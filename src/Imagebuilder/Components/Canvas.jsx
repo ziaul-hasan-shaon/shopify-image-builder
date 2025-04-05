@@ -48,7 +48,7 @@ const Canvas = ({
 									height="100%"
 									top="-1%"
 									left={0}
-									zIndex={1}
+									// zIndex={1}
 								/>
 							) : <></>
 							}

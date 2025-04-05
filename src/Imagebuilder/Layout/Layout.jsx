@@ -63,7 +63,9 @@ const Layout = (
 		isStandard,
 		setIsStandard,
 		isHigh,
-		setIsHigh
+		setIsHigh,
+		handlePreview,
+		mockupImage
 	}
 ) => {
 
@@ -162,7 +164,10 @@ const Layout = (
 							justifyContent={"center"}
 							gap={"10px"}
 							cursor={"pointer"}
-							onClick={onPreviewOpen}
+							onClick={() => {
+								handlePreview();
+								onPreviewOpen()
+							}}
 						>
 							<Text fontSize={"18px"}>Preview</Text>
 							<FiEye size={20} />
@@ -546,14 +551,14 @@ const Layout = (
 					<ModalHeader borderBottom={"1px solid #EBEBEB"}>Frame Preview</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody p={0}>
-						<Mockup/>
+						<Mockup mockupImage={mockupImage}/>
 					</ModalBody>
 
 					<ModalFooter borderTop={"1px solid #EBEBEB"}>
-						<Button colorScheme='blue' mr={3} onClick={onPreviewClose}>
-							Close
+						<Button bg='#F9F9F9' color={"#374144"} mr={3} onClick={onPreviewClose}>
+							Cancel
 						</Button>
-						<Button variant='ghost'>Secondary Action</Button>
+						<Button bg={"#F46267"} color={"#ffffff"}>Done</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>

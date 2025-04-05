@@ -38,6 +38,7 @@ const ImageBuilder = () => {
 	const [isStandard, setIsStandard] = useState(true)
 	const [isHigh, setIsHigh] = useState(false)
 	const [isExtra, setIsExtra] = useState(false)
+	const [mockupImage, setMockupImage] = useState(null);
 
 	console.log('selectedImage', selectedImage)
 	console.log('uploadedImages', uploadedImages)
@@ -387,6 +388,17 @@ const ImageBuilder = () => {
 		}
 	};
 
+	const handlePreview = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const dataURL = canvas.toDataURL({
+        format: 'png',
+        quality: 1,
+      });
+      setMockupImage(dataURL); // Set to state
+    }
+  }
+
 	return (
 		<>
 			<Box>
@@ -439,6 +451,8 @@ const ImageBuilder = () => {
 					setIsStandard={setIsStandard}
 					isHigh={isHigh}
 					setIsHigh={setIsHigh}
+					handlePreview={handlePreview}
+					mockupImage={mockupImage}
 				/>
 			</Box>
 		</>
