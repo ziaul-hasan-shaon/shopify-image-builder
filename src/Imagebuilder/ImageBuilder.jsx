@@ -39,6 +39,7 @@ const ImageBuilder = () => {
 	const [isHigh, setIsHigh] = useState(false)
 	const [isExtra, setIsExtra] = useState(false)
 	const [mockupImage, setMockupImage] = useState(null);
+	const [note, setNote] = useState("")
 
 	console.log('selectedImage', selectedImage)
 	console.log('uploadedImages', uploadedImages)
@@ -453,6 +454,8 @@ const ImageBuilder = () => {
 					setIsHigh={setIsHigh}
 					handlePreview={handlePreview}
 					mockupImage={mockupImage}
+					note = {note}
+					setNote = {setNote}
 				/>
 			</Box>
 		</>

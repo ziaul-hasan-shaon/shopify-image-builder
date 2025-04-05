@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, useDisclosure, Heading, Divider, AbsoluteCenter, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, useDisclosure, Heading, Divider, AbsoluteCenter, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Textarea } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import logo from '../../assets/Images/Logo.png'
 import Uploader from '../Components/Uploader';
@@ -13,6 +13,11 @@ import faceBook from "../../assets/Images/Social media/facebook 1.png";
 import dark from "../../assets/Images/Social media/x_dark 1.png";
 import linkedin from "../../assets/Images/Social media/linkedin 1.png";
 import Mockup from '../Components/Mockup';
+import { GrRedo, GrUndo } from 'react-icons/gr';
+import { BsFullscreen } from 'react-icons/bs';
+import { FaRegEdit } from 'react-icons/fa';
+import { ImImage } from 'react-icons/im';
+import { GoArrowUpRight, GoChevronDown, GoChevronUp } from 'react-icons/go';
 
 const Layout = (
 	{
@@ -65,7 +70,9 @@ const Layout = (
 		isHigh,
 		setIsHigh,
 		handlePreview,
-		mockupImage
+		mockupImage,
+		note,
+		setNote
 	}
 ) => {
 
@@ -75,8 +82,14 @@ const Layout = (
 	const [isTextOpen, setIsTextOpen] = useState(false)
 	const [isBorderOpen, setIsBorderOpen] = useState(false)
 	const [scale, setScale] = useState(1); // Default zoom level
+	const [isOpenNote, setIsOpenNote] = useState(false)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
+	const {
+			isOpen: isArtboardOpen,
+			onOpen: onArtboardOpen,
+			onClose: onArtboardClose
+		} = useDisclosure()
 
 	// to control preview modal state
 	const {
@@ -125,7 +138,7 @@ const Layout = (
 		<>
 			<Box>
 				<Grid
-					gridTemplateColumns={"repeat(12, 1fr)"}
+					gridTemplateColumns={"repeat(13, 1fr)"}
 					borderBottom={"1px solid #EEEEEE"}
 				>
 					<GridItem
@@ -147,12 +160,35 @@ const Layout = (
 						justifyContent={"center"}
 						borderRight={"1px solid #EEEEEE"}
 					>
-						<Box>
-
+						<Box width={"100%"} p={3}>
+							<Popover isOpen={isArtboardOpen} onOpen={onArtboardOpen} onClose={onArtboardClose} placement="bottom-start">
+								<PopoverTrigger>
+									<Button display={"flex"} alignItems={"center"} justifyContent={"space-between"} width={"100%"} height={"50px"} border={'1px solid #EBEBEB'} bg={"#F9F9F9"} cursor={"pointer"}>
+										<Box display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"} >
+											<ImImage color='#2B2B2B' size={30}/>
+											<Text fontSize={"18px"} fontWeight={"normal"}> Default 4:5 </Text>
+										</Box>
+											{isArtboardOpen ? <GoChevronUp size={24}/> : <GoChevronDown size={24}/>}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent width={'450px'}>
+									{/* <PopoverArrow /> */}
+									{/* <PopoverCloseButton /> */}
+									<PopoverBody>
+										<Template 
+											canvasWidth={canvasWidth}
+											canvasHeight={canvasHeight}
+											setCanvasWidth={setCanvasWidth}
+											setCanvasHeight={setCanvasHeight}
+											onClose={onArtboardClose}
+										/>
+									</PopoverBody>
+								</PopoverContent>
+							</Popover>
 						</Box>
 					</GridItem>
 					<GridItem
-						colSpan={8}
+						colSpan={9}
 						display={"flex"}
 						alignItems={"center"}
 						justifyContent={"space-between"}
@@ -162,7 +198,7 @@ const Layout = (
 							display={"flex"}
 							alignItems={"center"}
 							justifyContent={"center"}
-							gap={"10px"}
+							gap={"15px"}
 							cursor={"pointer"}
 							onClick={() => {
 								handlePreview();
@@ -170,7 +206,19 @@ const Layout = (
 							}}
 						>
 							<Text fontSize={"18px"}>Preview</Text>
-							<FiEye size={20} />
+							<Box
+								style={{
+									backgroundColor: "#ECF8FF" ,
+									borderRadius: "6px", 
+									width: "24px",
+									height: "24px",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center"
+									}}
+							>
+								<GoArrowUpRight color='#00AEF9' size={20} />
+							</Box>
 						</Box>
 						<Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start">
 							<PopoverTrigger>
@@ -336,7 +384,7 @@ const Layout = (
 			</Box>
 			<Box>
 				<Grid
-					gridTemplateColumns={"repeat(12, 1fr)"}
+					gridTemplateColumns={"repeat(13, 1fr)"}
 					height={"calc(100vh - 100px)"}
 					position={"relative"}
 					overflowY={"auto"}
@@ -445,12 +493,11 @@ const Layout = (
 					>
 						{
 							isTemplateOpen &&
-							<Template
-								canvasWidth={canvasWidth}
-								canvasHeight={canvasHeight}
-								setCanvasWidth={setCanvasWidth}
-								setCanvasHeight={setCanvasHeight}
-							/>
+							<Box height={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+								<Text fontSize={"18px"} fontWeight={"semibold"}>
+									This feature will coming soon....
+								</Text>
+							</Box>
 						}
 						{
 							isUploadOpen &&
@@ -505,7 +552,7 @@ const Layout = (
 							/>
 						}
 					</GridItem>
-					<GridItem colSpan={8} position="sticky" top="0" h={"calc(100vh - 100px)"} zIndex={999} bg="gray.100">
+					<GridItem colSpan={9} position="sticky" top="0" h={"calc(100vh - 100px)"} zIndex={999} bg="gray.100">
 
 						{/* Zoomable Content */}
 						<Box
@@ -521,22 +568,107 @@ const Layout = (
 							<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} />
 						</Box>
 
-						{/* Slider Positioned Inside GridItem */}
-						<Box position="absolute" bottom="10px" left="50%" transform="translateX(-50%)" zIndex="1000" w="300px">
-							<Slider
-								aria-label="zoom-slider"
-								defaultValue={1}
-								min={0.5}
-								max={2}
-								step={0.1}
-								value={scale}
-								onChange={(val) => setScale(val)}
+						<Box
+							px={4}
+							bg={"#ffffff"}
+							borderRadius={"20px"}
+							position="absolute" 
+							bottom="30px" 
+							display={"flex"}
+							alignItems={"center"}
+							justifyContent={"space-between"}
+							left="50%" 
+							transform="translateX(-50%)" 
+							zIndex="1000"
+							width={"700px"}
+						>
+							<Box display={"flex"} alignItems={"center"} gap={"10px"}>
+								<Box p={3} display={"flex"} alignItems={"center"} gap={"10px"} borderRight={"1px solid #D9D9D9"}>
+									<GrUndo color='#333333' size={25}/>
+									<GrRedo color='#333333' size={25}/>
+								</Box>
+								<BsFullscreen color='#333333'/>
+							</Box>
+							{/* Slider Positioned Inside GridItem */}
+							<Box w="320px" display={"flex"} alignItems={"center"} gap={"20px"} p={5} borderRight={"1px solid #E5E5E5"}>
+								<Box 
+									width={"65px"} 
+									bg={"#F9F9F9"} 
+									border={"1px solid #EBEBEB"} 
+									borderRadius={"5px"}
+									display={"flex"}
+									alignItems={"center"}
+									justifyContent={"start"}
+									px={2}
+								>
+									{`${Math.round(scale * 100)}%`}
+								</Box>
+								<Slider
+									aria-label="zoom-slider"
+									defaultValue={1}
+									min={0.5}
+									max={2}
+									step={0.1}
+									value={scale}
+									onChange={(val) => setScale(val)}
+								>
+									<SliderTrack>
+										<SliderFilledTrack />
+									</SliderTrack>
+									<SliderThumb />
+								</Slider>
+								<FaRegEdit 
+									color='#333333' 
+									size={30} 
+									onClick={() => setIsOpenNote(!isOpenNote)}
+									cursor={"pointer"}
+								/>
+								{isOpenNote && 
+									<Box 
+										width={"700px"}
+										height={"150px"}
+										p={3}
+										borderRadius={"15px"}
+										bg={"#ffffff"}
+										pos={"absolute"}
+										bottom={"80px"}
+										left="50%" 
+										transform="translateX(-50%)" 
+										display={"flex"}
+										flexDir={"column"}
+										alignItems={"end"}
+										gap={"10px"}
+									>
+										<Textarea
+											value={note}
+											onChange={(e) => setNote(e.target.value)}
+											placeholder='Here is a sample placeholder'
+											size='sm'
+											borderRadius={"15px"}
+										/>
+										<Button 
+											bg={"#2B2B2B"}
+											color={"#ffffff"}
+											onClick={() => setIsOpenNote(false)}
+										>
+											save
+										</Button>
+									</Box>
+								}
+							</Box>
+							<Box
+								display={"flex"}
+								alignItems={"center"}
+								justifyContent={"center"}
+								gap={"20px"}
 							>
-								<SliderTrack>
-									<SliderFilledTrack />
-								</SliderTrack>
-								<SliderThumb />
-							</Slider>
+								<Text>
+									$29.99
+								</Text>
+								<Button bg={"#F46267"} color={"white"}>
+									Add to Cart
+								</Button>
+							</Box>
 						</Box>
 
 					</GridItem>
@@ -555,10 +687,16 @@ const Layout = (
 					</ModalBody>
 
 					<ModalFooter borderTop={"1px solid #EBEBEB"}>
-						<Button bg='#F9F9F9' color={"#374144"} mr={3} onClick={onPreviewClose}>
+						{/* <Button bg='#F9F9F9' color={"#374144"} mr={3} >
 							Cancel
+						</Button> */}
+						<Button 
+							bg={"#F46267"} 
+							color={"#ffffff"}
+							onClick={onPreviewClose}
+						>
+							Done
 						</Button>
-						<Button bg={"#F46267"} color={"#ffffff"}>Done</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>

@@ -94,7 +94,7 @@ const Uploader = ({
 			{uploadedImages?.length > 0 &&
 				<Box p={5}>
 					<Heading fontSize={"16px"} textAlign="start">Uploaded Images</Heading>
-					<Flex overflow="hidden" align="center" wrap="wrap" gap={3} p={2} my={3}>
+					<Flex overflow="hidden" align="center" wrap="wrap" gap={3} p={2} my={2}>
 						{uploadedImages?.map((image) => (
 							<Box key={image.id} border="1px solid #ccc" borderRadius="5px" p={2} position="relative" cursor="pointer" onClick={() => handleImageSelect(image)}>
 								<Image src={image.url} alt={image.title} boxSize="60px" objectFit="cover" />
@@ -108,6 +108,7 @@ const Uploader = ({
 			}
 			{selectedImage?.length > 0 && (
 				<Box px={5}>
+					<Heading fontSize={"16px"} textAlign="start">Selected Images</Heading>
 					{selectedImage?.map((image) => (
 						<Flex key={image.id} border="1px solid #E5E5E5" p={2} borderRadius="10px" align="center" justify="space-between" my={2} bg="#F9F9F9">
 							<Box border="1px solid #ccc" borderRadius="5px" p={0}>
