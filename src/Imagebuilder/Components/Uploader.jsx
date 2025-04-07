@@ -1,11 +1,13 @@
 import axios from 'axios';
-import React, { useState } from 'react';
-import { Box, Button, Flex, Heading, Image, Input, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Flex, Heading, Image, Input, Radio, RadioGroup, ring, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useDropzone } from 'react-dropzone';
 import { FiUploadCloud } from 'react-icons/fi';
 import { HiXMark } from 'react-icons/hi2';
 import { RxRotateCounterClockwise } from 'react-icons/rx';
 import { CgEditFlipH, CgEditFlipV } from 'react-icons/cg';
+import toast from 'react-hot-toast';
+import { FaRegCircle } from 'react-icons/fa';
 
 const Uploader = ({
 	loading,
@@ -17,8 +19,21 @@ const Uploader = ({
 	handleDeleteButtonClick,
 	handleSelectedImageDelet,
 	flipSelectedImages,
-	rotateSelectedImages
+	rotateSelectedImages,
+	resize,
+	setResize,
+	handleScaleChange,
+	canvasWidth,
+	canvasHeight,
+	setCanvasWidth,
+	setCanvasHeight,
 }) => {
+
+	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
+
+	useEffect(() => {
+		setLandOrPort(canvasWidth > canvasHeight ? "landscape" : "portrait")
+	}, [canvasWidth, canvasHeight])
 
 	const onDrop = async (acceptedFiles) => {
 		setLoading(true); // Start loading indicator
@@ -40,6 +55,7 @@ const Uploader = ({
 				} catch (error) {
 					console.error("Error removing background:", error);
 					reject(error);
+					toast.error("An error occar while removing background")
 				}
 			});
 		});
@@ -51,10 +67,23 @@ const Uploader = ({
 			console.error("Error processing uploaded images:", error);
 		} finally {
 			setLoading(false); // Stop loading indicator
+			toast.success("Successfully uploaded image")
 		}
 	};
 
+	const handleChange = (value) => {
+    setLandOrPort(value);
 
+    if (value === "landscape") {
+        // In landscape mode, set the canvas width and height accordingly
+        setCanvasWidth(Math.max(canvasWidth, canvasHeight)); // Assign the larger value to width
+        setCanvasHeight(Math.min(canvasWidth, canvasHeight)); // Assign the smaller value to height
+    } else {
+        // In portrait mode, set the canvas width and height accordingly
+        setCanvasWidth(Math.min(canvasWidth, canvasHeight)); // Assign the smaller value to width
+        setCanvasHeight(Math.max(canvasWidth, canvasHeight)); // Assign the larger value to height
+    }
+	};
 
 	// Dropzone setup
 	const { getRootProps, getInputProps } = useDropzone({
@@ -81,7 +110,13 @@ const Uploader = ({
 				>
 					<Input {...getInputProps()} hidden />
 					{loading ? (
-						<Text>Uploading....</Text>
+						<Spinner 
+							thickness='4px'
+							speed='0.65s'
+							emptyColor='gray.200'
+							color='red.500'
+							size='xl' 
+						/>
 					) : (
 						<Flex direction="column" align="center" justify="center">
 							<FiUploadCloud size={40} color="#d63031" />
@@ -121,6 +156,32 @@ const Uploader = ({
 					))}
 				</Box>
 			)}
+			<Box px={5}>
+				<RadioGroup onChange={handleChange} value={landOrPort}>
+					<Stack direction='row'>
+						<Radio value='landscape'>Landscape</Radio>
+						<Radio value='portrait'>Portrait</Radio>
+					</Stack>
+				</RadioGroup>
+			</Box>
+			 <Box mt={5} px={5} display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"}>
+        <Text >Resize Image</Text>
+        <Slider
+          min={0.01}
+          max={.5}
+          step={.01}
+          value={resize}
+          onChange={handleScaleChange}
+          width="200px"
+        >
+          <SliderTrack>
+            <SliderFilledTrack bg='tomato'/>
+          </SliderTrack>
+          <SliderThumb boxSize={5} bg={'transparent'} p={0}>
+						<FaRegCircle size={"20px"} color='#FF6347' style={{background: "#ffffff", padding: "0px"}} />
+					</SliderThumb>
+        </Slider>
+      </Box>
 			<Flex align="center" justify="start" gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
 				<Box>
 					<Heading fontSize={"16px"}>Rotate</Heading>

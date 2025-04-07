@@ -24,7 +24,17 @@ import cat1 from "../../assets/Images/Pattern/cats/Frame 427319183 (5).png"
 import cat2 from "../../assets/Images/Pattern/cats/Frame 427319189 (4).png"
 
 
-const BackgroundPatternTabs = ({ color, setColor, gradientList, setGradientList, addBackground }) => {
+const BackgroundPatternTabs = ({ 
+	color, 
+	setColor, 
+	gradientList, 
+	setGradientList, 
+	addBackground, 
+	gradientBg,
+	setGradientBg,
+	patterBg,
+	setPatternBg
+}) => {
 
 	const [isBackgroundActive, setIsBackgroundActive] = useState(true)
 	const [isPatternActive, setIsPatternActive] = useState(false)
@@ -123,7 +133,11 @@ const BackgroundPatternTabs = ({ color, setColor, gradientList, setGradientList,
 										key={index}
 										src={gradient}
 										alt={`Gradient ${index}`}
-										onClick={() => addBackground(gradient, "")}
+										onClick={() => {
+											addBackground(gradient, "");
+											setGradientBg(true);
+											setPatternBg(false)
+										}}
 										style={{
 											width: "40px",
 											height: "40px",
@@ -169,7 +183,11 @@ const BackgroundPatternTabs = ({ color, setColor, gradientList, setGradientList,
 											key={index}
 											src={abImg}
 											alt="abastruct image"
-											onClick={() => addBackground(abImg, "")}
+											onClick={() => {
+												addBackground(abImg, "");
+												setGradientBg(true);
+												setPatternBg(false)
+											}}
 											style={{
 												width: "90px",
 												height: "60px",
@@ -221,7 +239,11 @@ const BackgroundPatternTabs = ({ color, setColor, gradientList, setGradientList,
 																			 key={idx}
 																			 src={item}
 																			 alt={section.title}
-																			 onClick={() => addBackground(item, "")}
+																			 onClick={() => {
+																				addBackground(item, "");
+																				setGradientBg(false);
+																				setPatternBg(true);
+																			 }}
 																			 style={{
 																					 width: "90px",
 																					 height: "60px",

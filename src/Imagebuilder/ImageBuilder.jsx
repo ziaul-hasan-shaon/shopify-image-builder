@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { border, Box } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
@@ -10,6 +10,7 @@ import gradient5 from "../assets/Images/GradientImage/gradients_app.png"
 import gradient6 from "../assets/Images/GradientImage/three-color-linear-gradient.png"
 import gradient7 from "../assets/Images/GradientImage/thumb-1920-1343513.png"
 import gradient8 from "../assets/Images/GradientImage/002 Night Fade.png"
+import toast from 'react-hot-toast';
 
 const initialGradientList = [
 	gradient1, gradient2, gradient3, gradient4, gradient5, gradient6, gradient7, gradient7, gradient8
@@ -22,9 +23,12 @@ const ImageBuilder = () => {
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState("#ff0000");
+	const [color, setColor] = useState("");
+	const [gradientBg, setGradientBg] = useState(false);
+	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
 	const [text, setText] = useState(""); // State for input text
+	const [canvasText, setCanvasText] = useState(null)
 	const [textColor, setTextColor] = useState("#000000"); // State for input text
 	const [prevAngle, setPrevAngle] = useState(0); // State to store previous angle
 	const [fontSize, setFontSize] = useState(null);
@@ -40,9 +44,61 @@ const ImageBuilder = () => {
 	const [isExtra, setIsExtra] = useState(false)
 	const [mockupImage, setMockupImage] = useState(null);
 	const [note, setNote] = useState("")
+	const [shareLoading, setShareLoading] = useState(false)
+	const [price, setprice] = useState(0)
+	const [tempRatio, setTempRatio] = useState(null)
+	const [resize, setResize] = useState(0.1)
+	// const [imageInfo, setImageInfo] = useState({
+	// 	selectedImage: selectedImage, // Track selected image
+	// 	bgcolor: color,
+	// 	gradientBg: gradientBg,
+	// 	patternBg: patterBg,
+	// 	canvasText: canvasText, // State for input text
+	// 	textColor: textColor, // State for input text
+	// 	fontSize: fontSize,
+	// 	fontWeight: fontWeight,
+	// 	fontFamily: fontFamily,
+	// 	selectedBorder: selectedBorder,
+	// 	canvasWidth: canvasWidth,
+	// 	canvasHeight: canvasHeight,
+	// 	isPngActive: isPngActive,
+	// 	isJpgActive: isJpgActive,
+	// 	note: note,
+	// 	price: price,
+	// });
+	
+	useEffect(() => {
+		let newPrice = 0;
+	
+		if (canvas) {
+			if(color != ""){
+				newPrice += 3; // Base price for canvas
+			}
+			// Add price for selected images
+			if (selectedImage?.length > 0) {
+				newPrice += selectedImage.length * 4; // Add 2 for each selected image
+			}
+	
+			// Only one of gradientBg or patterBg can be active
+			if (gradientBg) {
+				newPrice += 4;
+			} else if (patterBg) {
+				newPrice += 5;
+			}
+			if(canvasText){
+				newPrice +=3
+			}
+			if(selectedBorder){
+				newPrice +=4
+			}
+		}
+	
+		setprice(newPrice); // Update the price with the calculated value
+	}, [canvas, color, selectedImage, gradientBg, patterBg, canvasText, selectedBorder]); // Dependencies based on canvas, selectedImage, gradientBg, and patterBg
 
-	console.log('selectedImage', selectedImage)
-	console.log('uploadedImages', uploadedImages)
+	console.log('price', price)
+	console.log('text', text)
+	console.log('canvasText', canvasText)
 
 	const fontSizeCollection = [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40];
 	const fontWightCollection = [
@@ -140,11 +196,13 @@ const ImageBuilder = () => {
 			hasControls: true,
 			editable: true,
 		});
+		console.log('textObject', textObject)
 
 		canvas.add(textObject);
 		canvas.setActiveObject(textObject);
 		canvas.renderAll();
 		setText(""); // Clear input field after adding text
+		setCanvasText(textObject?.text)
 	};
 
 	const updateTextProperties = (property, value) => {
@@ -154,6 +212,56 @@ const ImageBuilder = () => {
 			canvas.renderAll();
 		}
 	};
+
+	useEffect(() => {
+		if (!canvas) return;
+		const handleTextChanged = (e) => {
+			const obj = e.target;
+	
+			if (
+				obj instanceof fabric.IText &&
+				obj.isEditing &&
+				obj.text.trim() === ""
+			) {
+				// Wait for the backspace event to finish before removing
+				setTimeout(() => {
+					canvas.remove(obj);
+					canvas.discardActiveObject();
+					canvas.renderAll();
+					setCanvasText("")
+				}, 0);
+			}
+		};
+	
+		canvas.on("text:changed", handleTextChanged);
+	
+		return () => {
+			canvas.off("text:changed", handleTextChanged);
+		};
+	}, [canvas]);
+	
+
+	useEffect(() => {
+		const handleKeyDown = (e) => {
+			const activeObject = canvas.getActiveObject();
+	
+			// Otherwise, delete the whole object on Delete or Backspace
+			if (e.key === "Delete") {
+				if (activeObject) {
+					// saveState();
+					canvas.remove(activeObject);
+					canvas.discardActiveObject();
+					canvas.renderAll();
+					setCanvasText("")
+				}
+			}
+		};
+	
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [canvas]);
+	
+	
 
 	const deleteUploadedImage = (imageId) => {
 		// Remove from uploaded images
@@ -330,6 +438,7 @@ const ImageBuilder = () => {
 			const matchedFont = fontWightCollection.find(font => font.value === Number(textProperties.fontWeight));
       setFontWeight(matchedFont ? matchedFont.label : 'Regular'); // Default to 'Regular' if not found
 			setFontFamily(textProperties.fontFamily);
+			setText(activeObject.type === 'i-text' ? activeObject?.text : "")
 		}
 	};
 
@@ -400,6 +509,116 @@ const ImageBuilder = () => {
     }
   }
 
+	const handleScaleChange = (value) => {
+		if (!canvas) return;
+    setResize(value);
+
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+      activeObject.scaleX = value;
+      activeObject.scaleY = value;
+      activeObject.setCoords();
+      canvas.renderAll();
+    }
+  };
+
+	async function uploadCanvasImageToImgBB(imageBase64) {
+    const formData = new FormData();
+    formData.append('image', imageBase64.split(',')[1]); // Remove the base64 header part
+		setShareLoading(true)
+
+    // Optional: Replace 'your_api_key' with your ImgBB API key
+    const apiKey = '599464de86515ed1f91ed7b853fe80be'; // Or leave it empty for anonymous use
+    const apiUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Image uploaded successfully:', data.data.url);
+            return data.data.url; // Image URL for sharing
+        } else {
+            console.error('Image upload failed:', data);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        return null;
+    }
+}
+
+async function shareImageOn(platform) {
+    const base64 = canvas.toDataURL({ format: "png" });
+
+    try {
+        const imageUrl = await uploadCanvasImageToImgBB(base64);
+
+        if (imageUrl) {
+            const text = encodeURIComponent("Check this canvas out!");
+            const link = encodeURIComponent(imageUrl);
+
+            let shareURL = "";
+
+            switch (platform) {
+                case "whatsapp":
+                    shareURL = `https://wa.me/?text=${text}%20${link}`;
+                    break;
+                case "facebook":
+                    shareURL = `https://www.facebook.com/sharer/sharer.php?u=${link}`;
+                    break;
+                case "x": // Twitter
+                    shareURL = `https://twitter.com/intent/tweet?text=${text}&url=${link}`;
+                    break;
+                case "linkedin":
+                    shareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${link}`;
+                    break;
+                default:
+                    console.error("Platform not supported");
+                    return;
+            }
+
+            window.open(shareURL, "_blank");
+						setShareLoading(false)
+        } else {
+            console.error('Failed to upload image to ImgBB');
+        }
+    } catch (error) {
+        console.error('Error sharing image:', error);
+    }
+}
+
+// console.log('shareLoading', shareLoading)
+
+const handleAddToCart = () => {
+	const imageInfo = {
+		selectedImage: selectedImage, // Track selected image
+		bgcolor: color,
+		gradientBg: gradientBg,
+		patternBg: patterBg,
+		canvasText: canvasText, // State for input text
+		textColor: textColor, // State for input text
+		fontSize: fontSize,
+		fontWeight: fontWeight,
+		fontFamily: fontFamily,
+		selectedBorder: selectedBorder,
+		canvasWidth: canvasWidth,
+		canvasHeight: canvasHeight,
+		isPngActive: isPngActive,
+		isJpgActive: isJpgActive,
+		note: note,
+		price: price,
+	}
+
+	console.log("successFully add to Cart")
+	console.log("imageInfo", imageInfo)
+	toast.success("Successfully added to cart")
+}
+
 	return (
 		<>
 			<Box>
@@ -456,6 +675,20 @@ const ImageBuilder = () => {
 					mockupImage={mockupImage}
 					note = {note}
 					setNote = {setNote}
+					shareImageOn={shareImageOn}
+					shareLoading={shareLoading}
+					price={price}
+					setprice={setprice}
+					gradientBg= {gradientBg}
+					setGradientBg={setGradientBg}
+					patterBg={patterBg}
+					setPatternBg={setPatternBg}
+					handleAddToCart={handleAddToCart}
+					tempRatio = {tempRatio}
+					setTempRatio = {setTempRatio}
+					resize = {resize}
+					setResize = {setResize}
+					handleScaleChange = {handleScaleChange}
 				/>
 			</Box>
 		</>

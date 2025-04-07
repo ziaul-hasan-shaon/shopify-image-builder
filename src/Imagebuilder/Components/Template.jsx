@@ -6,20 +6,22 @@ const Template = ({
 		canvasHeight,
 		setCanvasWidth,
 		setCanvasHeight,
-		onClose
+		onClose,
+		tempRatio,
+		setTempRatio
 }) => {
-	const [selectedRatio, setSelectedRatio] = useState(null);
+	const [selectedRatio, setSelectedRatio] = useState(1);
 
 	const ratios = [
-		{ label: "600×600 inches", w: 600, h: 600, width: "75px", height: "42px" },
-		{ label: "800×400 inches", w: 800, h: 400, width: "75px", height: "48px" },
-		{ label: "600×300 inches", w: 600, h: 300, width: "75px", height: "54px" },
-		{ label: "1000×600 inches", w: 1000, h: 600, width: "79px", height: "56px" },
-		{ label: "1200×600 inches", w: 1200, h: 600, width: "79px", height: "72px" },
-		{ label: "300×600 inches", w: 300, h: 600, width: "79px", height: "88px" },
-		{ label: "400×800 inches", w: 400, h: 800, width: "79px", height: "96px" },
-		{ label: "600×1000 inches", w: 600, h: 1000, width: "63px", height: "96px" },
-		{ label: "600×1200 inches", w: 600, h: 1200, width: "64px", height: "96px" },
+			{ label: "6.3×6.3 inches", w: 600, h: 600, width: "75px", height: "42px", ratio: "1:1" },
+			{ label: "8.3×4.2 inches", w: 800, h: 400, width: "75px", height: "48px", ratio: "2:1" },
+			{ label: "6.3×3.1 inches", w: 600, h: 300, width: "75px", height: "54px", ratio: "2:1" },
+			{ label: "10.4×6.3 inches", w: 1000, h: 600, width: "79px", height: "56px", ratio: "5:3" },
+			// { label: "12.5×6.3 inches", w: 1200, h: 600, width: "79px", height: "72px", ratio: "2:1" },
+			{ label: "3.1×6.3 inches", w: 300, h: 600, width: "79px", height: "88px", ratio: "1:2" },
+			{ label: "4.2×8.3 inches", w: 400, h: 800, width: "79px", height: "96px", ratio: "1:2" },
+			{ label: "6.3×10.4 inches", w: 600, h: 1000, width: "63px", height: "96px", ratio: "3:5" },
+			// { label: "6.3×12.5 inches", w: 600, h: 1200, width: "64px", height: "96px", ratio: "1:2" }
 	];
 
 	return (
@@ -70,6 +72,7 @@ const Template = ({
 							setSelectedRatio(index);
 							setCanvasWidth(ratio?.w);
 							setCanvasHeight(ratio?.h)
+							setTempRatio(ratio?.ratio)
 							onClose()
 						}}
 					>
@@ -80,7 +83,12 @@ const Template = ({
 							borderRadius="md"
 							bg={selectedRatio === index ? "#ffffff" : "#F8F8F8"}
 							mb="1"
-						/>
+							display={"flex"}
+							alignItems={"center"}
+							justifyContent={"center"}
+						>
+							<Text fontSize={"12px"} fontWeight={"light"} color={"#B1B1B1"}>{ratio.ratio}</Text>
+						</Box>
 						<Text fontSize="xs">{ratio.label}</Text>
 					</GridItem>
 				))}
