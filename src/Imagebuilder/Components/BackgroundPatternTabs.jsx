@@ -33,7 +33,9 @@ const BackgroundPatternTabs = ({
 	gradientBg,
 	setGradientBg,
 	patterBg,
-	setPatternBg
+	setPatternBg,
+	bgImage,
+	setBgImage 
 }) => {
 
 	const [isBackgroundActive, setIsBackgroundActive] = useState(true)
@@ -137,6 +139,7 @@ const BackgroundPatternTabs = ({
 											addBackground(gradient, "");
 											setGradientBg(true);
 											setPatternBg(false)
+											setBgImage(gradient)
 										}}
 										style={{
 											width: "40px",
@@ -187,6 +190,7 @@ const BackgroundPatternTabs = ({
 												addBackground(abImg, "");
 												setGradientBg(true);
 												setPatternBg(false)
+												setBgImage(abImg)
 											}}
 											style={{
 												width: "90px",
@@ -243,6 +247,7 @@ const BackgroundPatternTabs = ({
 																				addBackground(item, "");
 																				setGradientBg(false);
 																				setPatternBg(true);
+																				setBgImage(item)
 																			 }}
 																			 style={{
 																					 width: "90px",

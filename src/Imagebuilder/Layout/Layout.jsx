@@ -86,7 +86,9 @@ const Layout = (
 		setTempRatio,
 		resize,
 		setResize,
-		handleScaleChange
+		handleScaleChange,
+		bgImage,
+		setBgImage 
 	}
 ) => {
 
@@ -577,6 +579,8 @@ const Layout = (
 							setGradientBg={setGradientBg}
 							patterBg={patterBg}
 							setPatternBg={setPatternBg}
+							bgImage = {bgImage}
+							setBgImage = {setBgImage}
 						/>
 					}
 					{
