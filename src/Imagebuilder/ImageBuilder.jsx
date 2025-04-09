@@ -48,6 +48,7 @@ const ImageBuilder = () => {
 	const [price, setprice] = useState(0)
 	const [tempRatio, setTempRatio] = useState(null)
 	const [resize, setResize] = useState(0.1)
+	const [bgImage, setBgImage] = useState(null)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -164,6 +165,13 @@ const ImageBuilder = () => {
 			const maxHeight = 200;
 			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
 			fabricImage.scale(scaleFactor);
+
+			// ✅ Save original size/position only ONCE
+			fabricImage.customProps = {
+				originalLeft: fabricImage.left,
+				originalTop: fabricImage.top,
+				originalScale: scaleFactor,
+			};
 	
 			canvas.add(fabricImage);
 			canvas.setActiveObject(fabricImage);
@@ -182,6 +190,36 @@ const ImageBuilder = () => {
 			console.error('Failed to load image:', err);
 		};
 	};
+
+	const resizeCanvas = (newWidth, newHeight) => {
+		if (!canvas) return;
+	
+		const currentWidth = canvas.getWidth();
+		const currentHeight = canvas.getHeight();
+	
+		const scale = Math.min(newWidth / currentWidth, newHeight / currentHeight);
+	
+		canvas.getObjects().forEach((obj) => {
+			const original = obj.customProps;
+			if (original) {
+				obj.left = original.originalLeft * scale;
+				obj.top = original.originalTop * scale;
+				obj.scaleX = original.originalScale * scale;
+				obj.scaleY = original.originalScale * scale;
+				obj.setCoords();
+			}
+		});
+	
+		canvas.setWidth(newWidth);
+		canvas.setHeight(newHeight);
+		canvas.renderAll();
+	};
+
+	useEffect(() => {
+		if (!canvas) return; // wait for canvas to be ready
+		console.log('Resizing canvas to:', canvasWidth, canvasHeight);
+		resizeCanvas(canvasWidth, canvasHeight);
+	}, [canvas, canvasWidth, canvasHeight]);
 	
 
 	const addTextToCanvas = () => {
@@ -328,10 +366,27 @@ const ImageBuilder = () => {
 			console.log('image', imageUrl)
 			const imgElement = new Image();
 			imgElement.onload = () => {
-				const img = new fabric.Image(imgElement, {
-					scaleX: canvas.width / imgElement.width,
-					scaleY: canvas.height / imgElement.height,
-				});
+				const img = new fabric.Image(imgElement);
+
+            // Calculate scale factors to fit the canvas while covering the entire area
+            const scaleX = canvas.width / imgElement.width;
+            const scaleY = canvas.height / imgElement.height;
+
+            // To ensure the image covers the canvas, we pick the larger scale value (like object-fit: cover)
+            const scale = Math.max(scaleX, scaleY);
+
+            // Set the image with the proper scale and position to cover the canvas
+            img.set({
+                scaleX: scale,
+                scaleY: scale,
+                left: -((imgElement.width * scale - canvas.width) / 2), // Center the image
+                top: -((imgElement.height * scale - canvas.height) / 2), // Center the image
+                originX: 'left',
+                originY: 'top'
+            });
+
+				console.log('canvasWidth', canvas.width)
+				console.log('canvasHeight', canvas.height)
 
 				// Set the image as the background
 				canvas.backgroundColor = ""
@@ -362,6 +417,12 @@ const ImageBuilder = () => {
 			// overlapImage()
 		}
 	}, [canvas, color]); // This ensures the effect runs after canvas is initialized
+
+	useEffect(() => {
+		if(canvas){
+			addBackground(bgImage, "")
+		}
+	}, [canvas, bgImage, canvasWidth, canvasHeight])
 
 	// Rotate selected image
 	const rotateSelectedImages = (angle) => {
@@ -689,6 +750,8 @@ const handleAddToCart = () => {
 					resize = {resize}
 					setResize = {setResize}
 					handleScaleChange = {handleScaleChange}
+					bgImage = {bgImage}
+					setBgImage = {setBgImage}
 				/>
 			</Box>
 		</>
