@@ -18,6 +18,7 @@ import { BsFullscreen, BsFullscreenExit } from 'react-icons/bs';
 import { FaRegCircle, FaRegEdit } from 'react-icons/fa';
 import { ImImage } from 'react-icons/im';
 import { GoArrowUpRight, GoChevronDown, GoChevronUp } from 'react-icons/go';
+import ComposeFaceUploader from '../Components/ComposeFaceUploader';
 
 const Layout = (
 	{
@@ -545,7 +546,8 @@ const Layout = (
 				>
 					{
 						isTemplateOpen &&
-						<Box height={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+						<Box height={"100%"} display={"flex"} flexDir={"column"} alignItems={"center"} justifyContent={"center"}>
+							<ComposeFaceUploader/>
 							<Text fontSize={"18px"} fontWeight={"semibold"}>
 								This feature will coming soon....
 							</Text>
