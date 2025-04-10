@@ -49,6 +49,8 @@ const ImageBuilder = () => {
 	const [tempRatio, setTempRatio] = useState(null)
 	const [resize, setResize] = useState(0.1)
 	const [bgImage, setBgImage] = useState(null)
+	const [svgColor, setSvgColor] = useState("#ffffff")
+	const [bgRemoveLoading, setBgRemoveLoading] = useState(false)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -134,10 +136,12 @@ const ImageBuilder = () => {
 
 	// Handle Selecting an Image from Uploaded List
 	const handleImageSelect = (image) => {
-		console.log('image', image);
+		// console.log('canvas', canvas)
 		if (!canvas) return;
+		// console.log('image', image);
 	
 		const imgElement = new Image();
+		// console.log("imageElement", imgElement)
 	
 		imgElement.onload = () => {
 			// Generate a unique ID
@@ -152,14 +156,15 @@ const ImageBuilder = () => {
 			}
 	
 			const fabricImage = new fabric.Image(imgElement, {
-				left: 10,
-				top: 10,
+				left: 50,
+				top: 50,
 				cornerSize: 10,
 				hasControls: true,
 				lockScalingFlip: true,
 				id: uniqueId,
 				originalId: image.id,
 			});
+			// console.log('fabric', fabricImage)
 	
 			const maxWidth = 200;
 			const maxHeight = 200;
@@ -183,7 +188,7 @@ const ImageBuilder = () => {
 				return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
 			});
 		};
-	
+		console.log('imgElement', image.url)
 		imgElement.src = image.url;
 	
 		imgElement.onerror = (err) => {
@@ -220,7 +225,26 @@ const ImageBuilder = () => {
 		console.log('Resizing canvas to:', canvasWidth, canvasHeight);
 		resizeCanvas(canvasWidth, canvasHeight);
 	}, [canvas, canvasWidth, canvasHeight]);
+
+	const getBackground = () => {
+    if (!canvas) return;
+
+    // Get the current background color
+    const backgroundColor = canvas.backgroundColor;
+    console.log('Background Color:', backgroundColor);
+
+    // Get the current background image (if any)
+    const backgroundImage = canvas.backgroundImage;
+    if (backgroundImage) {
+        console.log('Background Image:', backgroundImage);
+    } else {
+        console.log('No background image set.');
+    }
+	};
 	
+	useEffect(()=> {
+		getBackground()
+	}, [bgImage])
 
 	const addTextToCanvas = () => {
 		if (!canvasRef.current || !text.trim()) return;
@@ -282,15 +306,19 @@ const ImageBuilder = () => {
 	useEffect(() => {
 		const handleKeyDown = (e) => {
 			const activeObject = canvas.getActiveObject();
-	
+			
 			// Otherwise, delete the whole object on Delete or Backspace
 			if (e.key === "Delete") {
 				if (activeObject) {
+					// const objectType = activeObject.type; // 'rect', 'circle', 'text', etc.
+
+  				// console.log("Active object type:", objectType);
 					// saveState();
 					canvas.remove(activeObject);
 					canvas.discardActiveObject();
 					canvas.renderAll();
 					setCanvasText("")
+					
 				}
 			}
 		};
@@ -325,6 +353,7 @@ const ImageBuilder = () => {
 	
 
 	const handleDeleteButtonClick = (e, imageId) => {
+		console.log('id', imageId)
 		e.stopPropagation();  // This prevents the click event from triggering parent handlers
 		deleteUploadedImage(imageId);  // Call your delete function
 	};
@@ -423,6 +452,20 @@ const ImageBuilder = () => {
 			addBackground(bgImage, "")
 		}
 	}, [canvas, bgImage, canvasWidth, canvasHeight])
+
+	const addSVGBackgroundWithColorChange = (svgContent) => {
+		// Convert SVG string to Blob URL
+		const svgToImageUrl = (svgContent) => {
+			const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+			return URL.createObjectURL(blob);
+		};
+
+		const imageUrl = svgToImageUrl(svgContent); // svgContent is your modified SVG string
+		setBgImage(imageUrl)
+		addBackground(imageUrl, null); // or provide a background color if needed
+	};
+	
+	
 
 	// Rotate selected image
 	const rotateSelectedImages = (angle) => {
@@ -685,6 +728,7 @@ const handleAddToCart = () => {
 			<Box>
 				<Layout 
 					canvasRef={canvasRef} 
+					canvas={canvas}
 					loading={loading} 
 					setLoading ={setLoading}
 					uploadedImages={uploadedImages}
@@ -752,6 +796,11 @@ const handleAddToCart = () => {
 					handleScaleChange = {handleScaleChange}
 					bgImage = {bgImage}
 					setBgImage = {setBgImage}
+					addSVGBackgroundWithColorChange = {addSVGBackgroundWithColorChange}
+					svgColor={svgColor}
+					setSvgColor={setSvgColor}
+					bgRemoveLoading={bgRemoveLoading}
+					setBgRemoveLoading= {setBgRemoveLoading}
 				/>
 			</Box>
 		</>

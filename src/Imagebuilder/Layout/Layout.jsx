@@ -88,7 +88,13 @@ const Layout = (
 		setResize,
 		handleScaleChange,
 		bgImage,
-		setBgImage 
+		setBgImage,
+		addSVGBackgroundWithColorChange,
+		svgColor,
+		setSvgColor,
+		bgRemoveLoading,
+		setBgRemoveLoading,
+		canvas
 	}
 ) => {
 
@@ -429,7 +435,7 @@ const Layout = (
 			<Box>
 				<Grid
 					gridTemplateColumns={"repeat(13, 1fr)"}
-					height={!isFullScreen ? "calc(100vh - 100px)" : "100vh"}
+					height={!isFullScreen ? "calc(100vh - 85px)" : "100vh"}
 					position={"relative"}
 					overflowY={"auto"}
 					sx={{ scrollbarWidth: "none" }}
@@ -565,6 +571,9 @@ const Layout = (
 							canvasWidth = {canvasWidth}
 							setCanvasHeight = {setCanvasHeight}
 							setCanvasWidth = {setCanvasWidth}
+							canvas={canvas}
+							bgRemoveLoading={bgRemoveLoading}
+							setBgRemoveLoading= {setBgRemoveLoading}
 						/>
 					}
 					{
@@ -581,6 +590,9 @@ const Layout = (
 							setPatternBg={setPatternBg}
 							bgImage = {bgImage}
 							setBgImage = {setBgImage}
+							addSVGBackgroundWithColorChange = {addSVGBackgroundWithColorChange}
+							svgColor={svgColor}
+							setSvgColor={setSvgColor}
 						/>
 					}
 					{
@@ -615,8 +627,8 @@ const Layout = (
 						colSpan={isFullScreen ? 13 : 9} 
 						position="sticky" top="0" 
 						h={canvasHeight >= 800 ? 
-							(isFullScreen ? "150vh" : "calc(150vh - 100px)") : 
-							(isFullScreen ? "100vh" : "calc(100vh - 100px)")
+							(isFullScreen ? "150vh" : "calc(150vh - 85px)") : 
+							(isFullScreen ? "100vh" : "calc(100vh - 85px)")
 						} 
 						zIndex={999} 
 						bg="gray.100" 
@@ -787,7 +799,7 @@ const Layout = (
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-			{shareLoading &&
+			{(shareLoading || bgRemoveLoading) &&
 			<Box 
 				position={"absolute"}
 				left={0}
@@ -796,8 +808,10 @@ const Layout = (
 				bottom={0}
 				zIndex={999}
 				display={"flex"}
+				flexDir={"column"}
 				alignItems={"center"}
 				justifyContent={"center"}
+				gap={"20px"}
 				bg={"#000000"}
 				opacity={".8"}
 			>
@@ -808,6 +822,9 @@ const Layout = (
 					color='blue.500'
 					size='xl' 
 				/>
+				<Text color={"red"}>
+					Processing
+				</Text>
 			</Box>
 			}
 		</>

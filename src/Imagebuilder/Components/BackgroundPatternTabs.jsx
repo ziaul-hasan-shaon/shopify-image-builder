@@ -1,5 +1,5 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, HStack, Image, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Text, useDisclosure } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import { FiPlus } from "react-icons/fi";
 import GradientColorPicker from "./GradientColorPicker";
@@ -22,6 +22,11 @@ import flower2 from "../../assets/Images/Pattern/flower/74878235_9826756.jpg"
 import flower3 from "../../assets/Images/Pattern/flower/4986022_2619336.jpg"
 import cat1 from "../../assets/Images/Pattern/cats/Frame 427319183 (5).png"
 import cat2 from "../../assets/Images/Pattern/cats/Frame 427319189 (4).png"
+import catSvg from "../../assets/Images/Pattern/cats/Cat.svg"
+import catSvg2 from "../../assets/Images/Pattern/cats/Cat1.svg"
+import catSvg3 from "../../assets/Images/Pattern/cats/Cat (1).svg"
+import catSvg4 from "../../assets/Images/Pattern/cats/Dog.svg"
+import PatterBackgroundColor from "./PatterBackgroundColor";
 
 
 const BackgroundPatternTabs = ({ 
@@ -35,13 +40,26 @@ const BackgroundPatternTabs = ({
 	patterBg,
 	setPatternBg,
 	bgImage,
-	setBgImage 
+	setBgImage, 
+	addSVGBackgroundWithColorChange,
+	svgColor,
+	setSvgColor
 }) => {
 
 	const [isBackgroundActive, setIsBackgroundActive] = useState(true)
 	const [isPatternActive, setIsPatternActive] = useState(false)
+	const [svgContent, setSvgContent] = useState('');
+	const [patternBgColor, setPatternBgColor] = useState("#ffffff")
+	const [patten, setPattern] = useState("")
+
+	// console.log('svgContent', svgContent)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
+	const {
+		isOpen: isPtternBgOpen,
+		onOpen: onPattenBgOpen,
+		onClose: onPatternBgClose
+	} = useDisclosure()
 
 	const abastruct = [abastruct1, abastruct2, abastruct3, abastruct4, abastruct5, abastruct6]
 
@@ -52,7 +70,33 @@ const BackgroundPatternTabs = ({
 	const butterflies = [ butterfly1, butterfly2, butterfly3, butterfly4, butterfly5]
 	const paws = [paws1, paws2, paws3]
 	const flowers = [flower1, flower2, flower3] 
-	const cats = [cat1, cat2]
+	const cats = [catSvg, catSvg2, catSvg3, catSvg4]
+
+	useEffect(() => {
+    if(patterBg){
+				const fetchAndColor = async () => {
+				const response = await fetch(bgImage);
+				const svgText = await response.text();
+				const parser = new DOMParser();
+				const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+				// Set background color directly on the SVG element
+				// const svgElement = svgDoc.documentElement;
+				// svgElement.setAttribute('style', `background-color: ${patternBgColor};`);
+				const paths = svgDoc.querySelectorAll('path, circle, rect, polygon, ellipse');
+	
+				paths.forEach(el => {
+					el.setAttribute('stroke', svgColor);
+				});
+				paths.forEach(el => {
+					el.setAttribute('fill', patternBgColor);
+				});
+	
+				setSvgContent(svgDoc.documentElement.outerHTML);
+			};
+	
+			fetchAndColor();
+		}
+  }, [bgImage, svgColor, patternBgColor]);
 
 	return (
 		<>
@@ -207,12 +251,12 @@ const BackgroundPatternTabs = ({
 					</Box>}
 				{isPatternActive &&
 					 <Box my={4}>
-					 <Popover placement="bottom-start">
+					 <Popover isOpen={isPtternBgOpen} onOpen={onPattenBgOpen} onClose={onPatternBgClose} placement="bottom-start">
 							 <PopoverTrigger>
 									 <Button display="flex" alignItems="center" justifyContent="space-between" width="100%" height="50px" border='1px solid #EBEBEB' bg="none" cursor="pointer">
 											 <Box display="flex" alignItems="center" justifyContent="start" gap="10px">
-													 <Box width="30px" height="30px" bg={color} borderRadius="5px"></Box>
-													 <Text>{color}</Text>
+													 <Box width="30px" height="30px" bg={svgColor} borderRadius="5px" border={"1px solid #EBEBEB"}/>
+													 <Text>{svgColor}</Text>
 											 </Box>
 											 <Text>Reset</Text>
 									 </Button>
@@ -220,7 +264,7 @@ const BackgroundPatternTabs = ({
 							 <PopoverContent width={'max-content'}>
 									 <PopoverArrow />
 									 <PopoverBody>
-											 <ColorPicker color={color} setColor={setColor} />
+											 <PatterBackgroundColor color={svgColor} setColor={setSvgColor} svgContent={svgContent} addSVGBackgroundWithColorChange={addSVGBackgroundWithColorChange} setPatternBgColor={setPatternBgColor} patternBgColor={patternBgColor} onClose = {onPatternBgClose}/>
 									 </PopoverBody>
 							 </PopoverContent>
 					 </Popover>
@@ -248,6 +292,7 @@ const BackgroundPatternTabs = ({
 																				setGradientBg(false);
 																				setPatternBg(true);
 																				setBgImage(item)
+																				setPattern(item)
 																			 }}
 																			 style={{
 																					 width: "90px",
@@ -255,7 +300,7 @@ const BackgroundPatternTabs = ({
 																					 borderRadius: "5px",
 																					 marginBottom: "10px",
 																					 objectFit: "cover",
-																					 border: "1px solid #E5E5E5",
+																					 border: patten === item ? "2px solid #2B2B2B" : "1px solid #E5E5E5",
 																					 cursor: "pointer"
 																			 }}
 																	 />

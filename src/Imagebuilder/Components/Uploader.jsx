@@ -27,6 +27,8 @@ const Uploader = ({
 	canvasHeight,
 	setCanvasWidth,
 	setCanvasHeight,
+	canvas,
+	setBgRemoveLoading
 }) => {
 
 	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
@@ -35,40 +37,110 @@ const Uploader = ({
 		setLandOrPort(canvasWidth > canvasHeight ? "landscape" : "portrait")
 	}, [canvasWidth, canvasHeight])
 
+	const fileToBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+		});
+	};
+	
 	const onDrop = async (acceptedFiles) => {
-		setLoading(true); // Start loading indicator
-		const newImages = acceptedFiles.map((file) => {
-			return new Promise(async (resolve, reject) => {
-				const formData = new FormData();
-				formData.append("image", file);
-				try {
-					const response = await axios.post("http://localhost:5000/remove-bg", formData, {
-						headers: { "Content-Type": "multipart/form-data" },
-					});
-					const base64Image = response.data.image;
-					const image = {
-						id: Date.now() + Math.random(),
-						title: file.name,
-						url: `data:image/png;base64,${base64Image}`,
-					};
-					resolve(image);
-				} catch (error) {
-					console.error("Error removing background:", error);
-					reject(error);
-					toast.error("An error occar while removing background")
-				}
+		setLoading(true);
+		let image;
+	
+		const initialImages = await Promise.all(
+			acceptedFiles.map(async (file) => {
+				const base64 = await fileToBase64(file);
+				const originalId = Date.now() + Math.random();
+	
+				 image = {
+					id: `${originalId}-initial`,         // unique id for canvas
+					originalId,                          
+					title: file.name,
+					url: base64, // for fabric
+					previewUrl: URL.createObjectURL(file), // for preview display
+					base64,
+					file,
+				};
+	
+				// Show immediately on canvas
+				setTimeout(() => {
+					if (canvas) {
+						handleImageSelect(image);
+					} else {
+						console.warn("Canvas not ready yet");
+					}
+				}, 500);
+	
+				return image;
+			})
+		);
+	
+		// Display in UI
+		setUploadedImages((prevImages) => [...prevImages, ...initialImages]);
+		// console.log('id', image)
+	
+		// After short delay, remove background
+		const delayedBackgroundRemoval = initialImages.map((img) => {
+			return new Promise((resolve, reject) => {
+				setTimeout(async () => {
+					const formData = new FormData();
+					formData.append("image", img.file);
+	
+					try {
+						const response = await axios.post("http://localhost:5000/remove-bg", formData, {
+							headers: { "Content-Type": "multipart/form-data" },
+						});
+	
+						const base64Image = `data:image/png;base64,${response.data.image}`;
+	
+						const updatedImage = {
+							...img,
+							id: `${img.originalId}-bgremoved`,
+							url: base64Image,
+							base64: base64Image,
+						};
+
+						// console.log('update', updatedImage)
+	
+						// Update canvas
+						setTimeout(() => {
+							if (canvas) {
+								handleImageSelect(updatedImage);
+								handleSelectedImageDelet(image?.id)
+							} else {
+								console.warn("Canvas not ready yet");
+							}
+						}, 500);
+	
+						resolve(updatedImage);
+					} catch (error) {
+						console.error("Error removing background:", error);
+						toast.error("An error occurred while removing background");
+						reject(error);
+					}
+				}, 300); // 300ms delay
 			});
 		});
-
+	
 		try {
-			const resolvedImages = await Promise.all(newImages);
-			setUploadedImages((prevImages) => [...prevImages, ...resolvedImages]);
-		} catch (error) {
-			console.error("Error processing uploaded images:", error);
+			setBgRemoveLoading(true)
+			const updatedImages = await Promise.all(delayedBackgroundRemoval);
+	
+			setUploadedImages((prev) => {
+				// Replace image by originalId
+				const filtered = prev.filter(
+					(img) => !updatedImages.find((u) => u.originalId === img.originalId)
+				);
+				return [...filtered, ...updatedImages];
+			});
 		} finally {
-			setLoading(false); // Stop loading indicator
-			toast.success("Successfully uploaded image")
+			setLoading(false);
+			setBgRemoveLoading(false)
 		}
+	
 	};
 
 	const handleChange = (value) => {
