@@ -1,19 +1,19 @@
 import { Box, Image, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import empty from "../../assets/Images/Border/Unframed.png"
-import border1 from "../../assets/Images/Border/border-151768_1920.png"
-// import border2 from "../../assets/Images/Border/empty-photo-frame-on-isolate-on-transparent-background-realistic-design-element-free-png (1).png"
-import border3 from "../../assets/Images/Border/frame-2487087_1280.png"
-import border4 from "../../assets/Images/Border/frame-4236931_1280.png"
-import border5 from "../../assets/Images/Border/frame-5507782_1920.png"
-import border6 from "../../assets/Images/Border/frame-7558618_1920.png"
-import border7 from "../../assets/Images/Border/paisley-decorated-square-frame-4auzo2kaca3tsl7b.png"
-import border8 from "../../assets/Images/Border/frame-7872263_1920.png"
 
 const Border = ({
 	selectedBorder,
 	setSelectedBorder
 }) => {
+
+	const empty = "https://i.ibb.co.com/8Dww7125/Unframed.png"
+	const border1 = "https://i.ibb.co.com/y1pGV09/border-151768-1920.png"
+	const border3 = "https://i.ibb.co.com/6Rxx6jyX/frame-2487087-1280.png"
+	const border4 = "https://i.ibb.co.com/0VyGJ4ZT/frame-4236931-1280.png"
+	const border5 = "https://i.ibb.co.com/Dgpv9Hb3/frame-5507782-1920.png"
+	const border6 = "https://i.ibb.co.com/dJ5RGxqm/frame-7558618-1920.png"
+	const border7 = "https://i.ibb.co.com/0y92m3hS/frame-7872263-1920.png"
+	const border8 = "https://i.ibb.co.com/vCkx8GMc/paisley-decorated-square-frame-4auzo2kaca3tsl7b.png"
 
 	const borders = [
 		border1, border3, border4, border5, border6, border7, border8

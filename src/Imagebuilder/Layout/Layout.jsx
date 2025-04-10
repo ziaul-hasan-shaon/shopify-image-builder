@@ -1,6 +1,5 @@
 import { Box, Grid, GridItem, Image, Text, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, useDisclosure, Heading, Divider, AbsoluteCenter, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Textarea, Spinner } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import logo from '../../assets/Images/Logo.png'
 import Uploader from '../Components/Uploader';
 import Canvas from '../Components/Canvas';
 import BackgroundPatternTabs from '../Components/BackgroundPatternTabs';
@@ -99,6 +98,8 @@ const Layout = (
 		setAtcLoading
 	}
 ) => {
+
+	const logo = "https://i.ibb.co.com/GfpxDdYd/Logo.png"
 
 	const [isUploadOpen, setIsUploadOpen] = useState(true)
 	const [isTemplateOpen, setIsTemplateOpen] = useState(false)

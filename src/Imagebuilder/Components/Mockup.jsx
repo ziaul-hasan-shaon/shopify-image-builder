@@ -1,19 +1,19 @@
 import { Box, Grid, GridItem, Image, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import mockup1 from '../../assets/Images/Mockup/mockup1.jpeg'
-import mockup2 from '../../assets/Images/Mockup/mockup2.jpeg'
-import mockup3 from '../../assets/Images/Mockup/mockup3.jpeg'
-import mockup4 from '../../assets/Images/Mockup/mockup4.jpeg'
-import mockup5 from '../../assets/Images/Mockup/mockup5.jpeg'
-import mockup6 from '../../assets/Images/Mockup/mockup6.jpeg'
-import mockup7 from '../../assets/Images/Mockup/mockup7.jpeg'
-import mockup8 from '../../assets/Images/Mockup/mockup8.jpg'
-import mockup9 from '../../assets/Images/Mockup/mockup9.jpg'
-import mockup10 from '../../assets/Images/Mockup/mockup10.jpg'
 
 const Mockup = ({ mockupImage }) => {
 
-	const mockupCollection = [mockup1, mockup2, mockup3, mockup4, mockup5, mockup6, mockup7, mockup8, mockup9, mockup10]
+	const mockup1 = "https://i.ibb.co.com/hFR1dsMN/mockup1.jpg"
+	const mockup2 = "https://i.ibb.co.com/vvcGV2gF/mockup2.jpg"
+	const mockup3 = "https://i.ibb.co.com/7xmNLy5h/mockup3.jpg"
+	const mockup4 = "https://i.ibb.co.com/xtjQsDGj/mockup4.jpg"
+	const mockup5 = "https://i.ibb.co.com/9kJmHD2C/mockup5.jpg"
+	const mockup6 = "https://i.ibb.co.com/Hff1BC17/mockup6.jpg"
+	const mockup7 = "https://i.ibb.co.com/Xrxcg0PM/mockup7.jpg"
+	const mockup8 = "https://i.ibb.co.com/x8JF7DNn/mockup8.jpg"
+	const mockup9 = "https://i.ibb.co.com/9mC9VrNH/mockup9.jpg"
+
+	const mockupCollection = [mockup1, mockup2, mockup3, mockup4, mockup5, mockup6, mockup7, mockup8, mockup9]
 	const [showMockup, setShowMockup] = useState(null)
 
 	// console.log('showMockup', showMockup)
@@ -100,7 +100,8 @@ const Mockup = ({ mockupImage }) => {
 										showMockup === mockup7 ? "188px" :
 										showMockup === mockup9 ? "360px" :
 										showMockup === mockup8 ? "365px" :
-										showMockup === mockup10 ? "255px" : "100px"
+										// showMockup === mockup10 ? "255px" : "100px"
+										"0px"
 										}
 									height={
 										showMockup === mockup1 ? "210px" :
@@ -112,7 +113,8 @@ const Mockup = ({ mockupImage }) => {
 										showMockup === mockup7 ? "255px" :
 										showMockup === mockup9 ? "246px" :
 										showMockup === mockup8 ? "250px" :
-										showMockup === mockup10 ? "185px" : "100px"
+										// showMockup === mockup10 ? "185px" : "100px"
+										"0px"
 									}
 									top={
 										showMockup === mockup1 ? "2%" :
@@ -124,7 +126,8 @@ const Mockup = ({ mockupImage }) => {
 										showMockup === mockup7 ? "10%" :
 										showMockup === mockup9 ? "43%" :
 										showMockup === mockup8 ? "24%" :
-										showMockup === mockup10 ? "39%" : "0px"
+										// showMockup === mockup10 ? "39%" : "0px"
+										"0px"
 									}
 									right={
 										showMockup === mockup1 ? "52%" :
@@ -136,7 +139,8 @@ const Mockup = ({ mockupImage }) => {
 										showMockup === mockup7 ? "32%" :
 										showMockup === mockup9 ? "17%" :
 										showMockup === mockup8 ? "11%" :
-										showMockup === mockup10 ? "24%" : "0px"
+										// showMockup === mockup10 ? "24%" : "0px"
+										"0px"
 									}
 								/>
 								{showMockup === mockup1 && 

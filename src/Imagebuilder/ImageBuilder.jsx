@@ -2,16 +2,17 @@ import { border, Box } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
-import gradient1 from "../assets/Images/GradientImage/021 True Sunset.png"
-import gradient2 from "../assets/Images/GradientImage/035 Itmeo Branding.png"
-import gradient3 from "../assets/Images/GradientImage/beautiful-color-ui-gradients-backgrounds-relay.png"
-import gradient4 from "../assets/Images/GradientImage/gradient1.png"
-import gradient5 from "../assets/Images/GradientImage/gradients_app.png"
-import gradient6 from "../assets/Images/GradientImage/three-color-linear-gradient.png"
-import gradient7 from "../assets/Images/GradientImage/thumb-1920-1343513.png"
-import gradient8 from "../assets/Images/GradientImage/002 Night Fade.png"
 import toast from 'react-hot-toast';
 import axios from 'axios';
+
+const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
+const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
+const gradient3 = "https://i.ibb.co.com/HDRtNSjn/three-color-linear-gradient.png"
+const gradient4 = "https://i.ibb.co.com/4n7HdRMD/gradients-app.png"
+const gradient5 = "https://i.ibb.co.com/8nX3T7YQ/beautiful-color-ui-gradients-backgrounds-relay.png"
+const gradient6 = "https://i.ibb.co.com/DDsDDtN2/035-Itmeo-Branding.png"
+const gradient7 = "https://i.ibb.co.com/Mks2SCrJ/021-True-Sunset.png"
+const gradient8 = "https://i.ibb.co.com/PZ9Tv6pv/002-Night-Fade.png"
 
 const initialGradientList = [
 	gradient1, gradient2, gradient3, gradient4, gradient5, gradient6, gradient7, gradient7, gradient8
@@ -24,7 +25,7 @@ const ImageBuilder = () => {
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState("");
+	const [color, setColor] = useState("#ffffff");
 	const [gradientBg, setGradientBg] = useState(false);
 	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
@@ -394,46 +395,36 @@ const ImageBuilder = () => {
 
 		// If there is an image URL, set it as the background image
 		if (imageUrl) {
-			// console.log('image', imageUrl)
 			const imgElement = new Image();
+			imgElement.crossOrigin = 'anonymous'; // 👈 necessary for CORS-safe image loading
 			imgElement.onload = () => {
 				const img = new fabric.Image(imgElement);
-
-            // Calculate scale factors to fit the canvas while covering the entire area
-            const scaleX = canvas.width / imgElement.width;
-            const scaleY = canvas.height / imgElement.height;
-
-            // To ensure the image covers the canvas, we pick the larger scale value (like object-fit: cover)
-            const scale = Math.max(scaleX, scaleY);
-
-            // Set the image with the proper scale and position to cover the canvas
-            img.set({
-                scaleX: scale,
-                scaleY: scale,
-                left: -((imgElement.width * scale - canvas.width) / 2), // Center the image
-                top: -((imgElement.height * scale - canvas.height) / 2), // Center the image
-                originX: 'left',
-                originY: 'top'
-            });
-
-				console.log('canvasWidth', canvas.width)
-				console.log('canvasHeight', canvas.height)
-
-				// Set the image as the background
-				canvas.backgroundColor = ""
-				canvas.set({
-					backgroundImage: img,
+		
+				const scaleX = canvas.width / imgElement.width;
+				const scaleY = canvas.height / imgElement.height;
+				const scale = Math.max(scaleX, scaleY);
+		
+				img.set({
+					scaleX: scale,
+					scaleY: scale,
+					left: -((imgElement.width * scale - canvas.width) / 2),
+					top: -((imgElement.height * scale - canvas.height) / 2),
+					originX: 'left',
+					originY: 'top'
 				});
+		
+				canvas.backgroundColor = "";
+				canvas.set({ backgroundImage: img });
 				canvas.renderAll();
 			};
-
-			imgElement.src = imageUrl;
-
-			// Error handling if image fails to load
+		
 			imgElement.onerror = (err) => {
 				console.error('Failed to load background image:', err);
 			};
-		} else {
+		
+			imgElement.src = imageUrl;
+		}
+		 else {
 			canvas.renderAll(); // Refresh the canvas to apply the color
 		}
 	};
