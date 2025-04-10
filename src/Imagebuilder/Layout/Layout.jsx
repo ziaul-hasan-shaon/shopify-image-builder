@@ -94,7 +94,9 @@ const Layout = (
 		setSvgColor,
 		bgRemoveLoading,
 		setBgRemoveLoading,
-		canvas
+		canvas,
+		atcLoading,
+		setAtcLoading
 	}
 ) => {
 
@@ -765,7 +767,7 @@ const Layout = (
 									color={"white"}
 									onClick={handleAddToCart}
 								>
-									Add to Cart
+									{atcLoading ? <Spinner/> : "Add to Cart"}
 								</Button>
 							</Box>
 						</Box>
@@ -799,33 +801,37 @@ const Layout = (
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-			{(shareLoading || bgRemoveLoading) &&
-			<Box 
-				position={"absolute"}
-				left={0}
-				right={0}
-				top={0}
-				bottom={0}
-				zIndex={999}
-				display={"flex"}
-				flexDir={"column"}
-				alignItems={"center"}
-				justifyContent={"center"}
-				gap={"20px"}
-				bg={"#000000"}
-				opacity={".8"}
-			>
-				<Spinner 
-					thickness='4px'
-					speed='0.65s'
-					emptyColor='gray.200'
-					color='blue.500'
-					size='xl' 
-				/>
-				<Text color={"red"}>
-					Processing
-				</Text>
-			</Box>
+			{!atcLoading &&
+				<>
+				{(shareLoading || bgRemoveLoading) &&
+						<Box 
+							position={"absolute"}
+							left={0}
+							right={0}
+							top={0}
+							bottom={0}
+							zIndex={999}
+							display={"flex"}
+							flexDir={"column"}
+							alignItems={"center"}
+							justifyContent={"center"}
+							gap={"20px"}
+							bg={"#000000"}
+							opacity={".8"}
+						>
+							<Spinner 
+								thickness='4px'
+								speed='0.65s'
+								emptyColor='gray.200'
+								color='blue.500'
+								size='xl' 
+							/>
+							<Text color={"red"}>
+								Processing
+							</Text>
+						</Box>
+					}
+				</>
 			}
 		</>
 	);

@@ -11,6 +11,7 @@ import gradient6 from "../assets/Images/GradientImage/three-color-linear-gradien
 import gradient7 from "../assets/Images/GradientImage/thumb-1920-1343513.png"
 import gradient8 from "../assets/Images/GradientImage/002 Night Fade.png"
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const initialGradientList = [
 	gradient1, gradient2, gradient3, gradient4, gradient5, gradient6, gradient7, gradient7, gradient8
@@ -51,6 +52,7 @@ const ImageBuilder = () => {
 	const [bgImage, setBgImage] = useState(null)
 	const [svgColor, setSvgColor] = useState("#ffffff")
 	const [bgRemoveLoading, setBgRemoveLoading] = useState(false)
+	const [atcLoading, setAtcLoading] = useState(false)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -188,7 +190,7 @@ const ImageBuilder = () => {
 				return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
 			});
 		};
-		console.log('imgElement', image.url)
+		// console.log('imgElement', image.url)
 		imgElement.src = image.url;
 	
 		imgElement.onerror = (err) => {
@@ -379,7 +381,7 @@ const ImageBuilder = () => {
 
 	// Function to set background image or color
 	const addBackground = (imageUrl, color) => {
-		console.log('color', color)
+		// console.log('color', color)
 		if (!canvas) return;
 
 		// Set background color
@@ -392,7 +394,7 @@ const ImageBuilder = () => {
 
 		// If there is an image URL, set it as the background image
 		if (imageUrl) {
-			console.log('image', imageUrl)
+			// console.log('image', imageUrl)
 			const imgElement = new Image();
 			imgElement.onload = () => {
 				const img = new fabric.Image(imgElement);
@@ -629,7 +631,6 @@ const ImageBuilder = () => {
 	async function uploadCanvasImageToImgBB(imageBase64) {
     const formData = new FormData();
     formData.append('image', imageBase64.split(',')[1]); // Remove the base64 header part
-		setShareLoading(true)
 
     // Optional: Replace 'your_api_key' with your ImgBB API key
     const apiKey = '599464de86515ed1f91ed7b853fe80be'; // Or leave it empty for anonymous use
@@ -657,6 +658,7 @@ const ImageBuilder = () => {
 }
 
 async function shareImageOn(platform) {
+		setShareLoading(true)
     const base64 = canvas.toDataURL({ format: "png" });
 
     try {
@@ -698,14 +700,15 @@ async function shareImageOn(platform) {
 
 // console.log('shareLoading', shareLoading)
 
-const handleAddToCart = () => {
+const handleAddToCart = async () => {
+	setAtcLoading(true);
+
 	const imageInfo = {
-		selectedImage: selectedImage, // Track selected image
 		bgcolor: color,
 		gradientBg: gradientBg,
 		patternBg: patterBg,
-		canvasText: canvasText, // State for input text
-		textColor: textColor, // State for input text
+		canvasText: canvasText,
+		textColor: textColor,
 		fontSize: fontSize,
 		fontWeight: fontWeight,
 		fontFamily: fontFamily,
@@ -716,12 +719,45 @@ const handleAddToCart = () => {
 		isJpgActive: isJpgActive,
 		note: note,
 		price: price,
+	};
+
+	const canvas = canvasRef.current;
+	let dataURL;
+
+	if (canvas) {
+		dataURL = canvas.toDataURL({
+			format: 'png',
+			quality: 1,
+		});
 	}
 
-	console.log("successFully add to Cart")
-	console.log("imageInfo", imageInfo)
-	toast.success("Successfully added to cart")
-}
+	try {
+		const imgUrl = await uploadCanvasImageToImgBB(dataURL); // 🛠️ Await this!
+		console.log('url', imgUrl);
+
+		if (imgUrl) {
+			const payload = {
+				id: 50374829605158,
+				quantity: 1,
+				properties: {
+					_image_info: imageInfo,
+					_preview_url: imgUrl,
+				},
+			};
+
+			await axios.post('/cart/add.js', payload);
+			toast.success('Successfully added to cart');
+			location.href = '/cart';
+		}
+	} catch (err) {
+		toast.error('Something went wrong');
+		console.error('error', err);
+	} finally {
+		setAtcLoading(false);
+	}
+
+	console.log('imageInfo', imageInfo);
+};
 
 	return (
 		<>
@@ -801,6 +837,8 @@ const handleAddToCart = () => {
 					setSvgColor={setSvgColor}
 					bgRemoveLoading={bgRemoveLoading}
 					setBgRemoveLoading= {setBgRemoveLoading}
+					atcLoading={atcLoading}
+					setAtcLoading={setAtcLoading}
 				/>
 			</Box>
 		</>
