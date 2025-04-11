@@ -122,21 +122,24 @@ const ImageBuilder = () => {
     "Lucida Console, monospace",
   ];
 
+	console.log('canvas', canvasRef)
 	// Initialize Fabric.js Canvas
 	useEffect(() => {
-		const newCanvas = new fabric.Canvas(canvasRef.current, {
-			width: canvasWidth,
-			height: canvasHeight,
-		});
-
-		newCanvas.setDimensions({ width: canvasWidth , height: canvasHeight });
-
-		setCanvas(newCanvas);
-		return () => {
-			newCanvas.dispose(); // Cleanup
-		};
+		const timeout = setTimeout(() => {
+			if (canvasRef.current) {
+				const newCanvas = new fabric.Canvas(canvasRef.current, {
+					width: canvasWidth,
+					height: canvasHeight,
+				});
+				newCanvas.setDimensions({ width: canvasWidth, height: canvasHeight });
+				setCanvas(newCanvas);
+			}
+		}, 0); // Wait 1 tick
+	
+		return () => clearTimeout(timeout);
 	}, []);
 
+	console.log('can', canvas)
 	// Handle Selecting an Image from Uploaded List
 	const handleImageSelect = (image) => {
 		// console.log('canvas', canvas)

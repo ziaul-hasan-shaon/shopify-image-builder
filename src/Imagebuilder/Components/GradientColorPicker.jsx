@@ -1,38 +1,47 @@
 import { Button } from "@chakra-ui/react";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
 
-const GradientColorPicker = ({ gradientList, setGradientList, onClose }) => {
+const GradientColorPicker = ({ gradientList, setGradientList, onClose, isOpen, device }) => {
 	const [color1, setColor1] = useState("#ff0000");
 	const [color2, setColor2] = useState("#0000ff");
 	const canvasRef = useRef(null);
 
 	const generateGradientImage = () => {
 		const canvas = canvasRef.current;
-		const ctx = canvas.getContext("2d");
+		if (!canvas) return;
 
-		// Set the canvas size
+		const ctx = canvas.getContext("2d");
 		canvas.width = 200;
 		canvas.height = 100;
 
-		// Create gradient
 		const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
 		gradient.addColorStop(0, color1);
 		gradient.addColorStop(1, color2);
 
-		// Fill canvas with gradient
 		ctx.fillStyle = gradient;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		// Convert canvas to image (data URL)
 		return canvas.toDataURL();
 	};
 
+	useEffect(() => {
+		if (isOpen) {
+			generateGradientImage();
+		}
+	}, [isOpen]);
+
 	const handleSaveGradient = () => {
 		const imageUrl = generateGradientImage();
-		setGradientList([...gradientList, imageUrl]);
-		onClose()
+		if (imageUrl) {
+			setGradientList([...gradientList, imageUrl]);
+			onClose();
+		}
 	};
+
+	if (!isOpen) return null;
+
+	const sketchPickerWidth = device === "mobile" ? "120px" : "150px"
 
 	return (
 		<>
@@ -43,10 +52,14 @@ const GradientColorPicker = ({ gradientList, setGradientList, onClose }) => {
 						border-radius: 50% !important;
 
 					}
+
+					.gradient-color-picker .sketch-picker {
+						width: ${sketchPickerWidth} !important;
+					}
 					`
 				}
 			</style>
-			<div className="gradient-color-picker" style={{  }}>
+			<div className="gradient-color-picker" style={{ }}>
 				{/* <h3>Gradient Color Picker</h3> */}
 
 				<div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>

@@ -37,7 +37,8 @@ const BackgroundPatternTabs = ({
 	setBgImage, 
 	addSVGBackgroundWithColorChange,
 	svgColor,
-	setSvgColor
+	setSvgColor,
+	device
 }) => {
 
 	const [isBackgroundActive, setIsBackgroundActive] = useState(true)
@@ -100,7 +101,8 @@ const BackgroundPatternTabs = ({
 	// console.log('patterBg', patterBg)
 
 	const fetchAndColor = () => {
-		const parser = new DOMParser();
+		if(bgImage){
+			const parser = new DOMParser();
 		const svgDoc = parser.parseFromString(bgImage, 'image/svg+xml');
 	
 		const paths = svgDoc.querySelectorAll('path, circle, rect, polygon, ellipse');
@@ -111,6 +113,7 @@ const BackgroundPatternTabs = ({
 		});
 	
 		setSvgContent(svgDoc.documentElement.outerHTML);
+		}
 	};
 	
 
@@ -236,7 +239,7 @@ const BackgroundPatternTabs = ({
 										<PopoverArrow />
 										{/* <PopoverCloseButton /> */}
 										<PopoverBody>
-											<GradientColorPicker gradientList={gradientList} setGradientList={setGradientList} onClose={onClose} />
+											<GradientColorPicker gradientList={gradientList} setGradientList={setGradientList} onClose={onClose} isOpen={isOpen} device={device}/>
 										</PopoverBody>
 									</PopoverContent>
 								</Popover>
@@ -287,7 +290,7 @@ const BackgroundPatternTabs = ({
 							 <PopoverContent width={'max-content'}>
 									 <PopoverArrow />
 									 <PopoverBody>
-											 <PatterBackgroundColor color={svgColor} setColor={setSvgColor} svgContent={svgContent} addSVGBackgroundWithColorChange={addSVGBackgroundWithColorChange} setPatternBgColor={setPatternBgColor} patternBgColor={patternBgColor} onClose = {onPatternBgClose}/>
+											 <PatterBackgroundColor color={svgColor} setColor={setSvgColor} svgContent={svgContent} addSVGBackgroundWithColorChange={addSVGBackgroundWithColorChange} setPatternBgColor={setPatternBgColor} patternBgColor={patternBgColor} onClose = {onPatternBgClose} isOpen={isPtternBgOpen}/>
 									 </PopoverBody>
 							 </PopoverContent>
 					 </Popover>

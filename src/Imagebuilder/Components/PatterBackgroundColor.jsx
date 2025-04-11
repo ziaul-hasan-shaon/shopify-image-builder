@@ -2,9 +2,13 @@
 import { useState } from "react";
 import { SketchPicker } from "react-color";
 
-const PatterBackgroundColor = ({ setColor, color, addSVGBackgroundWithColorChange, svgContent, setPatternBgColor,patternBgColor, onClose }) => {
+const PatterBackgroundColor = ({ setColor, color, addSVGBackgroundWithColorChange, svgContent, setPatternBgColor,patternBgColor, onClose, isOpen }) => {
 
 	const [showBtn, setShowBtn] = useState(false)
+
+	console.log('svgContent', svgContent)
+
+	if (!isOpen) return null;
 
 	return (
 		<div>
@@ -57,11 +61,13 @@ const PatterBackgroundColor = ({ setColor, color, addSVGBackgroundWithColorChang
 				onMouseEnter={() => setShowBtn(true)}
 				style={{ margin: "10px 0", border: "1px solid #E5E5E5", borderRadius: "5px", position: "relative" }}
 			>
-				<div
-					className="svg-container"
-					dangerouslySetInnerHTML={{ __html: svgContent }}
-				/>
-				<div
+				{!svgContent.includes('<parsererror') && (
+				<>
+					<div
+						className="svg-container"
+						dangerouslySetInnerHTML={{ __html: svgContent }}
+					/>
+					<div
 					style={{
 						position: "absolute",
 						inset: 0,
@@ -74,29 +80,32 @@ const PatterBackgroundColor = ({ setColor, color, addSVGBackgroundWithColorChang
 					}}
 				// onClick={() => addSVGBackgroundWithColorChange(svgContent)}
 				/>
-				{showBtn &&
-					<button
-						style={{
-							backgroundColor: "#F46267",
-							position: "absolute",
-							color: "#ffffff",
-							padding: "5px",
-							width: "80%",
-							top: "50%",
-							left: "50%",
-							transform: "translate(-50%, -50%)",
-							borderRadius: "10px"
-						}}
-						onMouseOut={() => setShowBtn(false)}
-						onClick={() => {
-							addSVGBackgroundWithColorChange(svgContent);
-							onClose()
-						}}
-					>
-						Click To set background
-					</button>
-				}
+					{showBtn &&
+						<button
+							style={{
+								backgroundColor: "#F46267",
+								position: "absolute",
+								color: "#ffffff",
+								padding: "5px",
+								width: "80%",
+								top: "50%",
+								left: "50%",
+								transform: "translate(-50%, -50%)",
+								borderRadius: "10px"
+							}}
+							onMouseOut={() => setShowBtn(false)}
+							onClick={() => {
+								addSVGBackgroundWithColorChange(svgContent);
+								onClose()
+							}}
+						>
+							Click To set background
+						</button>
+					}
+				</>
+				)}
 			</div>
+
 		</div>
 	);
 };
