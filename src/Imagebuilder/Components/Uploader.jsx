@@ -28,7 +28,8 @@ const Uploader = ({
 	setCanvasWidth,
 	setCanvasHeight,
 	canvas,
-	setBgRemoveLoading
+	setBgRemoveLoading, 
+	device
 }) => {
 
 	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
@@ -171,7 +172,7 @@ const Uploader = ({
 				<Heading fontSize={"16px"} textAlign="start">Upload Image</Heading>
 				<Box
 					{...getRootProps()}
-					border="2px dashed #ff7675"
+					border={device === "Desktop" ? "2px dashed #ff7675" : ""}
 					borderRadius="8px"
 					p={7}
 					textAlign="center"
@@ -190,11 +191,26 @@ const Uploader = ({
 							size='xl' 
 						/>
 					) : (
-						<Flex direction="column" align="center" justify="center">
-							<FiUploadCloud size={40} color="#d63031" />
-							<Text fontWeight="bold" my={2}>Upload image</Text>
-							<Text fontSize="sm">Drag or click to browse (4 MB max)</Text>
-						</Flex>
+						<>
+						{
+							device === "Desktop" ? 
+							<Flex direction="column" align="center" justify="center">
+								<FiUploadCloud size={40} color="#d63031" />
+								<Text fontWeight="bold" my={2}>Upload image</Text>
+								<Text fontSize="sm">Drag or click to browse (4 MB max)</Text>
+							</Flex> : 
+							<Flex align="center" justify="space-between">
+								<Flex align="center" justify="start" gap={"15px"}>
+									<FiUploadCloud size={40} color="#d63031" />
+									<Box textAlign={"start"}>
+										<Text fontWeight="bold" my={2}>Upload image</Text>
+										<Text fontSize="sm">Drag or click to browse</Text>
+									</Box>
+								</Flex>
+								<Button bg={"#d63031"} color={"white"}>Upload</Button>
+							</Flex>
+						}
+						</>
 					)}
 				</Box>
 			</Box>

@@ -583,6 +583,7 @@ const DesktopLayout = (
 							canvas={canvas}
 							bgRemoveLoading={bgRemoveLoading}
 							setBgRemoveLoading= {setBgRemoveLoading}
+							device ={device}
 						/>
 					}
 					{

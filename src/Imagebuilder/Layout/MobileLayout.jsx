@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Popover, PopoverBody, PopoverContent, PopoverTrigger, Spinner, Text, Textarea, useDisclosure } from '@chakra-ui/react';
+import { AbsoluteCenter, Box, Button, Collapse, Divider, Heading, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Spinner, Text, Textarea, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { GrRedo, GrUndo } from 'react-icons/gr';
 import { BsFullscreen, BsFullscreenExit } from 'react-icons/bs';
@@ -11,6 +11,12 @@ import BackgroundPatternTabs from '../Components/BackgroundPatternTabs';
 import TextEditor from '../Components/TextEditor';
 import Border from '../Components/Border';
 import Template from '../Components/Template';
+import { FiSave } from 'react-icons/fi';
+import whatsapp from "../../assets/Images/Social media/whatsapp 1.png";
+import faceBook from "../../assets/Images/Social media/facebook 1.png";
+import dark from "../../assets/Images/Social media/x_dark 1.png";
+import linkedin from "../../assets/Images/Social media/linkedin 1.png";
+import Mockup from '../Components/Mockup';
 
 const MobileLayout = (
 	{
@@ -107,7 +113,7 @@ const MobileLayout = (
 	}
 ) => {
 
-	// const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
+	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const [isContentOpen, setIsContentOpen] = useState(true)
 	const {
 		isOpen: isArtboardOpen,
@@ -171,8 +177,9 @@ const MobileLayout = (
 					border={"1px solid #E5E5E5"}
 					mx={4}
 					my={10}
+					// width={"100%"}
 				>
-					<Box display={"flex"} alignItems={"center"} gap={"10px"}>
+					<Box display={"flex"} alignItems={"center"} gap={"10px"} width={"35%"}>
 						<Box p={3} display={"flex"} alignItems={"center"} gap={"10px"} borderRight={"1px solid #D9D9D9"}>
 							<GrUndo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={20} />
 							<GrRedo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={20} />
@@ -224,12 +231,30 @@ const MobileLayout = (
 								</Box>
 							}
 						</Box>
+						<Box
+							style={{
+								backgroundColor: "#ECF8FF" ,
+								borderRadius: "6px", 
+								width: "24px",
+								height: "24px",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center"
+								}}
+								onClick={() => {
+									handlePreview();
+									onPreviewOpen()
+								}}
+						>
+							<GoArrowUpRight color='#F46267' size={20} />
+						</Box>
 					</Box>
 					<Box
 						display={"flex"}
 						alignItems={"center"}
 						justifyContent={"center"}
 						gap={"20px"}
+						width={"55%"}
 					>
 						<Text>
 							$ {price}
@@ -239,11 +264,194 @@ const MobileLayout = (
 							color={"white"}
 							onClick={handleAddToCart}
 							fontSize={"14px"}
-							width={"60%"}
+							// width={"60%"}
 							height={"30px"}
 						>
 							{atcLoading ? <Spinner /> : "Add to Cart"}
 						</Button>
+						<Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start">
+										<PopoverTrigger>
+											{/* <Button
+												display={"flex"}
+												alignItems={"center"}
+												justifyContent={"center"}
+												gap={"10px"}
+												color={"#F46267"}
+												bg={"#FEEFF0"}
+												border={"1px solid #FCCED0"}
+											>
+												
+											</Button> */}
+											<FiSave size={22} color='#F46267'/>
+										</PopoverTrigger>
+										<PopoverContent width={'280px'}>
+											<PopoverArrow/>
+											{/* <PopoverCloseButton /> */}
+											<PopoverBody p={4}>
+												<Box display={"flex"} flexDir={"column"} alignItems={"start"} justifyContent={"center"} gap={"10px"}>
+													<Heading as='h4' size='md'>
+														Export settings
+													</Heading>
+													<Text color={"#B1B1B1"}>
+														Image format
+													</Text>
+													<Box display={"flex"} alignItems={"center"} justifyContent={"center"} gap={"10px"} p={2} bg={"#EBEBEB"} borderRadius={"10px"} width={"100%"}>
+														<Button
+															fontSize={"16px"}
+															fontWeight={"regular"}
+															width={"50%"}
+															bg={isPngActive ? "#ffffff" : "transparent"}
+															onClick={() => {
+																setIsJpgActive(false);
+																setIsPngActive(true)
+															}}
+														>
+															PNG
+														</Button>
+														<Button
+															fontSize={"16px"}
+															fontWeight={"regular"}
+															width={"50%"}
+															bg={isJpgActive ? "#ffffff" : "transparent"}
+															onClick={() => {
+																setIsJpgActive(true);
+																setIsPngActive(false)
+															}}
+														>
+															JPEG
+														</Button>
+													</Box>
+													<Box display={"flex"} alignItems={"center"} justifyContent={"center"} gap={"10px"} p={2} bg={"#EBEBEB"} borderRadius={"10px"} width={"100%"}>
+														<Box
+															display={"flex"}
+															alignItems={"center"}
+															justifyContent={"center"}
+															flexDir={"column"}
+															p={2}
+															bg={isStandard ? "#ffffff" : "transparent"}
+															onClick={() => {
+																setIsExtra(false);
+																setIsStandard(true);
+																setIsHigh(false)
+															}}
+															borderRadius={"8px"}
+															cursor={"pointer"}
+															width={"70px"}
+															height={"62px"}
+														>
+															<Text>1x</Text>
+															<Text>Standard</Text>
+														</Box>
+														<Box
+															display={"flex"}
+															alignItems={"center"}
+															justifyContent={"center"}
+															flexDir={"column"}
+															p={2}
+															bg={isHigh ? "#ffffff" : "transparent"}
+															onClick={() => {
+																setIsExtra(false);
+																setIsStandard(false);
+																setIsHigh(true)
+															}}
+															borderRadius={"8px"}
+															cursor={"pointer"}
+															width={"70px"}
+															height={"62px"}
+														>
+															<Text>2x</Text>
+															<Text>High</Text>
+														</Box>
+														<Box
+															display={"flex"}
+															alignItems={"center"}
+															justifyContent={"center"}
+															flexDir={"column"}
+															p={2}
+															bg={isExtra ? "#ffffff" : "transparent"}
+															onClick={() => {
+																setIsExtra(true);
+																setIsStandard(false);
+																setIsHigh(false)
+															}}
+															borderRadius={"8px"}
+															cursor={"pointer"}
+															width={"70px"}
+															height={"62px"}
+														>
+															<Text>3x</Text>
+															<Text>Extra</Text>
+														</Box>
+													</Box>
+													<Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} gap={"20px"} width={"100%"} px={2} py={4} bg={"#EBEBEB"} borderRadius={"10px"}>
+														<Text>Output Resulation</Text>
+														<Text textAlign={"center"}>{isStandard ? canvasWidth * 2 + "x" + canvasHeight * 2 : isHigh ? canvasWidth * 3 + "x" + canvasHeight * 3 : isExtra ? canvasWidth * 4 + "x" + canvasHeight * 4 : ""}</Text>
+													</Box>
+													<Box width={"100%"}>
+														<Button
+															width={"100%"}
+															bg={"#F46267"}
+															borderRadius={"10px"}
+															color={"#ffffff"}
+															onClick={() => {
+																saveCanvasAsImage(isPngActive ? "png" : "jpeg", isStandard ? 2 : isHigh ? 3 : 4);
+																onClose()
+															}}
+														>
+															Export
+														</Button>
+													</Box>
+													<Box position='relative' padding='16px' width={"100%"}>
+														<Divider />
+														<AbsoluteCenter bg='white' px='10px' color={"#B1B1B1"}>
+															or
+														</AbsoluteCenter>
+													</Box>
+													<Box width={"100%"} p={2}>
+														<Text>Share with</Text>
+														<Box display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"} width={"100%"} my={2}>
+															<Box>
+																<Image 
+																	w={30} 
+																	src={whatsapp} 
+																	about='whatsapp'
+																	cursor="pointer"
+																	onClick={() => shareImageOn("whatsapp")} 
+																/>
+															</Box>
+															<Box>
+																<Image 
+																w={30} 
+																src={faceBook} 
+																about='faceBook'
+																cursor="pointer"
+																onClick={() => shareImageOn("facebook")} 
+																/>
+															</Box>
+															<Box>
+																<Image 
+																w={30} 
+																src={dark} 
+																about='dark'
+																cursor="pointer"
+																onClick={() => shareImageOn("x")} 
+																/>
+															</Box>
+															<Box>
+																<Image 
+																w={30} 
+																src={linkedin} 
+																about='linkedin'
+																cursor="pointer"
+																onClick={() => shareImageOn("linkedin")} 
+																/>
+															</Box>
+														</Box>
+													</Box>
+												</Box>
+											</PopoverBody>
+										</PopoverContent>
+									</Popover>
 					</Box>
 				</Box>
 				<Box
@@ -251,13 +459,13 @@ const MobileLayout = (
 					justifyContent="center"
 					alignItems="center"
 					// h="100%"
-					// w="100%"
+					w="100%"
 					position={"relative"}
 					mb={"50px"}
 				>
 					<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={260} canvasWidth={350} scale={""} device={device} />
 				</Box>
-				<Box >
+				<Box w={"100%"}>
 					<Box
 						display={"flex"}
 						flexDir={"column"}
@@ -348,6 +556,7 @@ const MobileLayout = (
 											canvas={canvas}
 											bgRemoveLoading={bgRemoveLoading}
 											setBgRemoveLoading={setBgRemoveLoading}
+											device={device}
 										/>
 									</Box>
 								}
@@ -541,6 +750,32 @@ const MobileLayout = (
 					</>
 				}
 			</Box>
+			<Modal isOpen={isPreviewOpen} onClose={onPreviewClose}>
+				<ModalOverlay />
+				<ModalContent
+					maxW={"100%"}
+					// height={"800px"}
+				>
+					<ModalHeader borderBottom={"1px solid #EBEBEB"}>Frame Preview</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody p={0}>
+						<Mockup mockupImage={mockupImage} device={device}/>
+					</ModalBody>
+
+					<ModalFooter borderTop={"1px solid #EBEBEB"}>
+						{/* <Button bg='#F9F9F9' color={"#374144"} mr={3} >
+							Cancel
+						</Button> */}
+						<Button 
+							bg={"#F46267"} 
+							color={"#ffffff"}
+							onClick={onPreviewClose}
+						>
+							Done
+						</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 		</>
 	);
 };
