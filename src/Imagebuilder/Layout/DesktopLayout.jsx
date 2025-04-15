@@ -792,7 +792,7 @@ const DesktopLayout = (
 					<ModalHeader borderBottom={"1px solid #EBEBEB"}>Frame Preview</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody p={0}>
-						<Mockup mockupImage={mockupImage}/>
+						<Mockup mockupImage={mockupImage} device={device}/>
 					</ModalBody>
 
 					<ModalFooter borderTop={"1px solid #EBEBEB"}>

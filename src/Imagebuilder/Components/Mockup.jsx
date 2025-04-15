@@ -7,6 +7,7 @@ import SwiperCore from "swiper";
 import { Autoplay } from "swiper/modules";
 
 const Mockup = ({ mockupImage, device }) => {
+	console.log('device', device)
 
 	const mockup1 = "https://i.ibb.co.com/hFR1dsMN/mockup1.jpg"
 	const mockup2 = "https://i.ibb.co.com/vvcGV2gF/mockup2.jpg"
