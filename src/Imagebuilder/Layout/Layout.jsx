@@ -96,9 +96,9 @@ const Layout = (
 	//to detect media
 		const [device, setDevice] = useState("")
         function detectDeviceByMatchMedia() {
-          if (window.matchMedia("(max-width: 768px)").matches) {
+          if (window.matchMedia("(max-width: 767px)").matches) {
               return setDevice("Mobile");
-          } else if (window.matchMedia("(max-width: 1024px)").matches) {
+          } else if (window.matchMedia("(max-width: 1023px)").matches) {
               return setDevice("Tablet");
 					} else {
               return setDevice("Desktop");

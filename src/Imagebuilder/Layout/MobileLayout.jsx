@@ -252,7 +252,7 @@ const MobileLayout = (
 					<Box
 						display={"flex"}
 						alignItems={"center"}
-						justifyContent={"center"}
+						justifyContent={"end"}
 						gap={"20px"}
 						width={"55%"}
 					>
@@ -463,7 +463,7 @@ const MobileLayout = (
 					position={"relative"}
 					mb={"50px"}
 				>
-					<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={260} canvasWidth={350} scale={""} device={device} />
+					<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={device === "Mobile" ? 260 : 400} canvasWidth={device === "Mobile" ? 350 : 500} scale={""} device={device} />
 				</Box>
 				<Box w={"100%"}>
 					<Box
@@ -628,6 +628,7 @@ const MobileLayout = (
 					bg={"#ffffff"}
 					zIndex={999}
 					borderTop={"1px solid #E5E5E5"}
+					width={"100%"}
 				>
 					<Box
 						p={4}

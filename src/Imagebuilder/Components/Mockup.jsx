@@ -180,7 +180,7 @@ const Mockup = ({ mockupImage, device }) => {
 					<Box>
 						<VStack >
 							{
-								device === "mobile" ? 
+								device === "Mobile" ? 
 								<Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
 							{showMockup ?
 									<Box 
@@ -362,7 +362,7 @@ const Mockup = ({ mockupImage, device }) => {
 							<Box mx={"auto"}>
 							<Text mb={1} fontSize={"18px"} fontWeight={"semibold"}>Select a mockup</Text>
 							<Swiper
-									slidesPerView={device === "mobile" ? 2 : 3}
+									slidesPerView={device === "Mobile" ? 2 : 3}
 									spaceBetween={10}
 									loop={true}
 									autoplay={{

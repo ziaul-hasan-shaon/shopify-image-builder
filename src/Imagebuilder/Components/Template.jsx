@@ -19,8 +19,8 @@ const Template = ({
 			{ label: "10.4×6.3 inches", w: 1000, h: 600, width: "79px", height: "56px", ratio: "5:3" },
 			// { label: "12.5×6.3 inches", w: 1200, h: 600, width: "79px", height: "72px", ratio: "2:1" },
 			{ label: "3.1×6.3 inches", w: 300, h: 600, width: "79px", height: "88px", ratio: "1:2" },
-			{ label: "4.2×8.3 inches", w: 400, h: 800, width: "79px", height: "96px", ratio: "1:2" },
-			{ label: "6.3×10.4 inches", w: 600, h: 1000, width: "63px", height: "96px", ratio: "3:5" },
+			{ label: "4.2×8.3 inches", w: 400, h: 600, width: "79px", height: "96px", ratio: "1:2" },
+			{ label: "6.3×10.4 inches", w: 400, h: 600, width: "63px", height: "96px", ratio: "3:5" },
 			// { label: "6.3×12.5 inches", w: 600, h: 1200, width: "64px", height: "96px", ratio: "1:2" }
 	];
 
