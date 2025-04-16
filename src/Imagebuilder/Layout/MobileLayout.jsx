@@ -171,7 +171,7 @@ const MobileLayout = (
 
 	return (
 		<>
-			<Box className='container' width={deviceWidth} >
+			<Box className='container' width={"100%"} >
 				<Box
 					px={2}
 					bg={"#ffffff"}
