@@ -94,31 +94,28 @@ const Layout = (
 	const [isOpenNote, setIsOpenNote] = useState(false)
 
 	//to detect media
-		const [device, setDevice] = useState("")
-        function detectDeviceByMatchMedia() {
-          if (window.matchMedia("(max-width: 767px)").matches) {
-              return setDevice("Mobile");
-          } else if (window.matchMedia("(max-width: 1023px)").matches) {
-              return setDevice("Tablet");
-					} else {
-              return setDevice("Desktop");
-          }
-      }
-        console.log("device", device);
+	const [device, setDevice] = useState("");
 
-				useEffect(() => {
-					detectDeviceByMatchMedia(); // initial run
-			
-					const handleResize = () => {
-						detectDeviceByMatchMedia();
-					};
-			
-					window.addEventListener("resize", handleResize);
-			
-					return () => {
-						window.removeEventListener("resize", handleResize); // cleanup
-					};
-				}, []);
+  const detectDevice = () => {
+    if (window.screen.width <= 767) {
+      setDevice("Mobile");
+    } else if (window.screen.width <= 1023) {
+      setDevice("Tablet");
+    } else {
+      setDevice("Desktop");
+    }
+  };
+
+  useEffect(() => {
+    detectDevice(); // On mount
+    window.addEventListener("resize", detectDevice); // On resize
+
+    return () => {
+      window.removeEventListener("resize", detectDevice);
+    };
+  }, []);
+
+	console.log('device', device)
 
 	return (
 		<>

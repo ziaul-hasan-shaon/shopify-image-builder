@@ -115,6 +115,11 @@ const MobileLayout = (
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const [isContentOpen, setIsContentOpen] = useState(true)
+
+	const deviceWidth = device === "Mobile" && window.innerWidth > 767 ? window.innerWidth / window.devicePixelRatio : window.screen.width
+
+	console.log('deviceWidth', deviceWidth)
+
 	const {
 		isOpen: isArtboardOpen,
 		onOpen: onArtboardOpen,
@@ -166,7 +171,7 @@ const MobileLayout = (
 
 	return (
 		<>
-			<Box className='container' width={"100%"} >
+			<Box className='container' width={deviceWidth} >
 				<Box
 					px={2}
 					bg={"#ffffff"}
