@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import { FiPlus } from "react-icons/fi";
 import GradientColorPicker from "./GradientColorPicker";
+import { renderToStaticMarkup } from 'react-dom/server';
 // import butterfly1 from "../../assets/Images/Pattern/butterfly/15716683_5670573.jpg"
 // import butterfly2 from "../../assets/Images/Pattern/butterfly/74878263_9826716.jpg"
 // import butterfly3 from "../../assets/Images/Pattern/butterfly/Frame 427319183 (4).png"
@@ -16,10 +17,10 @@ import GradientColorPicker from "./GradientColorPicker";
 // import flower3 from "../../assets/Images/Pattern/flower/4986022_2619336.jpg"
 // import cat1 from "../../assets/Images/Pattern/cats/Frame 427319183 (5).png"
 // import cat2 from "../../assets/Images/Pattern/cats/Frame 427319189 (4).png"
-import catSvgsrc from "../../assets/Images/Pattern/cats/Cat.svg"
-import catSvgsrc2 from "../../assets/Images/Pattern/cats/Cat1.svg"
-import catSvgsrc3 from "../../assets/Images/Pattern/cats/Cat (1).svg"
-import catSvgsrc4 from "../../assets/Images/Pattern/cats/Dog.svg"
+import  Cat1  from "../../assets/Images/Pattern/cats/Cat.svg?react";
+import  Cat2  from "../../assets/Images/Pattern/cats/Cat1.svg?react";
+import  Cat3  from "../../assets/Images/Pattern/cats/Cat (1).svg?react";
+import  Dog from "../../assets/Images/Pattern/cats/Dog.svg?react";
 import PatterBackgroundColor from "./PatterBackgroundColor";
 
 
@@ -81,19 +82,9 @@ const BackgroundPatternTabs = ({
 	const [cats, setCats] = useState([]); // State to hold the SVGs
 
   useEffect(() => {
-    const loadCats = async () => {
-      const catSvg1 = convertSvg(catSvgsrc);
-      const catSvg2 = convertSvg(catSvgsrc2);
-      const catSvg3 = convertSvg(catSvgsrc3);
-      const catSvg4 = convertSvg(catSvgsrc4);
-
-      // Wait for all the promises to resolve
-      const catsSvg = await Promise.all([catSvg1, catSvg2, catSvg3, catSvg4]);
-      setCats(catsSvg); // Set the state with the SVGs
-    };
-
-    loadCats();
-  }, []); // Empty dependency array to run once when the component mounts
+    const components = [Cat1, Cat2, Cat3, Dog];
+    setCats(components.map((Component) => <Component />));
+  }, []);
 
 	// console.log('cats', cats)
 
@@ -103,7 +94,7 @@ const BackgroundPatternTabs = ({
 	const fetchAndColor = () => {
 		if(bgImage){
 			const parser = new DOMParser();
-		const svgDoc = parser.parseFromString(bgImage, 'image/svg+xml');
+			const svgDoc = parser.parseFromString(bgImage, 'image/svg+xml');
 	
 		const paths = svgDoc.querySelectorAll('path, circle, rect, polygon, ellipse');
 	
@@ -307,43 +298,48 @@ const BackgroundPatternTabs = ({
 													 </AccordionButton>
 											 </h2>
 											 <AccordionPanel pb={4}>
-													<style>
-														{`
-																.convert-svg svg{
-																	width: 85px;
-																	height: 60px;
-																	object-fit: cover;
-																}
-														`}
-													</style>
-													 <Box display="flex" alignItems="center" justifyContent="start" gap={2} mt="10px" flexWrap="wrap">
-															 {section.items?.map((item, idx) => (
-																	 <Box
-																			 key={idx}
-																			 onClick={() => {
-																				addSVGBackgroundWithColorChange(item);
-																				setGradientBg(false);
-																				setPatternBg(true);
-																				setBgImage(item)
-																				setPattern(item)
-																			 }}
-																			 className="convert-svg"
-																			 style={{
-																					 width: "90px",
-																					 height: "60px",
-																					 borderRadius: "5px",
-																					 marginBottom: "10px",
-																					 objectFit: "cover",
-																					 border: patten === item ? "2px solid #2B2B2B" : "1px solid #E5E5E5",
-																					 cursor: "pointer"
-																			 }}
-																			 >
-																			 <div
-																				 dangerouslySetInnerHTML={{ __html: item}}
-																			 />
-																			</Box>
-															 ))}
-													 </Box>
+											 <style>
+													{`
+														.convert-svg svg {
+															width: 85px;
+															height: 60px;
+															object-fit: cover;
+														}
+													`}
+												</style>
+
+												<Box display="flex" alignItems="center" justifyContent="start" gap={2} mt="10px" flexWrap="wrap">
+													{cats.map((CatElement, idx) => {
+														const Component = [Cat1, Cat2, Cat3, Dog][idx];
+														const svgString = renderToStaticMarkup(<Component />);
+
+														return (
+															<Box
+																key={idx}
+																onClick={() => {
+																	addSVGBackgroundWithColorChange(svgString);
+																	setGradientBg(false);
+																	setPatternBg(true);
+																	setBgImage(svgString);
+																	setPattern(svgString);
+																}}
+																className="convert-svg"
+																style={{
+																	width: '90px',
+																	height: '60px',
+																	borderRadius: '5px',
+																	marginBottom: '10px',
+																	objectFit: 'cover',
+																	border: patten === svgString ? '2px solid #2B2B2B' : '1px solid #E5E5E5',
+																	cursor: 'pointer',
+																}}
+															>
+																{CatElement}
+															</Box>
+														);
+													})}
+												</Box>
+
 											 </AccordionPanel>
 									 </AccordionItem>
 							 ))}
