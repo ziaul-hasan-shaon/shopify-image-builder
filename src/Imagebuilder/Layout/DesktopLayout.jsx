@@ -171,7 +171,7 @@ const DesktopLayout = (
 			<Box>
 				{!isFullScreen &&
 				<Grid
-				gridTemplateColumns={"repeat(13, 1fr)"}
+				gridTemplateColumns={"repeat(16, 1fr)"}
 				borderBottom={"1px solid #EEEEEE"}
 			>
 				<GridItem
@@ -187,7 +187,7 @@ const DesktopLayout = (
 					</Box>
 				</GridItem>
 				<GridItem
-					colSpan={3}
+					colSpan={4}
 					display={"flex"}
 					alignItems={"center"}
 					justifyContent={"center"}
@@ -223,7 +223,7 @@ const DesktopLayout = (
 					</Box>
 				</GridItem>
 				<GridItem
-					colSpan={9}
+					colSpan={11}
 					display={"flex"}
 					alignItems={"center"}
 					justifyContent={"space-between"}
@@ -255,6 +255,22 @@ const DesktopLayout = (
 							<GoArrowUpRight color='#00AEF9' size={20} />
 						</Box>
 					</Box>
+					<Box
+						display={"flex"}
+						alignItems={"center"}
+						gap={"16px"}
+					>
+					<Button
+						color={"#F46267"}
+						bg={"#FEEFF0"}
+						border={"1px solid #FCCED0"}
+					>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M3 10.5V15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H12.5M21 10.5V12.5" stroke="#F46267" stroke-width="1.25" stroke-linecap="round"/>
+							<path d="M22 17.5H14M22 17.5C22 18.2002 20.0057 19.5085 19.5 20M22 17.5C22 16.7998 20.0057 15.4915 19.5 15" stroke="#F46267" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M17.7947 2.00254L6.14885 2.03002C4.41069 1.94542 3.96502 3.2116 3.96502 3.83056C3.96502 4.38414 3.88957 5.19117 2.82426 6.70798C1.75895 8.22478 1.839 8.67537 2.43973 9.72544C2.9383 10.5969 4.20643 10.9374 4.86764 10.9946C6.96785 11.0398 7.98968 9.32381 7.98968 8.1178C9.03154 11.1481 11.9946 11.1481 13.3148 10.8016C14.6376 10.4545 15.7707 9.2118 16.0381 8.1178C16.194 9.47735 16.6672 10.2707 18.0653 10.8158C19.5135 11.3805 20.7589 10.5174 21.3838 9.9642C22.0087 9.41096 22.4097 8.18278 21.2958 6.83288C20.5276 5.90195 20.2074 5.02494 20.1023 4.11599C20.0413 3.58931 19.9878 3.02336 19.5961 2.66323C19.0238 2.13691 18.2026 1.97722 17.7947 2.00254Z" stroke="#F46267" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</Button>
 					<Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start">
 						<PopoverTrigger>
 							<Button
@@ -438,12 +454,13 @@ const DesktopLayout = (
 							</PopoverBody>
 						</PopoverContent>
 					</Popover>
+					</Box>
 				</GridItem>
 			</Grid>}
 			</Box>
 			<Box>
 				<Grid
-					gridTemplateColumns={"repeat(13, 1fr)"}
+					gridTemplateColumns={"repeat(16, 1fr)"}
 					height={!isFullScreen ? "calc(100vh - 85px)" : "100vh"}
 					position={"relative"}
 					overflowY={"auto"}
@@ -469,12 +486,12 @@ const DesktopLayout = (
 						onClick={handleIsTemplateOpen}
 						cursor={"pointer"}
 					>
-						<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M2.5 15C2.5 10.3886 2.5 8.08288 3.51728 6.44846C3.89363 5.84378 4.36114 5.31784 4.89864 4.89442C6.35145 3.75 8.40096 3.75 12.5 3.75H17.5C21.599 3.75 23.6485 3.75 25.1014 4.89442C25.6389 5.31784 26.1064 5.84378 26.4828 6.44846C27.5 8.08288 27.5 10.3886 27.5 15C27.5 19.6114 27.5 21.9171 26.4828 23.5515C26.1064 24.1562 25.6389 24.6821 25.1014 25.1056C23.6485 26.25 21.599 26.25 17.5 26.25H12.5C8.40096 26.25 6.35145 26.25 4.89864 25.1056C4.36114 24.6821 3.89363 24.1562 3.51728 23.5515C2.5 21.9171 2.5 19.6114 2.5 15Z" stroke={isTemplateOpen ? "#F46267" : "#374144"} stroke-width="2" />
 							<path d="M11.875 3.75V26.25" stroke={isTemplateOpen ? "#F46267" : "#374144"} stroke-width="2" stroke-linejoin="round" />
 							<path d="M6.25 8.75H7.5M6.25 12.5H7.5" stroke={isTemplateOpen ? "#F46267" : "#374144"} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
-						<Text>Template</Text>
+						<Text fontSize={"14px"}>Template</Text>
 					</Box>
 					<Box
 						p={4}
@@ -486,13 +503,13 @@ const DesktopLayout = (
 						onClick={handleIsUploadOpen}
 						cursor={"pointer"}
 					>
-						<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M21.25 9.375C21.8644 10.0071 23.4997 12.5 24.375 12.5M24.375 12.5C25.2503 12.5 26.8856 10.0071 27.5 9.375M24.375 12.5V2.5" stroke={isUploadOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M26.2499 16.25C26.2475 21.4337 26.184 24.0879 24.511 25.761C22.7719 27.5 19.9729 27.5 14.375 27.5C8.77707 27.5 5.97811 27.5 4.23905 25.761C2.5 24.0219 2.5 21.2229 2.5 15.625C2.5 10.0271 2.5 7.22811 4.23905 5.48905C5.97811 3.75 8.77707 3.75 14.375 3.75C14.5874 3.75 17.5 3.7501 17.5 3.7501" stroke={isUploadOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" />
 							<path d="M2.5 17.6692C3.27377 17.5568 4.05605 17.5013 4.83964 17.5033C8.15456 17.4332 11.3883 18.4661 13.9639 20.4177C16.3525 22.2276 18.0309 24.7186 18.75 27.5" stroke={isUploadOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linejoin="round" />
 							<path d="M26.25 21.1202C24.7807 20.3761 23.261 19.9984 21.7327 20.0001C19.4181 19.9909 17.1269 20.8416 15 22.4999" stroke={isUploadOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linejoin="round" />
 						</svg>
-						<Text>Upload</Text>
+						<Text fontSize={"14px"}>Upload</Text>
 					</Box>
 					<Box
 						p={4}
@@ -504,7 +521,7 @@ const DesktopLayout = (
 						onClick={handleIsBackgroundOpen}
 						cursor={"pointer"}
 					>
-						<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M5.31595 25.3775C7.06925 26.875 9.71284 26.875 15 26.875C20.2871 26.875 22.9307 26.875 24.684 25.3775C24.933 25.1649 25.1649 24.933 25.3775 24.684C26.875 22.9307 26.875 20.2871 26.875 15C26.875 9.71284 26.875 7.06925 25.3775 5.31595C25.1649 5.06697 24.933 4.8351 24.684 4.62246C22.9307 3.125 20.2871 3.125 15 3.125C9.71284 3.125 7.06925 3.125 5.31595 4.62246C5.06697 4.8351 4.8351 5.06697 4.62246 5.31595C3.125 7.06925 3.125 9.71284 3.125 15C3.125 20.2871 3.125 22.9307 4.62246 24.684C4.8351 24.933 5.06697 25.1649 5.31595 25.3775Z" stroke={isBackgroundOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M5 25L25 5" stroke={isBackgroundOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M3.37256 19.7526L19.7572 3.36792" stroke={isBackgroundOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
@@ -512,7 +529,7 @@ const DesktopLayout = (
 							<path d="M16.875 26.875L26.875 16.875" stroke={isBackgroundOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M3.125 13.125L13.125 3.125" stroke={isBackgroundOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
-						<Text>Background</Text>
+						<Text fontSize={"14px"}>Background</Text>
 					</Box>
 					<Box
 						p={4}
@@ -524,11 +541,11 @@ const DesktopLayout = (
 						onClick={handleIsTextOpen}
 						cursor={"pointer"}
 					>
-						<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M18.75 26.2512H11.25" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M15 3.75V26.251M15 3.75C16.7343 3.75 18.9619 3.78818 20.7355 3.9706C21.4856 4.04774 21.8608 4.08631 22.1926 4.22237C22.8833 4.50535 23.4397 5.12577 23.6492 5.846C23.75 6.19226 23.75 6.58739 23.75 7.37768M15 3.75C13.2657 3.75 11.0381 3.78818 9.26451 3.9706C8.51438 4.04774 8.1393 4.08631 7.80733 4.22237C7.1168 4.50535 6.5602 5.12577 6.35071 5.846C6.25 6.19226 6.25 6.58739 6.25 7.37768" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" />
 						</svg>
-						<Text>Text</Text>
+						<Text fontSize={"14px"}>Text</Text>
 					</Box>
 					<Box
 						p={4}
@@ -540,16 +557,16 @@ const DesktopLayout = (
 						onClick={handleIsBorderOpen}
 						cursor={"pointer"}
 					>
-						<svg width="40" height="40" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M5 2.5V5M27.5 25H25M20.625 25H12.5C8.96446 25 7.1967 25 6.09835 23.9016C5 22.8032 5 21.0355 5 17.5V9.375" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 							<path d="M25 27.5V15C25 10.286 25 7.92894 23.5355 6.46447C22.0711 5 19.714 5 15 5H2.5" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
-						<Text>Border</Text>
+						<Text fontSize={"14px"}>Border</Text>
 					</Box>
 				</GridItem>}
 					{!isFullScreen && 
 					<GridItem
-					colSpan={3}
+					colSpan={4}
 					borderRight={"1px solid #EEEEEE"}
 				>
 					{
@@ -634,7 +651,7 @@ const DesktopLayout = (
 					}
 				</GridItem>}
 					<GridItem 
-						colSpan={isFullScreen ? 13 : 9} 
+						colSpan={isFullScreen ? 15 : 11} 
 						position="sticky" top="0" 
 						h={canvasHeight >= 800 ? 
 							(isFullScreen ? "150vh" : "calc(150vh - 85px)") : 
