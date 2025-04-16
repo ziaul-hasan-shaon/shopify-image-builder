@@ -244,14 +244,17 @@ const Uploader = ({
 					))}
 				</Box>
 			)}
-			<Box px={5}>
-				<RadioGroup onChange={handleChange} value={landOrPort}>
-					<Stack direction='row'>
-						<Radio value='landscape'>Landscape</Radio>
-						<Radio value='portrait'>Portrait</Radio>
-					</Stack>
-				</RadioGroup>
-			</Box>
+			{
+				device === "Desktop" &&
+				<Box px={5}>
+					<RadioGroup onChange={handleChange} value={landOrPort}>
+						<Stack direction='row'>
+							<Radio value='landscape'>Landscape</Radio>
+							<Radio value='portrait'>Portrait</Radio>
+						</Stack>
+					</RadioGroup>
+				</Box>
+			}
 			 <Box mt={5} px={5} display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"}>
         <Text >Resize Image</Text>
         <Slider
