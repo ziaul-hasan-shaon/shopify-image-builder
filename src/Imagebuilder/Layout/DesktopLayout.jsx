@@ -323,7 +323,7 @@ const DesktopLayout = (
 											JPEG
 										</Button>
 									</Box>
-									<Box display={"flex"} alignItems={"center"} justifyContent={"center"} gap={"10px"} p={2} bg={"#EBEBEB"} borderRadius={"10px"} width={"100%"}>
+									<Box display={"flex"} alignItems={"center"} justifyContent={"center"} gap={"10px"} p={2} bg={"#EBEBEB"} borderRadius={"10px"} width={"100%"} >
 										<Box
 											display={"flex"}
 											alignItems={"center"}
@@ -342,7 +342,7 @@ const DesktopLayout = (
 											height={"62px"}
 										>
 											<Text>1x</Text>
-											<Text>Standard</Text>
+											<Text fontSize={"14px"}>Standard</Text>
 										</Box>
 										<Box
 											display={"flex"}
@@ -362,7 +362,7 @@ const DesktopLayout = (
 											height={"62px"}
 										>
 											<Text>2x</Text>
-											<Text>High</Text>
+											<Text fontSize={"14px"}>High</Text>
 										</Box>
 										<Box
 											display={"flex"}
@@ -382,7 +382,7 @@ const DesktopLayout = (
 											height={"62px"}
 										>
 											<Text>3x</Text>
-											<Text>Extra</Text>
+											<Text fontSize={"14px"}>Extra</Text>
 										</Box>
 									</Box>
 									<Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} gap={"20px"} width={"100%"} px={2} py={4} bg={"#EBEBEB"} borderRadius={"10px"}>

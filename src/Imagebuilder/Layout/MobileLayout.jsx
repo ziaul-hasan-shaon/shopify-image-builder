@@ -293,7 +293,7 @@ const MobileLayout = (
 											<PopoverArrow/>
 											{/* <PopoverCloseButton /> */}
 											<PopoverBody p={4}>
-												<Box display={"flex"} flexDir={"column"} alignItems={"start"} justifyContent={"center"} gap={"10px"}>
+												<Box display={"flex"} flexDir={"column"} alignItems={"start"} justifyContent={"center"} gap={"10px"} fontSize={"14px"}>
 													<Heading as='h4' size='md'>
 														Export settings
 													</Heading>
