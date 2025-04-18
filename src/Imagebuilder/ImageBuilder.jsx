@@ -297,6 +297,7 @@ const ImageBuilder = () => {
 					canvas.discardActiveObject();
 					canvas.renderAll();
 					setCanvasText("")
+					setText("")
 				}, 0);
 			}
 		};
@@ -312,26 +313,36 @@ const ImageBuilder = () => {
 	useEffect(() => {
 		const handleKeyDown = (e) => {
 			const activeObject = canvas.getActiveObject();
-			
-			// Otherwise, delete the whole object on Delete or Backspace
+	
 			if (e.key === "Delete") {
 				if (activeObject) {
-					// const objectType = activeObject.type; // 'rect', 'circle', 'text', etc.
-
-  				// console.log("Active object type:", objectType);
-					// saveState();
+					// Check if it's an image
+					if (activeObject.type === "image") {
+						const imageId = activeObject.originalId || activeObject.id; // Adjust based on how you set it
+						
+						// Update selectedImage state
+						setSelectedImage((prevSelectedImages) => {
+							return prevSelectedImages.filter(
+								(image) => image.originalId !== imageId
+							);
+						});
+					}
+	
+					// Remove from canvas
 					canvas.remove(activeObject);
 					canvas.discardActiveObject();
 					canvas.renderAll();
-					setCanvasText("")
-					
+	
+					// Reset any text-specific states
+					setCanvasText("");
+					setText("");
 				}
 			}
 		};
 	
-		document.addEventListener("keydown", handleKeyDown);
-		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, [canvas]);
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [canvas]);	
 	
 	
 
