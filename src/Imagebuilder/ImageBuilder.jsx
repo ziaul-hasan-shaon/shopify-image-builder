@@ -344,7 +344,48 @@ const ImageBuilder = () => {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [canvas]);	
 	
+	useEffect(() => {
+		// Function to handle keydown events
+		const handleKeyDown = (e) => {
+			if (!canvas) return;
+			
+			const activeObject = canvas.getActiveObject();
+			if (!activeObject) return;
 	
+			// Amount to move in pixels
+			const moveAmount = e.shiftKey ? 10 : 1; // Move 10px with shift, 1px without
+	
+			switch (e.key) {
+				case 'ArrowLeft':
+					e.preventDefault(); // Prevent page scrolling
+					activeObject.left -= moveAmount;
+					break;
+				case 'ArrowRight':
+					e.preventDefault();
+					activeObject.left += moveAmount;
+					break;
+				case 'ArrowUp':
+					e.preventDefault();
+					activeObject.top -= moveAmount;
+					break;
+				case 'ArrowDown':
+					e.preventDefault();
+					activeObject.top += moveAmount;
+					break;
+			}
+	
+			activeObject.setCoords(); // Update object coordinates
+			canvas.renderAll(); // Re-render the canvas
+		};
+	
+		// Add event listener when component mounts
+		window.addEventListener('keydown', handleKeyDown);
+	
+		// Remove event listener when component unmounts
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [canvas]); // Only re-run if canvas changes
 
 	const deleteUploadedImage = (imageId) => {
 		// Remove from uploaded images
