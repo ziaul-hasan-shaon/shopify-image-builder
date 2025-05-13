@@ -54,6 +54,8 @@ const ImageBuilder = () => {
 	const [svgColor, setSvgColor] = useState("#ffffff")
 	const [bgRemoveLoading, setBgRemoveLoading] = useState(false)
 	const [atcLoading, setAtcLoading] = useState(false)
+	const [cropRect, setCropRect] = useState(null);
+	const [activeFabricImage, setActiveFabricImage] = useState(null);
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -187,6 +189,7 @@ const ImageBuilder = () => {
 			canvas.add(fabricImage);
 			canvas.setActiveObject(fabricImage);
 			canvas.renderAll();
+			setActiveFabricImage(fabricImage); // 👈 Save for crop logic
 	
 			fabricImage.setCoords();
 	
@@ -201,6 +204,55 @@ const ImageBuilder = () => {
 			console.error('Failed to load image:', err);
 		};
 	};
+
+	const showCropBox = () => {
+		if (!canvas || !activeFabricImage) return;
+	
+		if (cropRect) {
+			canvas.remove(cropRect);
+		}
+	
+		const rect = new fabric.Rect({
+			left: activeFabricImage.left + 20,
+			top: activeFabricImage.top + 20,
+			width: 100,
+			height: 100,
+			fill: 'rgba(0,0,0,0.3)',
+			stroke: 'red',
+			strokeWidth: 1,
+			hasBorders: true,
+			hasControls: true,
+			objectCaching: false,
+		});
+	
+		setCropRect(rect);
+		canvas.add(rect);
+		canvas.setActiveObject(rect);
+		canvas.renderAll();
+	};
+	
+	
+	const applyCrop = () => {
+		if (!canvas || !cropRect || !activeFabricImage) return;
+	
+		const cropArea = new fabric.Rect({
+			left: cropRect.left,
+			top: cropRect.top,
+			width: cropRect.width * cropRect.scaleX,
+			height: cropRect.height * cropRect.scaleY,
+			originX: 'left',
+			originY: 'top',
+			absolutePositioned: true,
+		});
+	
+		activeFabricImage.clipPath = cropArea;
+	
+		canvas.remove(cropRect);
+		setCropRect(null);
+		canvas.renderAll();
+	};
+	
+	
 
 	const resizeCanvas = (newWidth, newHeight) => {
 		if (!canvas) return;
@@ -808,6 +860,8 @@ const handleAddToCart = async () => {
 	return (
 		<>
 			<Box>
+				<button onClick={showCropBox}>Show Crop Box</button>
+				<button onClick={applyCrop}>Apply Crop</button>
 				<Layout 
 					canvasRef={canvasRef} 
 					canvas={canvas}
