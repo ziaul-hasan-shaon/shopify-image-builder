@@ -4,6 +4,7 @@ import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import potraceInit from 'potrace-wasm';
 
 const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
 const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
@@ -140,66 +141,155 @@ const ImageBuilder = () => {
 	}, []);
 
 	console.log('can', canvas)
+
+	useEffect(() => {
+		const checkCV = () => {
+			if (window.cv && window.cv.imread) {
+				console.log('✅ OpenCV is ready');
+			} else {
+				setTimeout(checkCV, 50);
+			}
+		};
+		checkCV();
+	}, []);
+
+	const traceTransparentImage = (imageElement, callback) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = imageElement.width;
+    canvas.height = imageElement.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imageElement, 0, 0);
+
+    const src = cv.imread(canvas);
+    const gray = new cv.Mat();
+    const edges = new cv.Mat();
+    const contours = new cv.MatVector();
+    const hierarchy = new cv.Mat();
+
+    // Convert to grayscale
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+    // Detect edges
+    cv.Canny(gray, edges, 50, 100);
+    // Find contours
+    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    // Scaling factor for the outline
+    const outlineScaleFactor = 1.15;
+
+    // Convert contours to path
+    let pathData = '';
+    for (let i = 0; i < contours.size(); i++) {
+        const contour = contours.get(i);
+        for (let j = 0; j < contour.data32S.length; j += 2) {
+            // Scale the contour points directly
+            const x = contour.data32S[j] * outlineScaleFactor;
+            const y = contour.data32S[j + 1] * outlineScaleFactor;
+            pathData += (j === 0 ? `M${x} ${y}` : `L${x} ${y}`);
+        }
+        pathData += 'Z';
+    }
+
+    // Clean up
+    src.delete(); gray.delete(); edges.delete(); contours.delete(); hierarchy.delete();
+
+    callback(pathData);
+};
+	
+
 	// Handle Selecting an Image from Uploaded List
-	const handleImageSelect = (image) => {
-		// console.log('canvas', canvas)
+	const handleImageSelect = async (image) => {
 		if (!canvas) return;
-		// console.log('image', image);
 	
 		const imgElement = new Image();
-		// console.log("imageElement", imgElement)
+		imgElement.crossOrigin = 'Anonymous';
 	
 		imgElement.onload = () => {
-			// Generate a unique ID
 			let baseId = image.id || 'image';
 			let uniqueId = baseId;
 			let counter = 1;
-	
-			// Check if the ID already exists on the canvas
 			while (canvas.getObjects().some(obj => obj.id === uniqueId)) {
 				uniqueId = `${baseId}-${counter}`;
 				counter++;
 			}
 	
-			const fabricImage = new fabric.Image(imgElement, {
-				left: 50,
-				top: 50,
-				cornerSize: 10,
-				hasControls: true,
-				lockScalingFlip: true,
-				id: uniqueId,
-				originalId: image.id,
-			});
-			// console.log('fabric', fabricImage)
-	
-			const maxWidth = 200;
-			const maxHeight = 200;
-			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
-			fabricImage.scale(scaleFactor);
+			traceTransparentImage(imgElement, (pathData) => {
 
-			// ✅ Save original size/position only ONCE
-			fabricImage.customProps = {
-				originalLeft: fabricImage.left,
-				originalTop: fabricImage.top,
-				originalScale: scaleFactor,
-			};
+				// Create the fabric image with center origin
+				const fabricImage = new fabric.Image(imgElement, {
+					left: 50,
+					top: 50,
+					cornerSize: 10,
+					hasControls: true,
+					lockScalingFlip: true,
+					id: uniqueId,
+					originalId: image.id,
+					originX: 'center',
+					originY: 'center',
+				});
+
+				// Calculate the scale factor to fit within max dimensions
+				const maxWidth = 200;
+				const maxHeight = 200;
+				const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
+
+				// Apply the scale factor to the image
+				fabricImage.scale(scaleFactor);
+
+				// Create the outline path with the same origin as the image
+				const outlinePath = new fabric.Path(pathData, {
+					stroke: '#DCDCDC',
+					strokeWidth: 20,
+					fill: 'transparent',
+					selectable: false,
+					evented: false,
+					opacity: 1,
+					originX: 'center',
+					originY: 'center',
+				});
+
+				// Apply the same scaling to the outline as the image
+				outlinePath.scale(scaleFactor);
+
+				const offsetX = (fabricImage.width * fabricImage.scaleX - outlinePath.width * outlinePath.scaleX) / 2;
+				const offsetY = (fabricImage.height * fabricImage.scaleY - outlinePath.height * outlinePath.scaleY) / 2;
+				
+				// Set the position of the outline based on the image’s position
+				outlinePath.set({
+					left: fabricImage.left + offsetX,
+					top: fabricImage.top + offsetY,
+				});
+
+				// Calculate dynamic offsets based on image dimensions and scale
+
+				// Group the image and outline together with same coordinates
+				const group = new fabric.Group([outlinePath, fabricImage], {
+					left: fabricImage.left,
+					top: fabricImage.top,
+					id: uniqueId,
+				}); 
+				// Fix any internal misalignment
+				// fabricImage.customProps = {
+				// 	originalLeft: fabricImage.left,
+				// 	originalTop: fabricImage.top,
+				// 	originalScale: scaleFactor,
+				// };
+				group.setCoords();
 	
-			canvas.add(fabricImage);
-			canvas.setActiveObject(fabricImage);
-			canvas.renderAll();
+				canvas.add(group);
+				canvas.setActiveObject(group);
+				canvas.renderAll();
 	
-			fabricImage.setCoords();
-	
-			setSelectedImage((prevSelected) => {
-				return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
+				setSelectedImage((prevSelected) => {
+					return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
+				});
 			});
 		};
-		// console.log('imgElement', image.url)
-		imgElement.src = image.url;
 	
 		imgElement.onerror = (err) => {
 			console.error('Failed to load image:', err);
 		};
+	
+		imgElement.src = image.url;
 	};
 
 	const resizeCanvas = (newWidth, newHeight) => {
