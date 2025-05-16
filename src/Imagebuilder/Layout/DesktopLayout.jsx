@@ -17,6 +17,9 @@ import { BsFullscreen, BsFullscreenExit } from 'react-icons/bs';
 import { FaRegCircle, FaRegEdit } from 'react-icons/fa';
 import { ImImage } from 'react-icons/im';
 import { GoArrowUpRight, GoChevronDown, GoChevronUp } from 'react-icons/go';
+import PageTabs from '../Components/PageTabs';
+import { usePage } from '../hook/PageContext';
+import AddOns from '../Components/AddOns';
 
 const DesktopLayout = (
 	{
@@ -109,12 +112,16 @@ const DesktopLayout = (
 		isOpenNote,
 		setIsOpenNote,
 		logo,
-		device
+		device,
+		isAddonOpen,
+		setIsAddonOpen
 	}
 ) => {
 
 	const [scale, setScale] = useState(1); // Default zoom level
 	const [isFullScreen, setIsFullScreen] = useState(false)
+
+	const {currentPage} = usePage()
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const {
@@ -165,6 +172,14 @@ const DesktopLayout = (
 		setIsTextOpen(false)
 		setIsBorderOpen(true)
 	}
+	const handleIsAddOnsOpen = () => {
+		setIsTemplateOpen(false);
+		setIsUploadOpen(false);
+		setIsBackgroundOpen(false);
+		setIsTextOpen(false)
+		setIsBorderOpen(false)
+		setIsAddonOpen(true)
+	}
 
 	return (
 		<>
@@ -196,7 +211,7 @@ const DesktopLayout = (
 					<Box width={"100%"} p={3}>
 						<Popover isOpen={isArtboardOpen} onOpen={onArtboardOpen} onClose={onArtboardClose} placement="bottom-start">
 							<PopoverTrigger>
-								<Button display={"flex"} alignItems={"center"} justifyContent={"space-between"} width={"100%"} height={"50px"} border={'1px solid #EBEBEB'} bg={"#F9F9F9"} cursor={"pointer"}>
+								<Button disabled={currentPage === "2d-cutout"} display={"flex"} alignItems={"center"} justifyContent={"space-between"} width={"100%"} height={"50px"} border={'1px solid #EBEBEB'} bg={"#F9F9F9"} cursor={"pointer"}>
 									<Box display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"} >
 										<ImImage color='#2B2B2B' size={30}/>
 										<Text fontSize={"18px"} fontWeight={"normal"}> {tempRatio || "Default Ratio 2:1"} </Text>
@@ -511,7 +526,9 @@ const DesktopLayout = (
 						</svg>
 						<Text fontSize={"14px"}>Upload</Text>
 					</Box>
-					<Box
+					{
+						currentPage !== "2d-cutout" && 
+						<Box
 						p={4}
 						display={"flex"}
 						flexDir={"column"}
@@ -531,38 +548,66 @@ const DesktopLayout = (
 						</svg>
 						<Text fontSize={"14px"}>Background</Text>
 					</Box>
-					<Box
-						p={4}
-						display={"flex"}
-						flexDir={"column"}
-						alignItems={"center"}
-						justifyContent={"center"}
-						gap={"10px"}
-						onClick={handleIsTextOpen}
-						cursor={"pointer"}
-					>
-						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M18.75 26.2512H11.25" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M15 3.75V26.251M15 3.75C16.7343 3.75 18.9619 3.78818 20.7355 3.9706C21.4856 4.04774 21.8608 4.08631 22.1926 4.22237C22.8833 4.50535 23.4397 5.12577 23.6492 5.846C23.75 6.19226 23.75 6.58739 23.75 7.37768M15 3.75C13.2657 3.75 11.0381 3.78818 9.26451 3.9706C8.51438 4.04774 8.1393 4.08631 7.80733 4.22237C7.1168 4.50535 6.5602 5.12577 6.35071 5.846C6.25 6.19226 6.25 6.58739 6.25 7.37768" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" />
-						</svg>
-						<Text fontSize={"14px"}>Text</Text>
-					</Box>
-					<Box
-						p={4}
-						display={"flex"}
-						flexDir={"column"}
-						alignItems={"center"}
-						justifyContent={"center"}
-						gap={"10px"}
-						onClick={handleIsBorderOpen}
-						cursor={"pointer"}
-					>
-						<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M5 2.5V5M27.5 25H25M20.625 25H12.5C8.96446 25 7.1967 25 6.09835 23.9016C5 22.8032 5 21.0355 5 17.5V9.375" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M25 27.5V15C25 10.286 25 7.92894 23.5355 6.46447C22.0711 5 19.714 5 15 5H2.5" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
-						</svg>
-						<Text fontSize={"14px"}>Border</Text>
-					</Box>
+					}
+					{
+						currentPage !== "2d-cutout" && 
+						<Box
+							p={4}
+							display={"flex"}
+							flexDir={"column"}
+							alignItems={"center"}
+							justifyContent={"center"}
+							gap={"10px"}
+							onClick={handleIsTextOpen}
+							cursor={"pointer"}
+						>
+							<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M18.75 26.2512H11.25" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M15 3.75V26.251M15 3.75C16.7343 3.75 18.9619 3.78818 20.7355 3.9706C21.4856 4.04774 21.8608 4.08631 22.1926 4.22237C22.8833 4.50535 23.4397 5.12577 23.6492 5.846C23.75 6.19226 23.75 6.58739 23.75 7.37768M15 3.75C13.2657 3.75 11.0381 3.78818 9.26451 3.9706C8.51438 4.04774 8.1393 4.08631 7.80733 4.22237C7.1168 4.50535 6.5602 5.12577 6.35071 5.846C6.25 6.19226 6.25 6.58739 6.25 7.37768" stroke={isTextOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" />
+							</svg>
+							<Text fontSize={"14px"}>Text</Text>
+						</Box>
+					}
+					{
+						currentPage !== "2d-cutout" && 
+						<Box
+							p={4}
+							display={"flex"}
+							flexDir={"column"}
+							alignItems={"center"}
+							justifyContent={"center"}
+							gap={"10px"}
+							onClick={handleIsBorderOpen}
+							cursor={"pointer"}
+						>
+							<svg width="32" height="32" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M5 2.5V5M27.5 25H25M20.625 25H12.5C8.96446 25 7.1967 25 6.09835 23.9016C5 22.8032 5 21.0355 5 17.5V9.375" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M25 27.5V15C25 10.286 25 7.92894 23.5355 6.46447C22.0711 5 19.714 5 15 5H2.5" stroke={isBorderOpen ? "#F46267" : "#374144"} stroke-width="1.875" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+							<Text fontSize={"14px"}>Border</Text>
+						</Box>
+					}
+					{
+						currentPage === "2d-cutout" &&
+							<Box
+								p={4}
+								display={"flex"}
+								flexDir={"column"}
+								alignItems={"center"}
+								justifyContent={"center"}
+								gap={"10px"}
+								onClick={handleIsAddOnsOpen}
+								cursor={"pointer"}
+							>
+								<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M3.125 7.5C3.125 5.57445 3.125 4.61167 3.55841 3.90441C3.80092 3.50866 4.13366 3.17592 4.52941 2.93341C5.23667 2.5 6.19945 2.5 8.125 2.5C10.0505 2.5 11.0133 2.5 11.7206 2.93341C12.1163 3.17592 12.4491 3.50866 12.6916 3.90441C13.125 4.61167 13.125 5.57445 13.125 7.5C13.125 9.42555 13.125 10.3883 12.6916 11.0956C12.4491 11.4913 12.1163 11.8241 11.7206 12.0666C11.0133 12.5 10.0505 12.5 8.125 12.5C6.19945 12.5 5.23667 12.5 4.52941 12.0666C4.13366 11.8241 3.80092 11.4913 3.55841 11.0956C3.125 10.3883 3.125 9.42555 3.125 7.5Z" stroke={isAddonOpen ? "#F46267" : "#374144"} stroke-width="1.5"/>
+								<path d="M4.72708 18.4771C6.03565 17.1685 6.68994 16.5142 7.46513 16.3281C7.89888 16.224 8.35113 16.224 8.78488 16.3281C9.56007 16.5142 10.2144 17.1685 11.5229 18.4771C12.8315 19.7856 13.4858 20.4398 13.6719 21.2151C13.776 21.6488 13.776 22.1011 13.6719 22.5348C13.4858 23.3101 12.8315 23.9643 11.5229 25.2728C10.2144 26.5815 9.56007 27.2357 8.78489 27.4218C8.35113 27.526 7.89888 27.526 7.46513 27.4218C6.68994 27.2357 6.03565 26.5815 4.72708 25.2728C3.4185 23.9643 2.76422 23.3101 2.5781 22.5348C2.47397 22.1011 2.47397 21.6488 2.5781 21.2151C2.76422 20.4398 3.4185 19.7856 4.72708 18.4771Z" stroke={isAddonOpen ? "#F46267" : "#374144"} stroke-width="1.5"/>
+								<path d="M17.5 22.5C17.5 20.5745 17.5 19.6116 17.9334 18.9044C18.1759 18.5086 18.5086 18.1759 18.9044 17.9334C19.6116 17.5 20.5745 17.5 22.5 17.5C24.4255 17.5 25.3884 17.5 26.0956 17.9334C26.4914 18.1759 26.8241 18.5086 27.0666 18.9044C27.5 19.6116 27.5 20.5745 27.5 22.5C27.5 24.4255 27.5 25.3884 27.0666 26.0956C26.8241 26.4914 26.4914 26.8241 26.0956 27.0666C25.3884 27.5 24.4255 27.5 22.5 27.5C20.5745 27.5 19.6116 27.5 18.9044 27.0666C18.5086 26.8241 18.1759 26.4914 17.9334 26.0956C17.5 25.3884 17.5 24.4255 17.5 22.5Z" stroke={isAddonOpen ? "#F46267" : "#374144"} stroke-width="1.5"/>
+								<path d="M22.5 2.5V12.5M27.5 7.5H17.5" stroke={isAddonOpen ? "#F46267" : "#374144"} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							<Text fontSize={"14px"}>AddOns</Text>
+						</Box>
+					}
 				</GridItem>}
 					{!isFullScreen && 
 					<GridItem
@@ -571,11 +616,15 @@ const DesktopLayout = (
 				>
 					{
 						isTemplateOpen &&
-						<Box height={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-							<Text fontSize={"18px"} fontWeight={"semibold"}>
-								This feature will coming soon....
-							</Text>
+						<>
+						<Box height={"100%"} py={"10px"} display={"flex"} alignItems={"start"} justifyContent={"start"}>
+							<PageTabs/>
+							
 						</Box>
+						<Text fontSize={"18px"} fontWeight={"semibold"}>
+							This feature will coming soon....
+						</Text>
+						</>
 					}
 					{
 						isUploadOpen &&
@@ -649,6 +698,10 @@ const DesktopLayout = (
 							setSelectedBorder={setSelectedBorder}
 						/>
 					}
+					{
+						isAddonOpen && 
+						<AddOns/>
+					}
 				</GridItem>}
 					<GridItem 
 						colSpan={isFullScreen ? 15 : 11} 
@@ -674,7 +727,7 @@ const DesktopLayout = (
 							transition="transform 0.2s ease-in-out"
 							position={"relative"}
 						>
-							<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device}/>
+							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device}/>
 						</Box>
 
 						<Box

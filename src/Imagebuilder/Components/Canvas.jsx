@@ -1,5 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import React from 'react';
+import { usePage } from "../hook/PageContext";
 
 const Canvas = ({
 	canvasRef,
@@ -7,9 +8,10 @@ const Canvas = ({
 	canvasWidth,
 	canvasHeight,
 	scale,
-	device 
+	device,
+	uploadedImages
 }) => {
-	console.log('canvasWidth',canvasWidth)
+	// console.log('canvasWidth',canvasWidth)
 	return (
 		<>
 			<style>
@@ -21,6 +23,7 @@ const Canvas = ({
     						// left: 60% !important;
 								width: ${canvasWidth}px !important;
 								height: ${canvasHeight}px !important;
+								border: ${uploadedImages?.length === 0 ? '1px dashed black' : 'none'} !important;
     						// transform: translate(-50%, -50%) !important;
 								// margin: 0px 3px;
 								inset: 0;  // Centers the canvas
@@ -70,7 +73,7 @@ const Canvas = ({
 						<canvas
 							ref={canvasRef}
 							style={{
-								border: "1px dashed black",
+								border: uploadedImages?.length === 0 ? "1px dashed black" : "",
 								width: `${canvasWidth}px`, // Canvas width
 								height: `${canvasHeight}px`, // Canvas height
 								position: "absolute", // Positioned absolutely inside the parent container

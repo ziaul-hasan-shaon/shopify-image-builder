@@ -2,6 +2,7 @@ import { Box } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import DesktopLayout from './DesktopLayout';
 import MobileLayout from './MobileLayout';
+import { usePage } from '../hook/PageContext';
 
 const Layout = (
 	{
@@ -86,12 +87,16 @@ const Layout = (
 
 	const logo = "https://i.ibb.co.com/GfpxDdYd/Logo.png"
 
-	const [isUploadOpen, setIsUploadOpen] = useState(true)
-	const [isTemplateOpen, setIsTemplateOpen] = useState(false)
+	const {currentPage} = usePage()
+	console.log('currentPage', currentPage)
+
+	const [isUploadOpen, setIsUploadOpen] = useState(currentPage === '2d-cutout' ? true : false)
+	const [isTemplateOpen, setIsTemplateOpen] = useState(currentPage !== '2d-cutout' ? true : false)
 	const [isBackgroundOpen, setIsBackgroundOpen] = useState(false)
 	const [isTextOpen, setIsTextOpen] = useState(false)
 	const [isBorderOpen, setIsBorderOpen] = useState(false)
 	const [isOpenNote, setIsOpenNote] = useState(false)
+	const [isAddonOpen, setIsAddonOpen] = useState(false)
 
 	//to detect media
 	const [device, setDevice] = useState("");
@@ -213,6 +218,8 @@ const Layout = (
 						isOpenNote = {isOpenNote}
 						setIsOpenNote = {setIsOpenNote}
 						logo={logo}
+						isAddonOpen = {isAddonOpen}
+						setIsAddonOpen = {setIsAddonOpen}
 					/>
 					: 
 					<MobileLayout 
@@ -306,6 +313,8 @@ const Layout = (
 						isOpenNote = {isOpenNote}
 						setIsOpenNote = {setIsOpenNote}
 						logo={logo}
+						isAddonOpen = {isAddonOpen}
+						setIsAddonOpen = {setIsAddonOpen}
 					/>
 				}
 			</Box>

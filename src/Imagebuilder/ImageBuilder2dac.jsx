@@ -4,6 +4,11 @@ import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { IoIosCrop } from "react-icons/io";
+import { RiCrop2Fill, RiDeleteBin6Line } from "react-icons/ri";
+import { LuImageUp } from "react-icons/lu";
+import { CgEditFlipH } from 'react-icons/cg';
+import { CiLock } from "react-icons/ci";
 
 const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
 const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
@@ -18,14 +23,14 @@ const initialGradientList = [
 	gradient1, gradient2, gradient3, gradient4, gradient5, gradient6, gradient7, gradient7, gradient8
 ]
 
-const ImageBuilder = () => {
+const ImageBuilder2dac = () => {
 
 	const canvasRef = useRef(null);
 	const [canvas, setCanvas] = useState(null);
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState("#ffffff");
+	const [color, setColor] = useState("");
 	const [gradientBg, setGradientBg] = useState(false);
 	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
@@ -37,8 +42,8 @@ const ImageBuilder = () => {
 	const [fontWeight, setFontWeight] = useState(null);
 	const [fontFamily, setFontFamily] = useState(null);
 	const [selectedBorder, setSelectedBorder] = useState("")
-	const [canvasWidth, setCanvasWidth] = useState(800)
-	const [canvasHeight, setCanvasHeight] = useState(400)
+	const [canvasWidth, setCanvasWidth] = useState(500)
+	const [canvasHeight, setCanvasHeight] = useState(500)
 	const [isPngActive, setIsPngActive] = useState(true)
 	const [isJpgActive, setIsJpgActive] = useState(false)
 	const [isStandard, setIsStandard] = useState(true)
@@ -54,6 +59,9 @@ const ImageBuilder = () => {
 	const [svgColor, setSvgColor] = useState("#ffffff")
 	const [bgRemoveLoading, setBgRemoveLoading] = useState(false)
 	const [atcLoading, setAtcLoading] = useState(false)
+	const [cropRect, setCropRect] = useState(null);
+	const [activeFabricImage, setActiveFabricImage] = useState(null);
+	const [applyImageCrop, setApplyImageCrop] = useState(false)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -172,8 +180,8 @@ const ImageBuilder = () => {
 			});
 			// console.log('fabric', fabricImage)
 	
-			const maxWidth = 200;
-			const maxHeight = 200;
+			const maxWidth = 400;
+			const maxHeight = 400;
 			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
 			fabricImage.scale(scaleFactor);
 
@@ -187,6 +195,7 @@ const ImageBuilder = () => {
 			canvas.add(fabricImage);
 			canvas.setActiveObject(fabricImage);
 			canvas.renderAll();
+			setActiveFabricImage(fabricImage); // 👈 Save for crop logic
 	
 			fabricImage.setCoords();
 	
@@ -201,6 +210,87 @@ const ImageBuilder = () => {
 			console.error('Failed to load image:', err);
 		};
 	};
+
+	const showCropBox = () => {
+		if (!canvas || !activeFabricImage) return;
+	
+		if (cropRect) {
+			canvas.remove(cropRect);
+		}
+	
+		const rect = new fabric.Rect({
+			left: activeFabricImage.left + 20,
+			top: activeFabricImage.top + 20,
+			width: 100,
+			height: 100,
+			fill: 'rgba(0,0,0,0.3)',
+			stroke: 'red',
+			strokeWidth: 1,
+			hasBorders: true,
+			hasControls: true,
+			objectCaching: false,
+		});
+	
+		setCropRect(rect);
+		canvas.add(rect);
+		canvas.setActiveObject(rect);
+		canvas.renderAll();
+		setApplyImageCrop(true)
+	};
+	
+	
+	const applyCrop = () => {
+		if (!canvas || !cropRect || !activeFabricImage) return;
+	
+		const cropArea = new fabric.Rect({
+			left: cropRect.left,
+			top: cropRect.top,
+			width: cropRect.width * cropRect.scaleX,
+			height: cropRect.height * cropRect.scaleY,
+			originX: 'left',
+			originY: 'top',
+			absolutePositioned: true,
+		});
+	
+		activeFabricImage.clipPath = cropArea;
+	
+		canvas.remove(cropRect);
+		setCropRect(null);
+		canvas.renderAll();
+	};
+	
+	useEffect(() => {
+		if (!canvas) return;
+	
+		// Called when no object is selected anymore
+		const handleSelectionCleared = () => {
+			setActiveFabricImage(null);
+		};
+	
+		// Attach listener
+		canvas.on('selection:cleared', handleSelectionCleared);
+	
+		// Optional: Listen for active object changes
+		canvas.on('selection:created', (e) => {
+			if (e.selected && e.selected[0]?.type === 'image') {
+				setActiveFabricImage(e.selected[0]);
+			}
+		});
+	
+		canvas.on('selection:updated', (e) => {
+			if (e.selected && e.selected[0]?.type === 'image') {
+				setActiveFabricImage(e.selected[0]);
+			}
+		});
+	
+		// Clean up on unmount or canvas change
+		return () => {
+			canvas.off('selection:cleared', handleSelectionCleared);
+			canvas.off('selection:created');
+			canvas.off('selection:updated');
+		};
+	}, [canvas]);
+	
 
 	const resizeCanvas = (newWidth, newHeight) => {
 		if (!canvas) return;
@@ -783,7 +873,7 @@ const handleAddToCart = async () => {
 
 		if (imgUrl) {
 			const payload = {
-				id: 50374829605158,
+				id: 50374829605158, 
 				quantity: 1,
 				properties: {
 					_image_info: imageInfo,
@@ -807,7 +897,7 @@ const handleAddToCart = async () => {
 
 	return (
 		<>
-			<Box>
+			<Box position={"relative"}>
 				<Layout 
 					canvasRef={canvasRef} 
 					canvas={canvas}
@@ -886,9 +976,48 @@ const handleAddToCart = async () => {
 					atcLoading={atcLoading}
 					setAtcLoading={setAtcLoading}
 				/>
+				{
+					(activeFabricImage && !bgRemoveLoading) && 
+					<Box 
+						position={"absolute"} 
+						top={"20%"} 
+						left={"60%"} 
+						zIndex={999} 
+						bg={"#ffffff"} 
+						borderRadius={"25px"}
+						p={3}
+						display={"flex"}
+						alignItems={"center"}
+						justifyContent={"space-between"}
+						width={"250px"}
+					>
+						{
+							applyImageCrop ? 
+							<button onClick={applyCrop}>
+								<RiCrop2Fill size={24}/>
+							</button> 
+							: 
+							<button onClick={showCropBox}>
+								<IoIosCrop size={26}/>
+							</button>
+						}
+						<button>
+							<RiDeleteBin6Line size={24}/>
+						</button>
+						<button>
+							<LuImageUp size={24}/>
+						</button>
+						<button>
+							<CiLock size = {24}/>
+						</button>
+						<button>
+							<CgEditFlipH size={24}/>
+						</button>
+					</Box>
+				}
 			</Box>
 		</>
 	);
 };
 
-export default ImageBuilder;
+export default ImageBuilder2dac;
