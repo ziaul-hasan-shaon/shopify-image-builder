@@ -115,6 +115,48 @@ const BackgroundPatternTabs = ({
   }, [bgImage, svgColor, patternBgColor]);
 
 
+	const bones = [
+		"https://i.ibb.co/My1P2gZC/all-pattern-16-3x.png",
+		"https://i.ibb.co/GQjHCbhQ/all-pattern-15-3x.png",
+		"https://i.ibb.co/gLqmLMcr/all-pattern-14-3x.png",
+		"https://i.ibb.co/jvsJmP8g/all-pattern-13-3x.png",
+		"https://i.ibb.co/fVvmvtkC/all-pattern-12-3x.png",
+		"https://i.ibb.co/spqqMmT2/all-pattern-11-3x.png",
+		"https://i.ibb.co/QRp8Fcb/all-pattern-10-3x.png",
+		"https://i.ibb.co/7tXHpNgd/all-pattern-09-3x.png",
+		"https://i.ibb.co/qPgXQr0/all-pattern-08-3x.png",
+		"https://i.ibb.co/1tYKsQd7/all-pattern-07-3x.png",
+		"https://i.ibb.co/b5wXzBt3/all-pattern-06-3x.png",
+		"https://i.ibb.co/MTzMmWR/all-pattern-05-3x.png",
+		"https://i.ibb.co/gZycGtBR/all-pattern-04-3x.png",
+		"https://i.ibb.co/N2WdQ0fZ/all-pattern-03-3x.png",
+		"https://i.ibb.co/JWr4T2r0/all-pattern-02-3x.png",
+		"https://i.ibb.co/rKw57q8M/all-pattern-01-3x.png"
+	]
+
+	const paws = [
+		"https://i.ibb.co/j9f2P0mg/all-pattern-24.png",
+		"https://i.ibb.co/Fk6CDN6s/all-pattern-23.png",
+		"https://i.ibb.co/RwSXJcq/all-pattern-22.png",
+		"https://i.ibb.co/rGFkbjSM/all-pattern-21.png",
+		"https://i.ibb.co/PvnmYT48/all-pattern-20.png",
+		"https://i.ibb.co/pvTbHnQP/all-pattern-19.png",
+		"https://i.ibb.co/ZR55kPLZ/all-pattern-18.png",
+		"https://i.ibb.co/DHDsdfb0/all-pattern-17.png",
+	]
+
+	const hearts = [
+		"https://i.ibb.co/GvGXWXTv/all-pattern-32.png",
+		"https://i.ibb.co/Xk8PjMZG/all-pattern-31.png",
+		"https://i.ibb.co/M5sX5MQb/all-pattern-30.png",
+		"https://i.ibb.co/8LLMPNFK/all-pattern-29.png",
+		"https://i.ibb.co/0yY7sdVW/all-pattern-28.png",
+		"https://i.ibb.co/XxDNYLFw/all-pattern-27.png",
+		"https://i.ibb.co/HDJrR826/all-pattern-26.png",
+		"https://i.ibb.co/PsPPYc7V/all-pattern-25.png",
+	]
+
+
 	return (
 		<>
 			<Box p={5}>
@@ -268,7 +310,7 @@ const BackgroundPatternTabs = ({
 					</Box>}
 				{isPatternActive &&
 					 <Box my={4}>
-					 <Popover isOpen={isPtternBgOpen} onOpen={onPattenBgOpen} onClose={onPatternBgClose} placement="bottom-start">
+					 {/* <Popover isOpen={isPtternBgOpen} onOpen={onPattenBgOpen} onClose={onPatternBgClose} placement="bottom-start">
 							 <PopoverTrigger>
 									 <Button display="flex" alignItems="center" justifyContent="space-between" width="100%" height="50px" border='1px solid #EBEBEB' bg="none" cursor="pointer">
 											 <Box display="flex" alignItems="center" justifyContent="start" gap="10px">
@@ -284,64 +326,104 @@ const BackgroundPatternTabs = ({
 											 <PatterBackgroundColor color={svgColor} setColor={setSvgColor} svgContent={svgContent} addSVGBackgroundWithColorChange={addSVGBackgroundWithColorChange} setPatternBgColor={setPatternBgColor} patternBgColor={patternBgColor} onClose = {onPatternBgClose} isOpen={isPtternBgOpen}/>
 									 </PopoverBody>
 							 </PopoverContent>
-					 </Popover>
+					 </Popover> */}
 
 					 <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple my={4}>
-							 {[{ title: "Cats", items: cats }].map((section, index) => (
-									 <AccordionItem key={index}>
-											 <h2>
-													 <AccordionButton>
-															 <Box flex="1" textAlign="left">
-																	 {section.title}
-															 </Box>
-															 <AccordionIcon />
-													 </AccordionButton>
-											 </h2>
-											 <AccordionPanel pb={4}>
-											 <style>
-													{`
-														.convert-svg svg {
-															width: 85px;
-															height: 60px;
-															object-fit: cover;
-														}
-													`}
-												</style>
-
-												<Box display="flex" alignItems="center" justifyContent="start" gap={2} mt="10px" flexWrap="wrap">
-													{cats.map((CatElement, idx) => {
-														const Component = [Cat1, Cat2, Cat3, Dog][idx];
-														const svgString = renderToStaticMarkup(<Component />);
-
-														return (
-															<Box
-																key={idx}
-																onClick={() => {
-																	addSVGBackgroundWithColorChange(svgString);
-																	setGradientBg(false);
-																	setPatternBg(true);
-																	setBgImage(svgString);
-																	setPattern(svgString);
-																}}
-																className="convert-svg"
-																style={{
-																	width: '90px',
-																	height: '60px',
-																	borderRadius: '5px',
-																	marginBottom: '10px',
-																	objectFit: 'cover',
-																	border: patten === svgString ? '2px solid #2B2B2B' : '1px solid #E5E5E5',
-																	cursor: 'pointer',
-																}}
-															>
-																{CatElement}
-															</Box>
-														);
-													})}
-												</Box>
-
-											 </AccordionPanel>
-									 </AccordionItem>
+							 {[
+								{ title: "Cats", items: cats, type: "svg" },
+								{ title: "Bones", items: bones, type: "image" },
+    						{ title: "Paws", items: paws, type: "image" },
+    						{ title: "Hearts", items: hearts, type: "image" },
+							 ].map((section, index) => (
+								<AccordionItem key={index}>
+								<h2>
+									<AccordionButton>
+										<Box flex="1" textAlign="left">
+											{section.title}
+										</Box>
+										<AccordionIcon />
+									</AccordionButton>
+								</h2>
+								<AccordionPanel pb={4}>
+									<style>
+										{`
+											.convert-svg svg {
+												width: 85px;
+												height: 60px;
+												object-fit: cover;
+											}
+										`}
+									</style>
+					
+									<Box
+										display="flex"
+										alignItems="center"
+										justifyContent="start"
+										gap={2}
+										mt="10px"
+										flexWrap="wrap"
+									>
+										{section.type === "svg"
+											? section.items.map((CatElement, idx) => {
+													const Component = [Cat1, Cat2, Cat3, Dog][idx];
+													const svgString = renderToStaticMarkup(<Component />);
+					
+													return (
+														<Box
+															key={idx}
+															onClick={() => {
+																addSVGBackgroundWithColorChange(svgString);
+																setGradientBg(false);
+																setPatternBg(true);
+																setBgImage(svgString);
+																setPattern(svgString);
+															}}
+															className="convert-svg"
+															style={{
+																width: "90px",
+																height: "60px",
+																borderRadius: "5px",
+																marginBottom: "10px",
+																objectFit: "cover",
+																border:
+																	patten === svgString
+																		? "2px solid #2B2B2B"
+																		: "1px solid #E5E5E5",
+																cursor: "pointer",
+															}}
+														>
+															{CatElement}
+														</Box>
+													);
+												})
+											: section.items.map((img, idx) => (
+													<Box
+														key={idx}
+														onClick={() => {
+															setGradientBg(false);
+															setPatternBg(true);
+															setBgImage(img);
+															setPattern(img);
+														}}
+														style={{
+															width: "95px",
+															height: "60px",
+															borderRadius: "5px",
+															marginBottom: "10px",
+															backgroundImage: `url(${img})`,
+															backgroundSize: "cover",
+															backgroundPosition: "center",
+															border:
+																patten === img
+																	? "2px solid #2B2B2B"
+																	: "1px solid #E5E5E5",
+															cursor: "pointer",
+														}}
+													/>
+												))}
+									</Box>
+								</AccordionPanel>
+							</AccordionItem>
 							 ))}
 					 </Accordion>
 			 </Box>}

@@ -5,7 +5,7 @@ import { usePage } from '../hook/PageContext';
 const tabs = [
 	{ key: 'all', label: 'All' },
 	{ key: '2d-cutout', label: '2D CutOut' },
-	{ key: '3d-acrylic', label: '3D Acrylic' },
+	{ key: '3d-acrylic', label: '3D Acrylic', disabled: true },
 	{ key: '2d-acrylic', label: '2D Acrylic' },
 ];
 
@@ -24,15 +24,19 @@ const acrylic3d = [
 ]
 
 const acrylic2d = [
-	"https://i.ibb.co/6cPSmVQw/38e77b7096ca839244e7960d14e0af1b462262b5.png",
-	"https://i.ibb.co/tMXpZpZf/c2eeb2baddda222c2a3df13aca5f2057814735f4.png",
-	"https://i.ibb.co/h1hWvy6h/81d9fb1d7eec130e878ae7e05dba1ccb0aeaf96f.png",
-	"https://i.ibb.co/h1hWvy6h/81d9fb1d7eec130e878ae7e05dba1ccb0aeaf96f.png",
-	"https://i.ibb.co/S7cnF37M/cacf942e6521d674cc545e5fe4cf461ecb415c9e.png",
-	"https://i.ibb.co/qYcSh5VD/95bff68332456ec005baeafde5eadac57db10d8d.png"
+	{img:	"https://i.ibb.co/6cPSmVQw/38e77b7096ca839244e7960d14e0af1b462262b5.png", src: "https://i.ibb.co/1tYKsQd7/all-pattern-07-3x.png"},
+	{img:	"https://i.ibb.co/tMXpZpZf/c2eeb2baddda222c2a3df13aca5f2057814735f4.png", src: "https://i.ibb.co/ZR55kPLZ/all-pattern-18.png"},
+	{img:	"https://i.ibb.co/h1hWvy6h/81d9fb1d7eec130e878ae7e05dba1ccb0aeaf96f.png", src: "https://i.ibb.co/DHDsdfb0/all-pattern-17.png"},
+	{img:	"https://i.ibb.co/h1hWvy6h/81d9fb1d7eec130e878ae7e05dba1ccb0aeaf96f.png", src: "https://i.ibb.co/DHDsdfb0/all-pattern-17.png"},
+	{img:	"https://i.ibb.co/S7cnF37M/cacf942e6521d674cc545e5fe4cf461ecb415c9e.png", src: "https://i.ibb.co/rKw57q8M/all-pattern-01-3x.png"},
+	{img:	"https://i.ibb.co/qYcSh5VD/95bff68332456ec005baeafde5eadac57db10d8d.png", src: "https://i.ibb.co/PsPPYc7V/all-pattern-25.png"}
 ]
 
-const PageTabs = () => {
+const PageTabs = ({
+	setPatternBg,
+	setBgImage,
+	setGradientBg
+}) => {
 	const { currentPage, setCurrentPage } = usePage();
 
 	return (
@@ -42,15 +46,18 @@ const PageTabs = () => {
 					{tabs.map((tab) => (
 						<Button
 							key={tab.key}
-							onClick={() => setCurrentPage(tab.key)}
+							onClick={() => !tab.disabled && setCurrentPage(tab.key)}
 							bg={currentPage === tab.key ? '#2B2B2B' : 'transparent'}
 							color={currentPage === tab.key ? 'white' : '#2B2B2B'}
-							_hover={{ bg: 'gray.100' }}
+							_hover={tab.disabled ? {} : { bg: 'gray.100' }}
 							borderRadius="8px"
 							px={4}
 							py={2}
 							fontSize={"14px"}
 							fontWeight={currentPage === tab.key ? 'bold' : 550}
+							isDisabled={tab.disabled}
+							opacity={tab.disabled ? 0.5 : 1}
+							cursor={tab.disabled ? 'not-allowed' : 'pointer'}
 						>
 							{tab.label}
 						</Button>
@@ -70,6 +77,7 @@ const PageTabs = () => {
 												src={img2d}
 												alt="2d-cutout"
 												borderRadius={"8px"}
+												cursor={"not-allowed"}
 											/>
 										</GridItem>
 									))
@@ -113,9 +121,15 @@ const PageTabs = () => {
 									<GridItem key={index} >
 										<Image
 											width={"100%"}
-											src={img2d}
+											src={img2d?.img}
 											alt="2d-acrylic"
 											borderRadius={"8px"}
+											onClick={() => {
+												setGradientBg(false);
+												setPatternBg(true);
+												setBgImage(img2d?.src);
+											}}
+											cursor={"pointer"}
 										/>
 									</GridItem>
 								))

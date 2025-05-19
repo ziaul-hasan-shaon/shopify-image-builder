@@ -5,8 +5,8 @@ import { FiPlus } from 'react-icons/fi';
 const AddOns = () => {
 
 	const addons = [
-		{ img: "https://i.ibb.co/C3kFRsW7/05e507054dd2fd21d78beb8c0a0c9a87fd532b12.png", title: "Wall Mount" },
-		{ img: "https://i.ibb.co/MxjKGkhX/508cd3704d087474d422490c474d3dc5678475ce.png", title: "Table Stand" }
+		{ img: "https://i.ibb.co/MxjKGkhX/508cd3704d087474d422490c474d3dc5678475ce.png", title: "Wall Mount" },
+		{ img: "https://i.ibb.co/C3kFRsW7/05e507054dd2fd21d78beb8c0a0c9a87fd532b12.png", title: "Table Stand" }
 	]
 
 	return (

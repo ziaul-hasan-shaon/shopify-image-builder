@@ -4,11 +4,6 @@ import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { IoIosCrop } from "react-icons/io";
-import { RiCrop2Fill, RiDeleteBin6Line } from "react-icons/ri";
-import { LuImageUp } from "react-icons/lu";
-import { CgEditFlipH } from 'react-icons/cg';
-import { CiLock } from "react-icons/ci";
 
 const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
 const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
@@ -30,7 +25,7 @@ const ImageBuilder2dac = () => {
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState("");
+	const [color, setColor] = useState( "");
 	const [gradientBg, setGradientBg] = useState(false);
 	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
@@ -61,7 +56,8 @@ const ImageBuilder2dac = () => {
 	const [atcLoading, setAtcLoading] = useState(false)
 	const [cropRect, setCropRect] = useState(null);
 	const [activeFabricImage, setActiveFabricImage] = useState(null);
-	const [applyImageCrop, setApplyImageCrop] = useState(false)
+	const [applyImageCrop, setApplyImageCrop] = useState(false);
+	const [isImageLocked, setIsImageLocked] = useState(false);
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -110,9 +106,9 @@ const ImageBuilder2dac = () => {
 		setprice(newPrice); // Update the price with the calculated value
 	}, [canvas, color, selectedImage, gradientBg, patterBg, canvasText, selectedBorder]); // Dependencies based on canvas, selectedImage, gradientBg, and patterBg
 
-	console.log('price', price)
-	console.log('text', text)
-	console.log('canvasText', canvasText)
+	// console.log('price', price)
+	// console.log('text', text)
+	// console.log('canvasText', canvasText)
 
 	const fontSizeCollection = [20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40];
 	const fontWightCollection = [
@@ -130,7 +126,7 @@ const ImageBuilder2dac = () => {
     "Lucida Console, monospace",
   ];
 
-	console.log('canvas', canvasRef)
+	// console.log('canvas', canvasRef)
 	// Initialize Fabric.js Canvas
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -147,7 +143,7 @@ const ImageBuilder2dac = () => {
 		return () => clearTimeout(timeout);
 	}, []);
 
-	console.log('can', canvas)
+	// console.log('can', canvas)
 	// Handle Selecting an Image from Uploaded List
 	const handleImageSelect = (image) => {
 		// console.log('canvas', canvas)
@@ -210,6 +206,27 @@ const ImageBuilder2dac = () => {
 			console.error('Failed to load image:', err);
 		};
 	};
+	
+
+	const toggleImageLock = () => {
+		const activeObject = canvas.getActiveObject();
+		if (!activeObject || activeObject.type !== 'image') return;
+	
+		const shouldLock = !isImageLocked;
+	
+		activeObject.set({
+			lockMovementX: shouldLock,
+			lockMovementY: shouldLock,
+			lockScalingX: shouldLock,
+			lockScalingY: shouldLock,
+			lockRotation: shouldLock,
+			hasControls: !shouldLock,
+			hasBorders: !shouldLock,
+		});
+	
+		canvas.renderAll();
+		setIsImageLocked(shouldLock);
+	};
 
 	const showCropBox = () => {
 		if (!canvas || !activeFabricImage) return;
@@ -257,7 +274,35 @@ const ImageBuilder2dac = () => {
 		canvas.remove(cropRect);
 		setCropRect(null);
 		canvas.renderAll();
+		setApplyImageCrop(false)
 	};
+
+	const undoCrop = () => {
+		if (!canvas || !activeFabricImage) return;
+	
+		activeFabricImage.clipPath = null;
+		canvas.renderAll();
+		setApplyImageCrop(false);
+	};
+	
+
+	// Add this in a useEffect or componentDidMount (if using class)
+	useEffect(() => {
+		const handleKeyDown = (e) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+				e.preventDefault(); // Prevent default undo behavior
+				undoCrop();
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+
+		// Clean up
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [canvas, activeFabricImage]);
+
 	
 	useEffect(() => {
 		if (!canvas) return;
@@ -354,7 +399,7 @@ const ImageBuilder2dac = () => {
 			hasControls: true,
 			editable: true,
 		});
-		console.log('textObject', textObject)
+		// console.log('textObject', textObject)
 
 		canvas.add(textObject);
 		canvas.setActiveObject(textObject);
@@ -501,7 +546,7 @@ const ImageBuilder2dac = () => {
 	
 
 	const handleDeleteButtonClick = (e, imageId) => {
-		console.log('id', imageId)
+		// console.log('id', imageId)
 		e.stopPropagation();  // This prevents the click event from triggering parent handlers
 		deleteUploadedImage(imageId);  // Call your delete function
 	};
@@ -516,7 +561,7 @@ const ImageBuilder2dac = () => {
 			if (imageToRemove) {
 				const canvasImage = canvas.getObjects().find((obj) => obj.id === imageToRemove.id);
 				if (canvasImage) {
-					console.log('canvas image', canvasImage)
+					// console.log('canvas image', canvasImage)
 					canvas.remove(canvasImage); // Remove from the canvas
 				}
 			}
@@ -583,7 +628,7 @@ const ImageBuilder2dac = () => {
 			// addBackgroundOnParent("https://media.istockphoto.com/id/182391849/photo/empty-gold-ornate-picture-frame-with-white-background.jpg?s=612x612&w=0&k=20&c=3uKrCpggF8Q6f3IuLBJD_zpto9XsYALCvvoIL8uOrAI=")
 			// overlapImage()
 		}
-	}, [canvas, color]); // This ensures the effect runs after canvas is initialized
+	}, [canvas, color, uploadedImages?.length > 0]); // This ensures the effect runs after canvas is initialized
 
 	useEffect(() => {
 		if(canvas){
@@ -672,7 +717,7 @@ const ImageBuilder2dac = () => {
 				fontFamily: activeObject.fontFamily  // Get the font family
 			};
 
-			console.log(textProperties); // You can return or use this object to display the properties elsewhere
+			// console.log(textProperties); // You can return or use this object to display the properties elsewhere
 
 			// Optionally, set the properties in your state or use them as needed
 			setTextColor(textProperties.color);
@@ -741,15 +786,31 @@ const ImageBuilder2dac = () => {
 	};
 
 	const handlePreview = () => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const dataURL = canvas.toDataURL({
-        format: 'png',
-        quality: 1,
-      });
-      setMockupImage(dataURL); // Set to state
-    }
-  }
+		const canvasEl = canvasRef.current;
+	
+		if (!canvasEl) return;
+	
+		const ctx = canvasEl.getContext('2d');
+	
+		// 1. Save current image
+		const imageData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+	
+		// 2. Fill canvas with white background
+		ctx.save();
+		ctx.globalCompositeOperation = 'destination-over';
+		ctx.fillStyle = '#80808090';
+		ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+		ctx.restore();
+	
+		// 3. Export as image
+		const dataURL = canvasEl.toDataURL('image/png', 1);
+		setMockupImage(dataURL);
+	
+		// 4. Restore original canvas
+		ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+		ctx.putImageData(imageData, 0, 0);
+	};
+	
 
 	const handleScaleChange = (value) => {
 		if (!canvas) return;
@@ -764,25 +825,23 @@ const ImageBuilder2dac = () => {
     }
   };
 
-	async function uploadCanvasImageToImgBB(imageBase64) {
+	async function uploadCanvasImageToLamda(imageFile) {
     const formData = new FormData();
-    formData.append('image', imageBase64.split(',')[1]); // Remove the base64 header part
+    formData.append('image', imageFile); 
 
-    // Optional: Replace 'your_api_key' with your ImgBB API key
-    const apiKey = '599464de86515ed1f91ed7b853fe80be'; // Or leave it empty for anonymous use
-    const apiUrl = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+    const lambdaUrl = 'https://kc6ofkdyoru4q5nxbds2ctcp5e0ohamn.lambda-url.us-east-1.on.aws/';
 
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(lambdaUrl, {
             method: 'POST',
             body: formData,
         });
 
         const data = await response.json();
 
-        if (data.success) {
-            console.log('Image uploaded successfully:', data.data.url);
-            return data.data.url; // Image URL for sharing
+        if (response.ok) {
+            console.log('Image uploaded successfully:', data.url || data);
+            return data.url || data; // Adjust based on the response structure
         } else {
             console.error('Image upload failed:', data);
             return null;
@@ -793,12 +852,14 @@ const ImageBuilder2dac = () => {
     }
 }
 
+
 async function shareImageOn(platform) {
 		setShareLoading(true)
-    const base64 = canvas.toDataURL({ format: "png" });
+		const dataURL = canvas.toDataURL('image/png', 1); // no need to pass an object
+		const file = dataURLtoFile(dataURL, 'canvas-image.png');
 
     try {
-        const imageUrl = await uploadCanvasImageToImgBB(base64);
+        const imageUrl = await uploadCanvasImageToLamda(file);
 
         if (imageUrl) {
             const text = encodeURIComponent("Check this canvas out!");
@@ -836,6 +897,21 @@ async function shareImageOn(platform) {
 
 // console.log('shareLoading', shareLoading)
 
+function dataURLtoFile(dataUrl, filename) {
+  const arr = dataUrl.split(',');
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
 const handleAddToCart = async () => {
 	setAtcLoading(true);
 
@@ -858,22 +934,21 @@ const handleAddToCart = async () => {
 	};
 
 	const canvas = canvasRef.current;
-	let dataURL;
+	let file;
 
 	if (canvas) {
-		dataURL = canvas.toDataURL({
-			format: 'png',
-			quality: 1,
-		});
+		const dataURL = canvas.toDataURL('image/png', 1); // no need to pass an object
+		file = dataURLtoFile(dataURL, 'canvas-image.png');
 	}
 
+
 	try {
-		const imgUrl = await uploadCanvasImageToImgBB(dataURL); // 🛠️ Await this!
-		console.log('url', imgUrl);
+		const imgUrl = await uploadCanvasImageToLamda(file); // 🛠️ Await this!
+		// console.log('url', imgUrl);
 
 		if (imgUrl) {
 			const payload = {
-				id: 50374829605158, 
+				id: 50374829605158,
 				quantity: 1,
 				properties: {
 					_image_info: imageInfo,
@@ -892,7 +967,7 @@ const handleAddToCart = async () => {
 		setAtcLoading(false);
 	}
 
-	console.log('imageInfo', imageInfo);
+	// console.log('imageInfo', imageInfo);
 };
 
 	return (
@@ -975,46 +1050,13 @@ const handleAddToCart = async () => {
 					setBgRemoveLoading= {setBgRemoveLoading}
 					atcLoading={atcLoading}
 					setAtcLoading={setAtcLoading}
+					activeFabricImage = {activeFabricImage}
+					applyCrop = {applyCrop}
+					applyImageCrop = {applyImageCrop}
+					showCropBox = {showCropBox}
+					toggleImageLock= {toggleImageLock}
+					isImageLocked = {isImageLocked}
 				/>
-				{
-					(activeFabricImage && !bgRemoveLoading) && 
-					<Box 
-						position={"absolute"} 
-						top={"20%"} 
-						left={"60%"} 
-						zIndex={999} 
-						bg={"#ffffff"} 
-						borderRadius={"25px"}
-						p={3}
-						display={"flex"}
-						alignItems={"center"}
-						justifyContent={"space-between"}
-						width={"250px"}
-					>
-						{
-							applyImageCrop ? 
-							<button onClick={applyCrop}>
-								<RiCrop2Fill size={24}/>
-							</button> 
-							: 
-							<button onClick={showCropBox}>
-								<IoIosCrop size={26}/>
-							</button>
-						}
-						<button>
-							<RiDeleteBin6Line size={24}/>
-						</button>
-						<button>
-							<LuImageUp size={24}/>
-						</button>
-						<button>
-							<CiLock size = {24}/>
-						</button>
-						<button>
-							<CgEditFlipH size={24}/>
-						</button>
-					</Box>
-				}
 			</Box>
 		</>
 	);

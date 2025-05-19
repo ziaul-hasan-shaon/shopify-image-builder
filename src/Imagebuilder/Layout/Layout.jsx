@@ -81,14 +81,20 @@ const Layout = (
 		setBgRemoveLoading,
 		canvas,
 		atcLoading,
-		setAtcLoading
+		setAtcLoading,
+		activeFabricImage,
+		applyCrop ,
+		applyImageCrop,
+		showCropBox,
+		toggleImageLock,
+		isImageLocked,
 	}
 ) => {
 
 	const logo = "https://i.ibb.co.com/GfpxDdYd/Logo.png"
 
 	const {currentPage} = usePage()
-	console.log('currentPage', currentPage)
+	// console.log('currentPage', currentPage)
 
 	const [isUploadOpen, setIsUploadOpen] = useState(currentPage === '2d-cutout' ? true : false)
 	const [isTemplateOpen, setIsTemplateOpen] = useState(currentPage !== '2d-cutout' ? true : false)
@@ -220,6 +226,12 @@ const Layout = (
 						logo={logo}
 						isAddonOpen = {isAddonOpen}
 						setIsAddonOpen = {setIsAddonOpen}
+						activeFabricImage = {activeFabricImage}
+						applyCrop = {applyCrop}
+						applyImageCrop = {applyImageCrop}
+						showCropBox = {showCropBox}
+						toggleImageLock= {toggleImageLock}
+						isImageLocked = {isImageLocked}
 					/>
 					: 
 					<MobileLayout 
@@ -315,6 +327,12 @@ const Layout = (
 						logo={logo}
 						isAddonOpen = {isAddonOpen}
 						setIsAddonOpen = {setIsAddonOpen}
+						activeFabricImage = {activeFabricImage}
+						applyCrop = {applyCrop}
+						applyImageCrop = {applyImageCrop}
+						showCropBox = {showCropBox}
+						toggleImageLock= {toggleImageLock}
+						isImageLocked = {isImageLocked}
 					/>
 				}
 			</Box>

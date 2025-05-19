@@ -74,12 +74,14 @@ const Canvas = ({
 							ref={canvasRef}
 							style={{
 								border: uploadedImages?.length === 0 ? "1px dashed black" : "",
+								// border: "1px dashed black",
 								width: `${canvasWidth}px`, // Canvas width
 								height: `${canvasHeight}px`, // Canvas height
 								position: "absolute", // Positioned absolutely inside the parent container
 								inset: 0,  // Centers the canvas
           			margin: "auto",
 								zIndex: 2,
+								boxShadow: uploadedImages?.length > 0 ? '0 2px 5px rgba(0, 0, 0, 0.2)' : "",
 								// top: "52%", // Centers the canvas vertically
 								// left: "60%", // Centers the canvas horizontally
 								// transform: "translate(-50%, -50%)", // Adjusts the position so the canvas is perfectly centered

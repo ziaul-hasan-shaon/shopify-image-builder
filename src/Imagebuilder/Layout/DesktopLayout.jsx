@@ -114,7 +114,13 @@ const DesktopLayout = (
 		logo,
 		device,
 		isAddonOpen,
-		setIsAddonOpen
+		setIsAddonOpen,
+		activeFabricImage,
+		applyCrop, 
+		applyImageCrop, 
+		showCropBox,
+		toggleImageLock,
+		isImageLocked,
 	}
 ) => {
 
@@ -143,6 +149,7 @@ const DesktopLayout = (
 		setIsBackgroundOpen(false);
 		setIsTextOpen(false)
 		setIsBorderOpen(false)
+		setIsAddonOpen(false)
 	}
 	const handleIsUploadOpen = () => {
 		setIsTemplateOpen(false);
@@ -150,6 +157,7 @@ const DesktopLayout = (
 		setIsBackgroundOpen(false);
 		setIsTextOpen(false)
 		setIsBorderOpen(false)
+		setIsAddonOpen(false)
 	}
 	const handleIsBackgroundOpen = () => {
 		setIsTemplateOpen(false);
@@ -157,6 +165,7 @@ const DesktopLayout = (
 		setIsBackgroundOpen(true);
 		setIsTextOpen(false)
 		setIsBorderOpen(false)
+		setIsAddonOpen(false)
 	}
 	const handleIsTextOpen = () => {
 		setIsTemplateOpen(false);
@@ -164,6 +173,7 @@ const DesktopLayout = (
 		setIsBackgroundOpen(false);
 		setIsTextOpen(true)
 		setIsBorderOpen(false)
+		setIsAddonOpen(false)
 	}
 	const handleIsBorderOpen = () => {
 		setIsTemplateOpen(false);
@@ -171,6 +181,7 @@ const DesktopLayout = (
 		setIsBackgroundOpen(false);
 		setIsTextOpen(false)
 		setIsBorderOpen(true)
+		setIsAddonOpen(false)
 	}
 	const handleIsAddOnsOpen = () => {
 		setIsTemplateOpen(false);
@@ -618,7 +629,11 @@ const DesktopLayout = (
 						isTemplateOpen &&
 						<>
 						<Box height={"100%"} py={"10px"} display={"flex"} alignItems={"start"} justifyContent={"start"}>
-							<PageTabs/>
+							<PageTabs 
+								setPatternBg ={setPatternBg}
+								setBgImage={setBgImage}
+								setGradientBg={setGradientBg}
+							/>
 							
 						</Box>
 						<Text fontSize={"18px"} fontWeight={"semibold"}>
@@ -650,6 +665,12 @@ const DesktopLayout = (
 							bgRemoveLoading={bgRemoveLoading}
 							setBgRemoveLoading= {setBgRemoveLoading}
 							device ={device}
+							activeFabricImage = {activeFabricImage}
+							applyCrop = {applyCrop}
+							applyImageCrop = {applyImageCrop}
+							showCropBox = {showCropBox}
+							toggleImageLock= {toggleImageLock}
+							isImageLocked = {isImageLocked}
 						/>
 					}
 					{

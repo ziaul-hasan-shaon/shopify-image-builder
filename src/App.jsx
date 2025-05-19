@@ -8,7 +8,7 @@ import { usePage } from './Imagebuilder/hook/PageContext';
 
 function App() {
   const { currentPage } = usePage();
-	console.log('currentPage', currentPage)
+	// console.log('currentPage', currentPage)
 
   return (
     <Box>
