@@ -61,16 +61,25 @@ export const handleImageUpload = async ({
         formData.append("image", img.file);
 
         try {
-          const response = await axios.post("http://localhost:5000/remove-bg", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+          const response = await axios.post("https://api.picsart.io/tools/1.0/removebg", formData, {
+             headers: {
+                        'x-picsart-api-key': 'eyJraWQiOiI5NzIxYmUzNi1iMjcwLTQ5ZDUtOTc1Ni05ZDU5N2M4NmIwNTEiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhdXRoLXNlcnZpY2UtYjQ3OWNjNzQtMzM1ZC00OTA0LWI2MmQtODA2MDkxNTdhMzY0IiwiYXVkIjoiNDYwMTg5MzcxMDI2MTAxIiwibmJmIjoxNzQ3NjU4NTQzLCJzY29wZSI6WyJiMmItYXBpLmdlbl9haSIsImIyYi1hcGkuaW1hZ2VfYXBpIl0sImlzcyI6Imh0dHBzOi8vYXBpLnBpY3NhcnQuY29tL3Rva2VuLXNlcnZpY2UiLCJvd25lcklkIjoiNDYwMTg5MzcxMDI2MTAxIiwiaWF0IjoxNzQ3NjU4NTQzLCJqdGkiOiI1ZGMwZDQwNS05NmY4LTQ5MzgtYTJhYy1kYjk5YTFhYjk5MTQifQ.PkMWf3bubrGTFaiOczeF0fjp6TkGBjuzLko4LBibByWXlYBNyDz3EMSdAXx-1oPaleLmGx5Ptfe9K8cmddSqjU6pWQCdPQvLJgn28LcI309Z8fm_GXMHp_d_aSVGRHH9X4g4xQq9lQW_jgeitqMIzeS30uM8bf17EqMgwlUXVcXBtJ8u0OYCpday5uIYuB0u4Y4PPOD_jxVS0f5HYwfHNPA1gX3OHZc7OK_poiKgOhRIb--O_SFM7o-8UaLvBKqZ7Fn_VF1hkBxqhxCRTWcYZQNIYIYJKnVSAGh0GA4Z-M-6QSBBxBQ5IQkJi3ngKcvl1bHI0ZFVRDnLc43Cz5rE-g'
+                      },
           });
-
-          const base64Image = `data:image/png;base64,${response.data.image}`;
+       const bgRemovedResponse = await fetch(response.data.data.url);
+         const bgRemovedBlob = await bgRemovedResponse.blob();
+          const base64Image = ()=>{
+            return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(bgRemovedBlob);
+                      });
+          };
           const updatedImage = {
             ...img,
             id: `${img.originalId}-bgremoved`,
-            url: base64Image,
-            base64: base64Image,
+            url: response.data.data.url,
+            base64: base64Image(),
           };
 
           // Update canvas

@@ -9,5 +9,15 @@ export default defineConfig({
       exportAs: 'named',
     }),
     react()
-  ]
+  ],
+  build:{
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        entryFileNames: 'image-builder.js',
+        chunkFileNames: '[name].js',
+        assetFileNames: 'image-builder.[ext]',
+      },
+    },
+  }
 })
