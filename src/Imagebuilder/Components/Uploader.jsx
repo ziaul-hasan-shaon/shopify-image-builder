@@ -201,6 +201,10 @@ const Uploader = ({
 						value={resize}
 						onChange={handleScaleChange}
 						width="200px"
+						isDisabled={!activeFabricImage} // ✅ this is correct
+						sx={{
+							cursor: !activeFabricImage ? 'not-allowed' : 'pointer',
+						}}
 					>
 						<SliderTrack>
 							<SliderFilledTrack bg='tomato'/>
