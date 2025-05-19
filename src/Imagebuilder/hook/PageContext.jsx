@@ -4,7 +4,10 @@ import React, { createContext, useContext, useState } from 'react';
 const PageContext = createContext();
 
 export const PageProvider = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('all'); // 'home' | '2d-acrylic'
+
+	const path = location.pathname.split("/").pop()
+
+  const [currentPage, setCurrentPage] = useState(path); // 'home' | '2d-acrylic'
 
   return (
     <PageContext.Provider value={{ currentPage, setCurrentPage }}>
