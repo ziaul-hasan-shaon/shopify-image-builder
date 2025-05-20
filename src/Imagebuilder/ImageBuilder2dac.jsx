@@ -788,29 +788,54 @@ const ImageBuilder2dac = () => {
 
 	const handlePreview = () => {
 		const canvasEl = canvasRef.current;
-	
 		if (!canvasEl) return;
 	
 		const ctx = canvasEl.getContext('2d');
 	
-		// 1. Save current image
-		const imageData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+		// Create a new offscreen canvas
+		const offscreenCanvas = document.createElement('canvas');
+		offscreenCanvas.width = canvasEl.width;
+		offscreenCanvas.height = canvasEl.height;
+		const offCtx = offscreenCanvas.getContext('2d');
 	
-		// 2. Fill canvas with white background
+		// Copy original image
+		offCtx.drawImage(canvasEl, 0, 0);
+	
+		// Apply shadow to outline the shape
+		ctx.save();
+		ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+		ctx.shadowColor = '#A79269';
+		ctx.shadowBlur = 5;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 0;
+
+		// Draw image multiple times around original position
+		for (let dx = -2; dx <= 2; dx++) {
+			for (let dy = -2; dy <= 2; dy++) {
+				if (dx !== 0 || dy !== 0) {
+					ctx.drawImage(offscreenCanvas, dx, dy);
+				}
+			}
+		}
+	
+		ctx.drawImage(offscreenCanvas, 0, 0);
+		ctx.restore();
+	
+		// Now add background under it
 		ctx.save();
 		ctx.globalCompositeOperation = 'destination-over';
-		ctx.fillStyle = '#80808090';
+		ctx.fillStyle = '#F9F9F9'; // semi-transparent background
 		ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 		ctx.restore();
 	
-		// 3. Export as image
 		const dataURL = canvasEl.toDataURL('image/png', 1);
 		setMockupImage(dataURL);
 	
-		// 4. Restore original canvas
+		// Optional: Restore canvas to original
+		const imageData = offCtx.getImageData(0, 0, canvasEl.width, canvasEl.height);
 		ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 		ctx.putImageData(imageData, 0, 0);
-	};
+	};	
 	
 
 	const handleScaleChange = (value) => {
