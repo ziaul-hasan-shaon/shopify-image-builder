@@ -88,6 +88,10 @@ const Layout = (
 		showCropBox,
 		toggleImageLock,
 		isImageLocked,
+		is3dPreview,
+		setIs3dPreview,
+		img3d, 
+		handle3dPreview
 	}
 ) => {
 
@@ -232,6 +236,10 @@ const Layout = (
 						showCropBox = {showCropBox}
 						toggleImageLock= {toggleImageLock}
 						isImageLocked = {isImageLocked}
+						is3dPreview = {is3dPreview}
+						setIs3dPreview = {setIs3dPreview}
+						img3d = {img3d}
+						handle3dPreview= {handle3dPreview}
 					/>
 					: 
 					<MobileLayout 
@@ -333,6 +341,10 @@ const Layout = (
 						showCropBox = {showCropBox}
 						toggleImageLock= {toggleImageLock}
 						isImageLocked = {isImageLocked}
+						is3dPreview = {is3dPreview}
+						setIs3dPreview = {setIs3dPreview}
+						img3d = {img3d}
+						handle3dPreview= {handle3dPreview}
 					/>
 				}
 			</Box>

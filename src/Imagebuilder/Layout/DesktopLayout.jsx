@@ -14,12 +14,13 @@ import linkedin from "../../assets/Images/Social media/linkedin 1.png";
 import Mockup from '../Components/Mockup';
 import { GrRedo, GrUndo } from 'react-icons/gr';
 import { BsFullscreen, BsFullscreenExit } from 'react-icons/bs';
-import { FaRegCircle, FaRegEdit } from 'react-icons/fa';
+import { FaPlay, FaRegCircle, FaRegEdit } from 'react-icons/fa';
 import { ImImage } from 'react-icons/im';
 import { GoArrowUpRight, GoChevronDown, GoChevronUp } from 'react-icons/go';
 import PageTabs from '../Components/PageTabs';
 import { usePage } from '../hook/PageContext';
 import AddOns from '../Components/AddOns';
+import { MdCancelScheduleSend } from "react-icons/md";
 
 const DesktopLayout = (
 	{
@@ -121,6 +122,10 @@ const DesktopLayout = (
 		showCropBox,
 		toggleImageLock,
 		isImageLocked,
+		is3dPreview,
+		setIs3dPreview,
+		img3d,
+		handle3dPreview
 	}
 ) => {
 
@@ -128,6 +133,7 @@ const DesktopLayout = (
 	const [isFullScreen, setIsFullScreen] = useState(false)
 
 	const {currentPage} = usePage()
+	console.log('currentPage', currentPage)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const {
@@ -297,6 +303,24 @@ const DesktopLayout = (
 							<path d="M17.7947 2.00254L6.14885 2.03002C4.41069 1.94542 3.96502 3.2116 3.96502 3.83056C3.96502 4.38414 3.88957 5.19117 2.82426 6.70798C1.75895 8.22478 1.839 8.67537 2.43973 9.72544C2.9383 10.5969 4.20643 10.9374 4.86764 10.9946C6.96785 11.0398 7.98968 9.32381 7.98968 8.1178C9.03154 11.1481 11.9946 11.1481 13.3148 10.8016C14.6376 10.4545 15.7707 9.2118 16.0381 8.1178C16.194 9.47735 16.6672 10.2707 18.0653 10.8158C19.5135 11.3805 20.7589 10.5174 21.3838 9.9642C22.0087 9.41096 22.4097 8.18278 21.2958 6.83288C20.5276 5.90195 20.2074 5.02494 20.1023 4.11599C20.0413 3.58931 19.9878 3.02336 19.5961 2.66323C19.0238 2.13691 18.2026 1.97722 17.7947 2.00254Z" stroke="#F46267" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
 					</Button>
+						{
+							currentPage === "3d-acrylic" &&
+							<>
+							{
+								!is3dPreview ?
+								<Button onClick={() => {
+									setIs3dPreview(true)
+									handle3dPreview()
+								}}>
+									<FaPlay color='#374144'/>
+								</Button>
+								:
+								<Button onClick={() => setIs3dPreview(false)}>
+									<MdCancelScheduleSend />
+								</Button> 
+							}
+							</>
+						}
 					<Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start">
 						<PopoverTrigger>
 							<Button
@@ -636,9 +660,9 @@ const DesktopLayout = (
 							/>
 							
 						</Box>
-						<Text fontSize={"18px"} fontWeight={"semibold"}>
+						{/* <Text fontSize={"18px"} fontWeight={"semibold"}>
 							This feature will coming soon....
-						</Text>
+						</Text> */}
 						</>
 					}
 					{
@@ -748,7 +772,7 @@ const DesktopLayout = (
 							transition="transform 0.2s ease-in-out"
 							position={"relative"}
 						>
-							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device}/>
+							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device} is3dPreview = {is3dPreview} setIs3dPreview = {setIs3dPreview} img3d={img3d}/>
 						</Box>
 
 						<Box

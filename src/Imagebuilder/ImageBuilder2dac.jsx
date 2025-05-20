@@ -944,7 +944,7 @@ const handleAddToCart = async () => {
 
 	try {
 		const imgUrl = await uploadCanvasImageToLamda(file); // 🛠️ Await this!
-		// console.log('url', imgUrl);
+		console.log('url', imgUrl?.file_url);
 
 		if (imgUrl) {
 			const payload = {
@@ -952,7 +952,7 @@ const handleAddToCart = async () => {
 				quantity: 1,
 				properties: {
 					_image_info: imageInfo,
-					_preview_url: imgUrl,
+					_preview_url: imgUrl?.file_url,
 				},
 			};
 

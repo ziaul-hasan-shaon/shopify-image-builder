@@ -18,14 +18,14 @@ const initialGradientList = [
 	gradient1, gradient2, gradient3, gradient4, gradient5, gradient6, gradient7, gradient7, gradient8
 ]
 
-const ImageBuilder = () => {
+const ImageBuilder3dac = () => {
 
 	const canvasRef = useRef(null);
 	const [canvas, setCanvas] = useState(null);
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState("#ffffff");
+	const [color, setColor] = useState( "");
 	const [gradientBg, setGradientBg] = useState(false);
 	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
@@ -37,8 +37,8 @@ const ImageBuilder = () => {
 	const [fontWeight, setFontWeight] = useState(null);
 	const [fontFamily, setFontFamily] = useState(null);
 	const [selectedBorder, setSelectedBorder] = useState("")
-	const [canvasWidth, setCanvasWidth] = useState(800)
-	const [canvasHeight, setCanvasHeight] = useState(400)
+	const [canvasWidth, setCanvasWidth] = useState(500)
+	const [canvasHeight, setCanvasHeight] = useState(500)
 	const [isPngActive, setIsPngActive] = useState(true)
 	const [isJpgActive, setIsJpgActive] = useState(false)
 	const [isStandard, setIsStandard] = useState(true)
@@ -58,6 +58,8 @@ const ImageBuilder = () => {
 	const [activeFabricImage, setActiveFabricImage] = useState(null);
 	const [applyImageCrop, setApplyImageCrop] = useState(false);
 	const [isImageLocked, setIsImageLocked] = useState(false);
+	const [is3dPreview, setIs3dPreview] = useState(false)
+	const [img3d, setImg3d] = useState(false)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -176,8 +178,8 @@ const ImageBuilder = () => {
 			});
 			// console.log('fabric', fabricImage)
 	
-			const maxWidth = 300;
-			const maxHeight = 300;
+			const maxWidth = 400;
+			const maxHeight = 400;
 			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
 			fabricImage.scale(scaleFactor);
 
@@ -302,6 +304,7 @@ const ImageBuilder = () => {
 		};
 	}, [canvas, activeFabricImage]);
 
+	
 	useEffect(() => {
 		if (!canvas) return;
 	
@@ -333,6 +336,7 @@ const ImageBuilder = () => {
 			canvas.off('selection:updated');
 		};
 	}, [canvas]);
+	
 
 	const resizeCanvas = (newWidth, newHeight) => {
 		if (!canvas) return;
@@ -618,14 +622,14 @@ const ImageBuilder = () => {
 	// Call addBackground once canvas is initialized
 	useEffect(() => {
 		if (canvas) {
-			// console.log('Canvas initialized, adding background...');
+			console.log('Canvas initialized, adding background...');
 			addBackground(
 				"",
 				color); // Setting only background color here
 			// addBackgroundOnParent("https://media.istockphoto.com/id/182391849/photo/empty-gold-ornate-picture-frame-with-white-background.jpg?s=612x612&w=0&k=20&c=3uKrCpggF8Q6f3IuLBJD_zpto9XsYALCvvoIL8uOrAI=")
 			// overlapImage()
 		}
-	}, [canvas, color]); // This ensures the effect runs after canvas is initialized
+	}, [canvas, color, uploadedImages?.length > 0]); // This ensures the effect runs after canvas is initialized
 
 	useEffect(() => {
 		if(canvas){
@@ -793,6 +797,18 @@ const ImageBuilder = () => {
     }
   }
 
+	// for 3d preview
+	const handle3dPreview = () => {
+		const canvas = canvasRef.current;
+    if (canvas) {
+      const dataURL = canvas.toDataURL({
+        format: 'png',
+        quality: 1,
+      });
+      setImg3d(dataURL); // Set to state
+    }
+	}
+	
 	const handleScaleChange = (value) => {
 		if (!canvas) return;
     setResize(value);
@@ -953,7 +969,7 @@ const handleAddToCart = async () => {
 
 	return (
 		<>
-			<Box>
+			<Box position={"relative"}>
 				<Layout 
 					canvasRef={canvasRef} 
 					canvas={canvas}
@@ -1037,10 +1053,14 @@ const handleAddToCart = async () => {
 					showCropBox = {showCropBox}
 					toggleImageLock= {toggleImageLock}
 					isImageLocked = {isImageLocked}
+					is3dPreview = {is3dPreview}
+					setIs3dPreview = {setIs3dPreview}
+					img3d = {img3d}
+					handle3dPreview= {handle3dPreview}
 				/>
 			</Box>
 		</>
 	);
 };
 
-export default ImageBuilder;
+export default ImageBuilder3dac;

@@ -5,7 +5,7 @@ import { usePage } from '../hook/PageContext';
 const tabs = [
 	{ key: 'all', label: 'All' },
 	{ key: '2d-cutout', label: '2D CutOut' },
-	{ key: '3d-acrylic', label: '3D Acrylic', disabled: true },
+	{ key: '3d-acrylic', label: '3D Acrylic' },
 	{ key: '2d-acrylic', label: '2D Acrylic' },
 ];
 
@@ -19,8 +19,8 @@ const cutOut2d = [
 ]
 
 const acrylic3d = [
-	"https://i.ibb.co/pjDcZv5B/Image-Container.png",
-	"https://i.ibb.co/5WryGTCd/Image-Container-1.png"
+	{img:"https://i.ibb.co/pjDcZv5B/Image-Container.png", src: "https://i.ibb.co/pvTbHnQP/all-pattern-19.png"},
+	{img:"https://i.ibb.co/5WryGTCd/Image-Container-1.png", src: "https://i.ibb.co/wN0BpFW6/all-pattern-48.png"}
 ]
 
 const acrylic2d = [
@@ -98,9 +98,14 @@ const PageTabs = ({
 									<GridItem key={index} >
 										<Image
 											width={"100%"}
-											src={img2d}
+											src={img2d?.img}
 											alt="3d-acrylic"
 											borderRadius={"8px"}
+											onClick={() => {
+												setGradientBg(false);
+												setPatternBg(true);
+												setBgImage(img2d?.src);
+											}}
 										/>
 									</GridItem>
 								))

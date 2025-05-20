@@ -156,6 +156,17 @@ const BackgroundPatternTabs = ({
 		"https://i.ibb.co/PsPPYc7V/all-pattern-25.png",
 	]
 
+	const chess = [
+		"https://i.ibb.co/wN0BpFW6/all-pattern-48.png",
+		"https://i.ibb.co/3YN2pqPy/all-pattern-47.png",
+		"https://i.ibb.co/sp0s4c3D/all-pattern-46.png",
+		"https://i.ibb.co/XrRWzmvg/all-pattern-45.png",
+		"https://i.ibb.co/gFDKkrK9/all-pattern-44.png",
+		"https://i.ibb.co/rKnSfMG0/all-pattern-43.png",
+		"https://i.ibb.co/rKztSStZ/all-pattern-42.png",
+		"https://i.ibb.co/Hf2VyVWc/all-pattern-41.png"
+	]
+
 
 	return (
 		<>
@@ -334,6 +345,7 @@ const BackgroundPatternTabs = ({
 								{ title: "Bones", items: bones, type: "image" },
     						{ title: "Paws", items: paws, type: "image" },
     						{ title: "Hearts", items: hearts, type: "image" },
+    						{ title: "Chess", items: chess, type: "image" },
 							 ].map((section, index) => (
 								<AccordionItem key={index}>
 								<h2>

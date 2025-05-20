@@ -1,6 +1,7 @@
 import { Box, Image } from "@chakra-ui/react";
 import React from 'react';
 import { usePage } from "../hook/PageContext";
+import Cube3D from "./Cube/Cube3d";
 
 const Canvas = ({
 	canvasRef,
@@ -9,11 +10,14 @@ const Canvas = ({
 	canvasHeight,
 	scale,
 	device,
-	uploadedImages
+	uploadedImages,
+	is3dPreview,
+	setIs3dPreview,
+	img3d
 }) => {
 	// console.log('canvasWidth',canvasWidth)
 	return (
-		<>
+			<>
 			<style>
 				{
 					`
@@ -43,7 +47,7 @@ const Canvas = ({
 				`
 				}
 			</style>
-			<Box>
+			<Box display={is3dPreview ? "none" : "block"}>
 				<Box display="flex" justifyContent="center" margin="10px auto" position="relative">
 					<Box
 						className="canvas-container"
@@ -90,6 +94,12 @@ const Canvas = ({
 					</Box>
 				</Box>
 				</Box>
+				{
+					is3dPreview &&
+					<>
+						<Cube3D img3d={img3d}/>
+					</>
+				}
 		</>
 	);
 };
