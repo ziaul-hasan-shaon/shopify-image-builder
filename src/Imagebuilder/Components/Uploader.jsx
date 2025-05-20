@@ -156,7 +156,7 @@ const Uploader = ({
 									}
 								}}
 								>
-									{console.log("upload", image)}
+									{/* {console.log("selectedImage", selectedImage)} */}
 									<Image src={image.url} alt={image.title} boxSize="60px" objectFit="cover" />
 									<Button onClick={(e) => handleDeleteButtonClick(e, image.id)} size={"xs"} bg={'#F46267'} color={"#ffffff"} position="absolute" top="-10px" right="-10px" borderRadius="full" padding={"1px"}>
 										<HiXMark />
@@ -182,7 +182,7 @@ const Uploader = ({
 					</Box>
 				)}
 				{
-					device === "Desktop" &&
+					(device === "Desktop" && currentPage !== "2d-cutout") &&
 					<Box px={5}>
 						<RadioGroup onChange={handleChange} value={landOrPort}>
 							<Stack direction='row'>

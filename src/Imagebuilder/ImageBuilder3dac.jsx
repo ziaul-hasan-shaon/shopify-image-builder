@@ -454,12 +454,12 @@ const ImageBuilder3dac = () => {
 				if (activeObject) {
 					// Check if it's an image
 					if (activeObject.type === "image") {
-						const imageId = activeObject.originalId || activeObject.id; // Adjust based on how you set it
+						const imageId = activeObject.id; // Adjust based on how you set it
 						
 						// Update selectedImage state
 						setSelectedImage((prevSelectedImages) => {
 							return prevSelectedImages.filter(
-								(image) => image.originalId !== imageId
+								(image) => image.id !== imageId
 							);
 						});
 					}
@@ -799,15 +799,34 @@ const ImageBuilder3dac = () => {
 
 	// for 3d preview
 	const handle3dPreview = () => {
-		const canvas = canvasRef.current;
-    if (canvas) {
-      const dataURL = canvas.toDataURL({
-        format: 'png',
-        quality: 1,
-      });
-      setImg3d(dataURL); // Set to state
-    }
-	}
+		if (!canvas) return;
+	
+		const originalBgColor = canvas.backgroundColor;
+		const originalBgImage = canvas.backgroundImage;
+	
+		// Remove background color and image temporarily
+		canvas.set({
+			backgroundColor: null,
+			backgroundImage: null,
+		});
+		canvas.renderAll();
+	
+		// Export transparent image
+		const dataURL = canvas.toDataURL({
+			format: 'png',
+			quality: 1,
+		});
+	
+		setImg3d(dataURL); // or your state setter for exported image
+	
+		// Restore original background color and image
+		canvas.set({
+			backgroundColor: originalBgColor,
+			backgroundImage: originalBgImage,
+		});
+		canvas.renderAll();
+	};
+	
 	
 	const handleScaleChange = (value) => {
 		if (!canvas) return;
@@ -913,6 +932,7 @@ const handleAddToCart = async () => {
 	setAtcLoading(true);
 
 	const imageInfo = {
+		print_type: "3d-acrylic",
 		bgcolor: color,
 		gradientBg: gradientBg,
 		patternBg: patterBg,

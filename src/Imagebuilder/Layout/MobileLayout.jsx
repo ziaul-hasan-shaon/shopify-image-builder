@@ -116,9 +116,9 @@ const MobileLayout = (
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const [isContentOpen, setIsContentOpen] = useState(true)
 
-	const deviceWidth = device === "Mobile" && window.innerWidth > 767 ? window.innerWidth / window.devicePixelRatio : window.screen.width
+	// const deviceWidth = device === "Mobile" && window.innerWidth > 767 ? window.innerWidth / window.devicePixelRatio : window.screen.width
 
-	console.log('deviceWidth', deviceWidth)
+	// console.log('deviceWidth', deviceWidth)
 
 	const {
 		isOpen: isArtboardOpen,
@@ -749,7 +749,7 @@ const MobileLayout = (
 									size='xl'
 								/>
 								<Text color={"red"}>
-									Processing
+									Removing background
 								</Text>
 							</Box>
 						}

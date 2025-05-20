@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 // import cubeIMg from "../assets/Images/canvas-export@2x (11).png"
 import "./Cube3D.css"
 
-const Cube3D = ({img3d}) => {
+const Cube3D = ({img3d, bgImage}) => {
   const cubeRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -31,27 +31,32 @@ const Cube3D = ({img3d}) => {
 
   return (
     <div
-      className="scene"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-    >
-      <div
-        className="cube"
-        ref={cubeRef}
-        style={{
-          transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`
-        }}
-      >
-        <div className="face front"><img src={img3d} alt="Front" /></div>
-        <div className="face back"><img src={img3d} alt="Back" /></div>
-        <div className="face right"><img src={img3d} alt="Right" /></div>
-        <div className="face left"><img src={img3d} alt="Left" /></div>
-        <div className="face top"><img src={img3d} alt="Top" /></div>
-        <div className="face bottom"><img src={img3d} alt="Bottom" /></div>
-      </div>
-    </div>
+			className="scene"
+			onMouseDown={handleMouseDown}
+			onMouseMove={handleMouseMove}
+			onMouseUp={handleMouseUp}
+			onMouseLeave={handleMouseUp}
+		>
+			<div
+				className="cube"
+				ref={cubeRef}
+				style={{
+					transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`
+				}}
+			>
+				{/* Cube Faces */}
+				<div className="face front" style={{ backgroundImage: `url(${bgImage})` }}/>
+				<div className="face back" style={{ backgroundImage: `url(${bgImage})` }}/>
+				<div className="face right" style={{ backgroundImage: `url(${bgImage})` }}/>
+				<div className="face left" style={{ backgroundImage: `url(${bgImage})` }}/>
+				<div className="face top" style={{ backgroundImage: `url(${bgImage})` }}/>
+				<div className="face bottom" style={{ backgroundImage: `url(${bgImage})` }}/>
+
+				{/* Center Image */}
+				<img className="center-image" src={img3d} alt="Center Image" />
+			</div>
+		</div>
+
   );
 };
 

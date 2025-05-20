@@ -25,7 +25,7 @@ const ImageBuilder2dac = () => {
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
-	const [color, setColor] = useState( "");
+	const [color, setColor] = useState("");
 	const [gradientBg, setGradientBg] = useState(false);
 	const [patterBg, setPatternBg] = useState(false)
 	const [gradientList, setGradientList] = useState(initialGradientList);
@@ -448,17 +448,18 @@ const ImageBuilder2dac = () => {
 	useEffect(() => {
 		const handleKeyDown = (e) => {
 			const activeObject = canvas.getActiveObject();
+			console.log('active', activeObject)
 	
 			if (e.key === "Delete") {
 				if (activeObject) {
 					// Check if it's an image
 					if (activeObject.type === "image") {
-						const imageId = activeObject.originalId || activeObject.id; // Adjust based on how you set it
+						const imageId = activeObject.id; // Adjust based on how you set it
 						
 						// Update selectedImage state
 						setSelectedImage((prevSelectedImages) => {
 							return prevSelectedImages.filter(
-								(image) => image.originalId !== imageId
+								(image) => image.id !== imageId
 							);
 						});
 					}
@@ -916,6 +917,7 @@ const handleAddToCart = async () => {
 	setAtcLoading(true);
 
 	const imageInfo = {
+		print_type: "2d-cutout",
 		bgcolor: color,
 		gradientBg: gradientBg,
 		patternBg: patterBg,

@@ -360,7 +360,7 @@ const ImageBuilder = () => {
 
 	useEffect(() => {
 		if (!canvas) return; // wait for canvas to be ready
-		console.log('Resizing canvas to:', canvasWidth, canvasHeight);
+		// console.log('Resizing canvas to:', canvasWidth, canvasHeight);
 		resizeCanvas(canvasWidth, canvasHeight);
 	}, [canvas, canvasWidth, canvasHeight]);
 
@@ -450,12 +450,12 @@ const ImageBuilder = () => {
 				if (activeObject) {
 					// Check if it's an image
 					if (activeObject.type === "image") {
-						const imageId = activeObject.originalId || activeObject.id; // Adjust based on how you set it
+						const imageId = activeObject.id; // Adjust based on how you set it
 						
 						// Update selectedImage state
 						setSelectedImage((prevSelectedImages) => {
 							return prevSelectedImages.filter(
-								(image) => image.originalId !== imageId
+								(image) => image.id !== imageId
 							);
 						});
 					}
@@ -897,6 +897,7 @@ const handleAddToCart = async () => {
 	setAtcLoading(true);
 
 	const imageInfo = {
+		print_type: "2d-acrylic",
 		bgcolor: color,
 		gradientBg: gradientBg,
 		patternBg: patterBg,

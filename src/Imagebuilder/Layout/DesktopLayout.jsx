@@ -133,7 +133,7 @@ const DesktopLayout = (
 	const [isFullScreen, setIsFullScreen] = useState(false)
 
 	const {currentPage} = usePage()
-	console.log('currentPage', currentPage)
+	// console.log('currentPage', currentPage)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const {
@@ -772,7 +772,7 @@ const DesktopLayout = (
 							transition="transform 0.2s ease-in-out"
 							position={"relative"}
 						>
-							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device} is3dPreview = {is3dPreview} setIs3dPreview = {setIs3dPreview} img3d={img3d}/>
+							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device} is3dPreview = {is3dPreview} setIs3dPreview = {setIs3dPreview} img3d={img3d} bgImage={bgImage}/>
 						</Box>
 
 						<Box
@@ -950,7 +950,7 @@ const DesktopLayout = (
 								size='xl' 
 							/>
 							<Text color={"red"}>
-								Processing
+								Removing background
 							</Text>
 						</Box>
 					}

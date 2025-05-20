@@ -130,7 +130,7 @@ const Layout = (
     };
   }, []);
 
-	console.log('device', device)
+	// console.log('device', device)
 
 	return (
 		<>

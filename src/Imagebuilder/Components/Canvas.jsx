@@ -13,7 +13,8 @@ const Canvas = ({
 	uploadedImages,
 	is3dPreview,
 	setIs3dPreview,
-	img3d
+	img3d,
+	bgImage
 }) => {
 	// console.log('canvasWidth',canvasWidth)
 	return (
@@ -97,7 +98,7 @@ const Canvas = ({
 				{
 					is3dPreview &&
 					<>
-						<Cube3D img3d={img3d}/>
+						<Cube3D img3d={img3d} bgImage={bgImage}/>
 					</>
 				}
 		</>

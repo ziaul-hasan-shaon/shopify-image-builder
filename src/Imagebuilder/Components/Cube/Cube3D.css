@@ -1,7 +1,7 @@
 .scene {
   width: 400px;
   height: 400px;
-  margin: 150px auto;
+  margin: 100px auto;
   perspective: 1000px;
   cursor: grab;
 }
@@ -19,19 +19,28 @@
   width: 400px;
   height: 400px;
   backface-visibility: hidden;
-  border: 1px solid #ccc;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,0.2);
+  opacity: 0.5;
 }
 
-.face img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Face Positions */
+/* Backgrounds for each face */
 .front  { transform: rotateY(  0deg) translateZ(200px); }
 .back   { transform: rotateY(180deg) translateZ(200px); }
 .right  { transform: rotateY( 90deg) translateZ(200px); }
 .left   { transform: rotateY(-90deg) translateZ(200px); }
 .top    { transform: rotateX( 90deg) translateZ(200px); }
 .bottom { transform: rotateX(-90deg) translateZ(200px); }
+
+/* Center floating image */
+.center-image {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  z-index: 10;
+}

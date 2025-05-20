@@ -7,7 +7,7 @@ export const PageProvider = ({ children }) => {
 
 	const path = location.pathname.split("/").pop()
 
-  const [currentPage, setCurrentPage] = useState("all"); // 'home' | '2d-acrylic'
+  const [currentPage, setCurrentPage] = useState(path); // 'home' | '2d-acrylic'
 
   return (
     <PageContext.Provider value={{ currentPage, setCurrentPage }}>
