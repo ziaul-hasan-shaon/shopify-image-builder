@@ -5,9 +5,11 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import SwiperCore from "swiper";
 import { Autoplay } from "swiper/modules";
+import { usePage } from '../hook/PageContext';
 
 const Mockup = ({ mockupImage, device }) => {
-	console.log('device', device)
+	const {currentPage} = usePage()
+	console.log('currentPage', currentPage) 
 
 	const mockup1 = "https://i.ibb.co.com/hFR1dsMN/mockup1.jpg"
 	const mockup2 = "https://i.ibb.co.com/vvcGV2gF/mockup2.jpg"
@@ -55,7 +57,9 @@ const Mockup = ({ mockupImage, device }) => {
 					device === "Desktop" ? 
 					<Box>
 						<Grid gridTemplateColumns={"repeat(10, 1fr)"}>
-							<GridItem colSpan={3} px={4} borderRight={"1px solid #EBEBEB"}>
+							{
+								(currentPage === "2d-acrylic" || currentPage === "all") &&
+								<GridItem colSpan={3} px={4} borderRight={"1px solid #EBEBEB"}>
 								<Text my={3} fontSize={"18px"} fontWeight={"semibold"}>Select a mockup</Text>
 								<Grid
 									gridTemplateColumns={"repeat(2, 1fr)"}
@@ -86,7 +90,8 @@ const Mockup = ({ mockupImage, device }) => {
 									))}
 								</Grid>
 							</GridItem>
-							<GridItem colSpan={7} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+							}
+							<GridItem colSpan={(currentPage === "2d-acrylic" || currentPage === "all") ? 7 : 10} display={"flex"} alignItems={"center"} justifyContent={"center"} py={10}>
 								{showMockup ?
 									<Box 
 										width={"500px"} 
@@ -169,7 +174,7 @@ const Mockup = ({ mockupImage, device }) => {
 											right={"25%"}
 										/>}
 									</Box> :
-									<Box width={"500px"} height={"500px"}>
+									<Box width={currentPage === "2d-acrylic" ? "500px" : "550px"} height={currentPage === "2d-acrylic" ? "500px" : "550px"}>
 										<Image width={"100%"} height={"100%"} objectFit={"cover"} src={mockupImage} alt='mockup' />
 									</Box>
 								}

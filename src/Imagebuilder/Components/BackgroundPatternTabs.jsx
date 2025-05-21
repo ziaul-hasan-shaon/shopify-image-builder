@@ -22,6 +22,7 @@ import  Cat2  from "../../assets/Images/Pattern/cats/Cat1.svg?react";
 import  Cat3  from "../../assets/Images/Pattern/cats/Cat (1).svg?react";
 import  Dog from "../../assets/Images/Pattern/cats/Dog.svg?react";
 import PatterBackgroundColor from "./PatterBackgroundColor";
+import { usePage } from "../hook/PageContext";
 
 
 const BackgroundPatternTabs = ({ 
@@ -42,11 +43,14 @@ const BackgroundPatternTabs = ({
 	device
 }) => {
 
-	const [isBackgroundActive, setIsBackgroundActive] = useState(true)
-	const [isPatternActive, setIsPatternActive] = useState(false)
+	const {currentPage} = usePage();
+
+	const [isBackgroundActive, setIsBackgroundActive] = useState(currentPage !== "3d-acrylic" ? true : false)
+	const [isPatternActive, setIsPatternActive] = useState(currentPage === "3d-acrylic" ? true : false)
 	const [svgContent, setSvgContent] = useState('');
 	const [patternBgColor, setPatternBgColor] = useState("#ffffff")
 	const [patten, setPattern] = useState("")
+
 
 	// console.log('svgContent', svgContent)
 
@@ -167,34 +171,44 @@ const BackgroundPatternTabs = ({
 		"https://i.ibb.co/Hf2VyVWc/all-pattern-41.png"
 	]
 
+	const sections =[
+		{ title: "Cats", items: cats, type: "svg" },
+		{ title: "Bones", items: bones, type: "image" },
+		{ title: "Paws", items: paws, type: "image" },
+		{ title: "Hearts", items: hearts, type: "image" },
+		{ title: "Chess", items: chess, type: "image" },
+	 ]
 
 	return (
 		<>
-			<Box p={5}>
-				<HStack>
-					<Button
-						onClick={() => {
-							setIsBackgroundActive(true);
-							setIsPatternActive(false)
-						}}
-						width={"100%"}
-						bg={isBackgroundActive ? "#2B2B2B" : "#F9F9F9"}
-						color={isBackgroundActive ? "#ffffff" : "#374144"}
-					>
-						Background
-					</Button>
-					<Button
-						onClick={() => {
-							setIsPatternActive(true);
-							setIsBackgroundActive(false)
-						}}
-						width={"100%"}
-						bg={isPatternActive ? "#2B2B2B" : "#F9F9F9"}
-						color={isPatternActive ? "#ffffff" : "#374144"}
-					>
-						Pattern
-					</Button>
-				</HStack>
+			<Box p={5} height={"calc(100vh - 130px)"} overflowY={"auto"}>
+				{
+					currentPage !== "3d-acrylic" &&
+					<HStack>
+						<Button
+							onClick={() => {
+								setIsBackgroundActive(true);
+								setIsPatternActive(false)
+							}}
+							width={"100%"}
+							bg={isBackgroundActive ? "#2B2B2B" : "#F9F9F9"}
+							color={isBackgroundActive ? "#ffffff" : "#374144"}
+						>
+							Background
+						</Button>
+						<Button
+							onClick={() => {
+								setIsPatternActive(true);
+								setIsBackgroundActive(false)
+							}}
+							width={"100%"}
+							bg={isPatternActive ? "#2B2B2B" : "#F9F9F9"}
+							color={isPatternActive ? "#ffffff" : "#374144"}
+						>
+							Pattern
+						</Button>
+					</HStack>
+				}
 				{isBackgroundActive &&
 					<Box py={4}>
 						<Box>
@@ -320,7 +334,7 @@ const BackgroundPatternTabs = ({
 						</Box>
 					</Box>}
 				{isPatternActive &&
-					 <Box my={4}>
+					 <Box my={0}>
 					 {/* <Popover isOpen={isPtternBgOpen} onOpen={onPattenBgOpen} onClose={onPatternBgClose} placement="bottom-start">
 							 <PopoverTrigger>
 									 <Button display="flex" alignItems="center" justifyContent="space-between" width="100%" height="50px" border='1px solid #EBEBEB' bg="none" cursor="pointer">
@@ -339,15 +353,15 @@ const BackgroundPatternTabs = ({
 							 </PopoverContent>
 					 </Popover> */}
 
-					 <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple my={4}>
-							 {[
-								{ title: "Cats", items: cats, type: "svg" },
-								{ title: "Bones", items: bones, type: "image" },
-    						{ title: "Paws", items: paws, type: "image" },
-    						{ title: "Hearts", items: hearts, type: "image" },
-    						{ title: "Chess", items: chess, type: "image" },
-							 ].map((section, index) => (
-								<AccordionItem key={index}>
+					 <Accordion defaultIndex={[0, 1, 2, 3, 4]} allowMultiple my={0}>
+							 { sections.map((section, index) => (
+								<AccordionItem 
+								key={index} 
+								sx={{
+									borderTop: index === 0 ? 'none' : undefined,
+									borderBottom: index === sections?.length - 1 ? 'none' : undefined, // or whatever the default is
+								}}
+								>
 								<h2>
 									<AccordionButton>
 										<Box flex="1" textAlign="left">
@@ -418,7 +432,7 @@ const BackgroundPatternTabs = ({
 															setPattern(img);
 														}}
 														style={{
-															width: "95px",
+															width: "90px",
 															height: "60px",
 															borderRadius: "5px",
 															marginBottom: "10px",

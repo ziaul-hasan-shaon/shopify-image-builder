@@ -1,6 +1,12 @@
+:root {
+  --plate-width: 800px;
+  --plate-height: 500px;
+  --plate-depth: 10px;
+}
+
 .scene {
-  width: 400px;
-  height: 400px;
+  width: var(--plate-width);
+  height: var(--plate-height);
   margin: 100px auto;
   perspective: 1000px;
   cursor: grab;
@@ -12,35 +18,88 @@
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.3s ease-out;
+  z-index: 99;
 }
 
 .face {
   position: absolute;
-  width: 400px;
-  height: 400px;
-  backface-visibility: hidden;
   background-size: cover;
   background-position: center;
-  border: 1px solid rgba(255,255,255,0.2);
-  opacity: 0.5;
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
+  opacity: 01;
 }
 
-/* Backgrounds for each face */
-.front  { transform: rotateY(  0deg) translateZ(200px); }
-.back   { transform: rotateY(180deg) translateZ(200px); }
-.right  { transform: rotateY( 90deg) translateZ(200px); }
-.left   { transform: rotateY(-90deg) translateZ(200px); }
-.top    { transform: rotateX( 90deg) translateZ(200px); }
-.bottom { transform: rotateX(-90deg) translateZ(200px); }
+/* Front and Back */
+.front,
+.back {
+  width: var(--plate-width);
+  height: var(--plate-height);
+}
+
+.front {
+  transform: translateZ(calc(var(--plate-depth) / 2));
+}
+
+.back {
+  transform: rotateY(180deg) translateZ(calc(var(--plate-depth) / 2));
+}
+
+/* Left and Right (sides) */
+.left,
+.right {
+  width: var(--plate-depth);
+  height: var(--plate-height);
+  /* background-color: #ccc; */
+}
+
+.left {
+  transform: translateZ(calc(var(--plate-depth) / 2));
+}
+
+.right {
+  transform: translateZ(calc(var(--plate-depth) / 2));
+}
+
+/* Top and Bottom (thin edges) */
+/* .top,
+.bottom {
+  width: var(--plate-width);
+  height: var(--plate-depth);
+  background-color: #ccc;
+} */
+
+/* .top {
+  transform: rotateX(90deg) translateZ(calc(var(--plate-height) / 2));
+}
+
+.bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--plate-height) / 2));
+} */
 
 /* Center floating image */
 .center-image {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: var(--plate-width);
+  height: var(--plate-height);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   object-fit: contain;
-  z-index: 10;
+	box-shadow: 0 40px 60px rgba(0, 0, 0, 0.3); /* floating effect */
+  z-index: 999;
+}
+
+/* Drop shadow to simulate floating */
+.shadow {
+  position: absolute;
+  bottom: 10px;
+  left: 55%;
+  width: 200px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  filter: blur(20px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 99;
 }

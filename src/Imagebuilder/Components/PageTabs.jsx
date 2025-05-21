@@ -105,6 +105,7 @@ const PageTabs = ({
 												setGradientBg(false);
 												setPatternBg(true);
 												setBgImage(img2d?.src);
+												setCurrentPage("3d-acrylic")
 											}}
 										/>
 									</GridItem>
@@ -133,6 +134,7 @@ const PageTabs = ({
 												setGradientBg(false);
 												setPatternBg(true);
 												setBgImage(img2d?.src);
+												setCurrentPage("2d-acrylic")
 											}}
 											cursor={"pointer"}
 										/>

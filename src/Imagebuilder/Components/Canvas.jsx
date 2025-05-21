@@ -1,4 +1,4 @@
-import { Box, Image } from "@chakra-ui/react";
+import { Box, Divider, Image, Text } from "@chakra-ui/react";
 import React from 'react';
 import { usePage } from "../hook/PageContext";
 import Cube3D from "./Cube/Cube3d";
@@ -11,10 +11,7 @@ const Canvas = ({
 	scale,
 	device,
 	uploadedImages,
-	is3dPreview,
-	setIs3dPreview,
-	img3d,
-	bgImage
+	sizeLabel
 }) => {
 	// console.log('canvasWidth',canvasWidth)
 	return (
@@ -48,7 +45,7 @@ const Canvas = ({
 				`
 				}
 			</style>
-			<Box display={is3dPreview ? "none" : "block"}>
+			<Box >
 				<Box display="flex" justifyContent="center" margin="10px auto" position="relative">
 					<Box
 						className="canvas-container"
@@ -78,7 +75,7 @@ const Canvas = ({
 						<canvas
 							ref={canvasRef}
 							style={{
-								border: uploadedImages?.length === 0 ? "1px dashed black" : "",
+								border: (uploadedImages?.length === 0 || device === "Mobile") ? "1px dashed black" : "",
 								// border: "1px dashed black",
 								width: `${canvasWidth}px`, // Canvas width
 								height: `${canvasHeight}px`, // Canvas height
@@ -93,14 +90,14 @@ const Canvas = ({
 							}}
 						></canvas>
 					</Box>
+					<Box mt={8} width={"10px"} height={"650px"} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"flex-end"} alignItems={"center"} position={"absolute"} right={0}>
+						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: "10px"}}>height {sizeLabel?.h} inch</Text>
+					</Box>
+					<Box mt={8} height={"10px"} width={"600px"} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={"end"} position={"absolute"} bottom={0}>
+						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: "10px"}}>width {sizeLabel?.w} inch</Text>
+					</Box>
 				</Box>
 				</Box>
-				{
-					is3dPreview &&
-					<>
-						<Cube3D img3d={img3d} bgImage={bgImage}/>
-					</>
-				}
 		</>
 	);
 };

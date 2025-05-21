@@ -58,6 +58,8 @@ const ImageBuilder2dac = () => {
 	const [activeFabricImage, setActiveFabricImage] = useState(null);
 	const [applyImageCrop, setApplyImageCrop] = useState(false);
 	const [isImageLocked, setIsImageLocked] = useState(false);
+	const [originalImageMap, setOriginalImageMap] = useState(new Map());
+	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -255,36 +257,129 @@ const ImageBuilder2dac = () => {
 		setApplyImageCrop(true)
 	};
 	
-	
 	const applyCrop = () => {
-		if (!canvas || !cropRect || !activeFabricImage) return;
-	
-		const cropArea = new fabric.Rect({
-			left: cropRect.left,
-			top: cropRect.top,
-			width: cropRect.width * cropRect.scaleX,
-			height: cropRect.height * cropRect.scaleY,
-			originX: 'left',
-			originY: 'top',
-			absolutePositioned: true,
+		if (!canvas || !cropRect || !activeFabricImage) {
+			console.warn("Missing canvas, cropRect, or activeFabricImage");
+			return;
+		}
+
+		const imageId = activeFabricImage?.id;
+
+		setOriginalImageMap(prev => {
+			const newMap = new Map(prev);
+			if (!newMap.has(imageId)) {
+				newMap.set(imageId, activeFabricImage);
+			}
+			return newMap;
 		});
 	
-		activeFabricImage.clipPath = cropArea;
+		const imageEl = activeFabricImage.getElement?.() || activeFabricImage._element;
 	
-		canvas.remove(cropRect);
-		setCropRect(null);
-		canvas.renderAll();
-		setApplyImageCrop(false)
+		if (!imageEl) {
+			console.error("Image element not found");
+			return;
+		}
+	
+		// Calculate relative crop area
+		const cropLeft = cropRect.left - activeFabricImage.left;
+		const cropTop = cropRect.top - activeFabricImage.top;
+		const cropWidth = cropRect.width * cropRect.scaleX;
+		const cropHeight = cropRect.height * cropRect.scaleY;
+	
+		const scaleX = activeFabricImage.scaleX || 1;
+		const scaleY = activeFabricImage.scaleY || 1;
+	
+		const sx = cropLeft / scaleX;
+		const sy = cropTop / scaleY;
+		const sw = cropWidth / scaleX;
+		const sh = cropHeight / scaleY;
+	
+		console.log("Crop Coordinates:", { sx, sy, sw, sh });
+	
+		// Make sure crop area is valid
+		if (sw <= 0 || sh <= 0) {
+			console.error("Invalid crop size");
+			return;
+		}
+	
+		// Create temporary canvas
+		const tempCanvas = document.createElement("canvas");
+		tempCanvas.width = sw;
+		tempCanvas.height = sh;
+		const ctx = tempCanvas.getContext("2d");
+	
+		ctx.drawImage(imageEl, sx, sy, sw, sh, 0, 0, sw, sh);
+		const croppedDataUrl = tempCanvas.toDataURL("image/png");
+	
+		// Debug check
+		const imgPreview = new Image();
+		imgPreview.src = croppedDataUrl;
+		// document.body.appendChild(imgPreview); // <- Remove this after test
+	
+		// Final step: load cropped image manually
+		const img = new Image();
+		img.crossOrigin = "anonymous";
+		img.onload = () => {
+			const fabricCropped = new fabric.Image(img, {
+				left: cropRect.left,
+				top: cropRect.top,
+				selectable: true,
+			});
+
+			// ✨ Normalize scaling
+			fabricCropped.set({
+				scaleX: activeFabricImage.scaleX,
+				scaleY: activeFabricImage.scaleY,
+				id: activeFabricImage.id,
+				originalId: activeFabricImage.originalId
+			});
+	
+			canvas.remove(activeFabricImage);
+			canvas.remove(cropRect);
+			canvas.add(fabricCropped);
+			canvas.setActiveObject(fabricCropped);
+			canvas.renderAll();
+	
+			setActiveFabricImage(fabricCropped);
+			setCropRect(null);
+			setApplyImageCrop(false);
+		};
+		img.onerror = () => {
+			console.error("Failed to load cropped image");
+		};
+		img.src = croppedDataUrl;
 	};
+
+	// console.log('activeId', activeFabricImage?.id)
+	// console.log('activeOriginalId', activeFabricImage?.originalId)
 
 	const undoCrop = () => {
 		if (!canvas || !activeFabricImage) return;
 	
-		activeFabricImage.clipPath = null;
-		canvas.renderAll();
-		setApplyImageCrop(false);
-	};
+		const imageId = activeFabricImage?.id;
+		const originalImage = originalImageMap.get(imageId);
 	
+		if (!originalImage) {
+			console.warn("Original image not found for undo");
+			return;
+		}
+	
+		// Optional: Sync position/scale
+		originalImage.set({
+			left: activeFabricImage.left,
+			top: activeFabricImage.top,
+			scaleX: activeFabricImage.scaleX,
+			scaleY: activeFabricImage.scaleY,
+		});
+	
+		canvas.remove(activeFabricImage);
+		canvas.add(originalImage);
+		canvas.setActiveObject(originalImage);
+		canvas.renderAll();
+	
+		setActiveFabricImage(originalImage);
+		setApplyImageCrop(false);
+	};	
 
 	// Add this in a useEffect or componentDidMount (if using class)
 	useEffect(() => {
@@ -544,7 +639,6 @@ const ImageBuilder2dac = () => {
 			return updatedSelectedImages;
 		});
 	};
-	
 
 	const handleDeleteButtonClick = (e, imageId) => {
 		// console.log('id', imageId)
@@ -648,8 +742,6 @@ const ImageBuilder2dac = () => {
 		setBgImage(imageUrl)
 		addBackground(imageUrl, null); // or provide a background color if needed
 	};
-	
-	
 
 	// Rotate selected image
 	const rotateSelectedImages = (angle) => {
@@ -800,11 +892,13 @@ const ImageBuilder2dac = () => {
 	
 		// Copy original image
 		offCtx.drawImage(canvasEl, 0, 0);
+
+		// #A79269';
 	
 		// Apply shadow to outline the shape
 		ctx.save();
 		ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-		ctx.shadowColor = '#A79269';
+		ctx.shadowColor = "#F8F8F860"
 		ctx.shadowBlur = 5;
 		ctx.shadowOffsetX = 0;
 		ctx.shadowOffsetY = 0;
@@ -824,7 +918,7 @@ const ImageBuilder2dac = () => {
 		// Now add background under it
 		ctx.save();
 		ctx.globalCompositeOperation = 'destination-over';
-		ctx.fillStyle = '#F9F9F9'; // semi-transparent background
+		ctx.fillStyle = '#0E0E0E80'; // semi-transparent background
 		ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
 		ctx.restore();
 	
@@ -1083,6 +1177,8 @@ const handleAddToCart = async () => {
 					showCropBox = {showCropBox}
 					toggleImageLock= {toggleImageLock}
 					isImageLocked = {isImageLocked}
+					sizeLabel = {sizeLabel}
+					setSizeLabel = {setSizeLabel}
 				/>
 			</Box>
 		</>

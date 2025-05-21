@@ -1,12 +1,14 @@
-import React, { useRef, useState } from 'react';
-// import cubeIMg from "../assets/Images/canvas-export@2x (11).png"
-import "./Cube3D.css"
+import React, { useRef, useState } from "react";
+import "./Cube3D.css";
 
-const Cube3D = ({img3d, bgImage}) => {
+const Cube3D = ({ img3d, bgImage }) => {
   const cubeRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+
+  // Utility: clamp value between min and max
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -17,11 +19,10 @@ const Cube3D = ({img3d, bgImage}) => {
     if (!isDragging) return;
 
     const deltaX = e.clientX - lastMouse.x;
-    const deltaY = e.clientY - lastMouse.y;
 
-    setRotation(prev => ({
-      x: prev.x + deltaY,
-      y: prev.y + deltaX
+    setRotation((prev) => ({
+      x: 0, // always zero vertical rotation
+      y: clamp(prev.y + deltaX, -20, 20),
     }));
 
     setLastMouse({ x: e.clientX, y: e.clientY });
@@ -31,32 +32,39 @@ const Cube3D = ({img3d, bgImage}) => {
 
   return (
     <div
-			className="scene"
-			onMouseDown={handleMouseDown}
-			onMouseMove={handleMouseMove}
-			onMouseUp={handleMouseUp}
-			onMouseLeave={handleMouseUp}
-		>
-			<div
-				className="cube"
-				ref={cubeRef}
-				style={{
-					transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`
-				}}
-			>
-				{/* Cube Faces */}
-				<div className="face front" style={{ backgroundImage: `url(${bgImage})` }}/>
-				<div className="face back" style={{ backgroundImage: `url(${bgImage})` }}/>
-				<div className="face right" style={{ backgroundImage: `url(${bgImage})` }}/>
-				<div className="face left" style={{ backgroundImage: `url(${bgImage})` }}/>
-				<div className="face top" style={{ backgroundImage: `url(${bgImage})` }}/>
-				<div className="face bottom" style={{ backgroundImage: `url(${bgImage})` }}/>
+      className="scene"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      <div
+        className="cube"
+        ref={cubeRef}
+        style={{
+          transform: `rotateX(0deg) rotateY(${rotation.y}deg)`,
+        }}
+      >
+        <div
+          className="face front"
+          style={{ backgroundColor: " rgba(187, 187, 187, 0.2)" }}
+          // style={{ backgroundImage: `url(${bgImage})` }}
+        />
+        <div className="face back" style={{ backgroundImage: `url(${bgImage})` }} />
+        <div className="face right" style={{ backgroundImage: `url(${bgImage})` }} />
+        <div className="face left" style={{ backgroundColor: " rgba(255, 255, 255, 0.2)" }} />
+        {/* <div className="face top" style={{ backgroundImage: `url(${bgImage})` }} />
+        <div className="face bottom" style={{ backgroundImage: `url(${bgImage})` }} /> */}
 
-				{/* Center Image */}
-				<img className="center-image" src={img3d} alt="Center Image" />
-			</div>
-		</div>
-
+        {
+					img3d && <img className="center-image" src={img3d} alt="Center Image" />
+				}
+				{/* Floating shadow */}
+				{
+					bgImage && <div className="shadow"></div>
+				}
+      </div>
+    </div>
   );
 };
 

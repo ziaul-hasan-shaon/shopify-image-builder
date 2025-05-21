@@ -91,7 +91,9 @@ const Layout = (
 		is3dPreview,
 		setIs3dPreview,
 		img3d, 
-		handle3dPreview
+		handle3dPreview, 
+		sizeLabel, 
+		setSizeLabel
 	}
 ) => {
 
@@ -107,6 +109,7 @@ const Layout = (
 	const [isBorderOpen, setIsBorderOpen] = useState(false)
 	const [isOpenNote, setIsOpenNote] = useState(false)
 	const [isAddonOpen, setIsAddonOpen] = useState(false)
+	const [currentState, setCurrentState] = useState(currentPage === '2d-cutout' ? "upload" : "template")
 
 	//to detect media
 	const [device, setDevice] = useState("");
@@ -240,6 +243,10 @@ const Layout = (
 						setIs3dPreview = {setIs3dPreview}
 						img3d = {img3d}
 						handle3dPreview= {handle3dPreview}
+						currentState = {currentState}
+						setCurrentState = {setCurrentState}
+						sizeLabel = {sizeLabel}
+						setSizeLabel={setSizeLabel}
 					/>
 					: 
 					<MobileLayout 
@@ -345,6 +352,10 @@ const Layout = (
 						setIs3dPreview = {setIs3dPreview}
 						img3d = {img3d}
 						handle3dPreview= {handle3dPreview}
+						currentState = {currentState}
+						setCurrentState = {setCurrentState}
+						sizeLabel = {sizeLabel}
+						setSizeLabel={setSizeLabel}
 					/>
 				}
 			</Box>

@@ -17,6 +17,7 @@ import faceBook from "../../assets/Images/Social media/facebook 1.png";
 import dark from "../../assets/Images/Social media/x_dark 1.png";
 import linkedin from "../../assets/Images/Social media/linkedin 1.png";
 import Mockup from '../Components/Mockup';
+import PageTabs from '../Components/PageTabs';
 
 const MobileLayout = (
 	{
@@ -109,7 +110,9 @@ const MobileLayout = (
 		isOpenNote,
 		setIsOpenNote,
 		logo,
-		device
+		device,
+		sizeLabel, 
+		setSizeLabel
 	}
 ) => {
 
@@ -531,11 +534,19 @@ const MobileLayout = (
 							<Box>
 								{
 									isTemplateOpen &&
-									<Box height={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-										<Text fontSize={"18px"} fontWeight={"semibold"}>
+									<>
+										<Box height={"100%"} py={"10px"} display={"flex"} alignItems={"start"} justifyContent={"start"} mb={"110px"}>
+											<PageTabs 
+												setPatternBg ={setPatternBg}
+												setBgImage={setBgImage}
+												setGradientBg={setGradientBg}
+											/>
+											
+										</Box>
+										{/* <Text fontSize={"18px"} fontWeight={"semibold"}>
 											This feature will coming soon....
-										</Text>
-									</Box>
+										</Text> */}
+									</>
 								}
 								{
 									isUploadOpen &&
@@ -636,7 +647,7 @@ const MobileLayout = (
 					width={"100%"}
 				>
 					<Box
-						p={4}
+						p={2}
 						display={"flex"}
 						flexDir={"column"}
 						alignItems={"center"}
@@ -653,7 +664,7 @@ const MobileLayout = (
 						<Text>Template</Text>
 					</Box>
 					<Box
-						p={4}
+						p={2}
 						display={"flex"}
 						flexDir={"column"}
 						alignItems={"center"}
@@ -671,7 +682,7 @@ const MobileLayout = (
 						<Text>Upload</Text>
 					</Box>
 					<Box
-						p={4}
+						p={2}
 						display={"flex"}
 						flexDir={"column"}
 						alignItems={"center"}
@@ -691,7 +702,7 @@ const MobileLayout = (
 						<Text>Background</Text>
 					</Box>
 					<Box
-						p={4}
+						p={2}
 						display={"flex"}
 						flexDir={"column"}
 						alignItems={"center"}
@@ -707,7 +718,7 @@ const MobileLayout = (
 						<Text>Text</Text>
 					</Box>
 					<Box
-						p={4}
+						p={2}
 						display={"flex"}
 						flexDir={"column"}
 						alignItems={"center"}

@@ -8,21 +8,41 @@ const Template = ({
 		setCanvasHeight,
 		onClose,
 		tempRatio,
-		setTempRatio
+		setTempRatio,
+		sizeLabel,
+		setSizeLabel 
 }) => {
-	const [selectedRatio, setSelectedRatio] = useState(1);
+	const [selectedRatio, setSelectedRatio] = useState(0);
+	const [customW, setCustomW] = useState(sizeLabel?.w);
+	const [customH, setCustomH] = useState(sizeLabel?.h)
 
 	const ratios = [
-			{ label: "6.3×6.3 inches", w: 600, h: 600, width: "75px", height: "42px", ratio: "1:1" },
-			{ label: "8.3×4.2 inches", w: 800, h: 400, width: "75px", height: "48px", ratio: "2:1" },
-			{ label: "6.3×3.1 inches", w: 600, h: 300, width: "75px", height: "54px", ratio: "2:1" },
-			{ label: "10.4×6.3 inches", w: 1000, h: 600, width: "79px", height: "56px", ratio: "5:3" },
-			// { label: "12.5×6.3 inches", w: 1200, h: 600, width: "79px", height: "72px", ratio: "2:1" },
-			{ label: "3.1×6.3 inches", w: 300, h: 600, width: "79px", height: "88px", ratio: "1:2" },
-			{ label: "4.2×8.3 inches", w: 400, h: 600, width: "79px", height: "96px", ratio: "1:2" },
-			{ label: "6.3×10.4 inches", w: 400, h: 600, width: "63px", height: "96px", ratio: "3:5" },
+			{ labelW: "6.3", labelH: "6.3", w: 500, h: 500, width: "75px", height: "42px", ratio: "1:1" },
+			{ labelW: "8.3", labelH: "4.2", w: 600, h: 400, width: "75px", height: "48px", ratio: "2:1" },
+			{ labelW: "6.3", labelH: "3.1", w: 600, h: 400, width: "75px", height: "54px", ratio: "2:1" },
+			{ labelW: "10.4", labelH: "6.3", w: 600, h: 400, width: "79px", height: "56px", ratio: "5:3" },
+			// { label: "12.5×6.3", w: 1200, h: 600, width: "79px", height: "72px", ratio: "2:1" },
+			{ labelW: "3.1", labelH: "6.3", w: 400, h: 500, width: "79px", height: "88px", ratio: "1:2" },
+			{ labelW: "4.2", labelH: "8.3", w: 400, h: 500, width: "79px", height: "96px", ratio: "1:2" },
+			{ labelW: "6.3", labelH: "10.4", w: 400, h: 500, width: "63px", height: "96px", ratio: "3:5" },
 			// { label: "6.3×12.5 inches", w: 600, h: 1200, width: "64px", height: "96px", ratio: "1:2" }
 	];
+
+	const handleSetSize = () => {
+		setSizeLabel({w: customW, h: customH})
+		if(customW > customH){
+			setCanvasWidth(600)
+			setCanvasHeight(400)
+		}
+		else if(customW < customH){
+			setCanvasWidth(400)
+			setCanvasHeight(500)
+		}
+		else{
+			setCanvasWidth(500)
+			setCanvasHeight(500)
+		}
+	}
 
 	return (
 		<Box w="100%" p={2} borderRadius="md" >
@@ -32,24 +52,27 @@ const Template = ({
 					<Text>W</Text>
 					<Input
 						size="sm"
-						value={canvasWidth}
+						value={customW}
 						w={"50%"}
 						textAlign="right"
-						onChange={(e) => setCanvasWidth(e.target.value)}
+						onChange={(e) => setCustomW(e.target.value)}
 						placeholder="W"
 					/>
 				</Box>
 				<Text fontSize="sm">×</Text>
+				<Box px={2} display={"flex"} alignItems={"center"} justifyContent={"space-between"} borderRadius={"5px"} w="40%" bg={"#EBEBEB"}>
+					<Text>H</Text>
 				<Input
 					size="sm"
 					borderRadius={"5px"}
 					w="40%"
 					bg={"#EBEBEB"}
-					value={canvasHeight}
-					onChange={(e) => setCanvasHeight(e.target.value)}
+					value={customH}
+					onChange={(e) => setCustomH(e.target.value)}
 					placeholder="H"
 				/>
-				<Button size="sm" bg={"#B1B1B1"} color={"white"}>
+				</Box>
+				<Button size="sm" bg={"#B1B1B1"} color={"white"} onClick={handleSetSize}>
 					Set
 				</Button>
 			</Box>
@@ -73,6 +96,7 @@ const Template = ({
 							setCanvasWidth(ratio?.w);
 							setCanvasHeight(ratio?.h)
 							setTempRatio(ratio?.ratio)
+							setSizeLabel({w: ratio.labelW, h:ratio.labelH})
 							onClose()
 						}}
 					>
@@ -89,7 +113,7 @@ const Template = ({
 						>
 							<Text fontSize={"12px"} fontWeight={"light"} color={"#B1B1B1"}>{ratio.ratio}</Text>
 						</Box>
-						<Text fontSize="xs">{ratio.label}</Text>
+						<Text fontSize="xs">{ratio.labelW} x {ratio.labelH} inches</Text>
 					</GridItem>
 				))}
 			</Grid>
