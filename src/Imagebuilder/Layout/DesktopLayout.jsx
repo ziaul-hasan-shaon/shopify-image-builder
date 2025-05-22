@@ -22,6 +22,8 @@ import { usePage } from '../hook/PageContext';
 import AddOns from '../Components/AddOns';
 import { MdCancelScheduleSend } from "react-icons/md";
 import Cube3D from '../Components/Cube/Cube3d';
+import Tabbuttons from '../Components/Tabbuttons';
+import { RiLogoutCircleLine } from 'react-icons/ri';
 
 const DesktopLayout = (
 	{
@@ -130,7 +132,13 @@ const DesktopLayout = (
 		currentState,
 		setCurrentState,
 		sizeLabel, 
-		setSizeLabel
+		setSizeLabel,
+		handleBringForoward,
+		handleSendBackward,
+		activeText,
+		setActiveText,
+		handleDuplicateText,
+		handleDeleteText
 	}
 ) => {
 
@@ -146,6 +154,12 @@ const DesktopLayout = (
 			onOpen: onArtboardOpen,
 			onClose: onArtboardClose
 		} = useDisclosure()
+
+	const {
+		isOpen: isResetModalOpen,
+		onOpen: onResetModalOpnen,
+		onClose: onResetModalClose
+	} = useDisclosure()
 
 	// to control preview modal state
 	const {
@@ -244,6 +258,19 @@ const DesktopLayout = (
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
+
+	useEffect(() => {
+		if(activeFabricImage){
+			handleIsUploadOpen(true)
+		}
+		else if(activeText){
+			handleIsTextOpen(true)
+		}
+	}, [activeFabricImage, activeText])
+
+	const handleReset = () => {
+		onResetModalOpnen()
+	}
 
 	const isDisabled = currentPage === "all"
 	const gridItem = (
@@ -717,6 +744,9 @@ const DesktopLayout = (
 					ref={containerRef}
 					position={"relative"}
 				>
+					<Box py={3}>
+						<Tabbuttons/>
+					</Box>
 					{
 						isTemplateOpen &&
 						<>
@@ -763,6 +793,8 @@ const DesktopLayout = (
 							showCropBox = {showCropBox}
 							toggleImageLock= {toggleImageLock}
 							isImageLocked = {isImageLocked}
+							handleBringForoward = {handleBringForoward}
+							handleSendBackward = {handleSendBackward}
 						/>
 					}
 					{
@@ -802,6 +834,14 @@ const DesktopLayout = (
 							fontWightCollection={fontWightCollection}
 							fontOptions={fontOptions}
 							addTextToCanvas={addTextToCanvas}
+							handleBringForoward = {handleBringForoward}
+							handleSendBackward = {handleSendBackward}
+							activeText={activeText}
+							setActiveText={setActiveText}
+							toggleImageLock= {toggleImageLock}
+							isImageLocked = {isImageLocked}
+							handleDuplicateText = {handleDuplicateText}
+							handleDeleteText = {handleDeleteText}
 						/>
 					}
 					{
@@ -822,7 +862,7 @@ const DesktopLayout = (
 								<Button 
 								width={"100%"} 
 								bg={"#E5E5E5"}
-								onClick={() => setCurrentPage("all")}
+								onClick={handleReset}
 								>
 									Reset
 								</Button>
@@ -1056,6 +1096,40 @@ const DesktopLayout = (
 					}
 				</>
 			}
+			<Modal size={"sm"} isOpen={isResetModalOpen} onClose={onResetModalClose}>
+        <ModalOverlay />
+        <ModalContent 
+					position={"absolute"}
+					bottom={"2%"}
+					left={"8%"}
+				>
+          <ModalHeader fontSize={"16px"} color={"#374144"} fontWeight={550}>Unsaved Changes</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDirection={"column"} gap={6}>
+							<Box width={"100px"} height={"80px"}>
+								<Image width={"100%"} src={"https://i.ibb.co/JRvBsCqP/72f4fd645f32c39d6c938de423c9947044a72f4c.png"} alt='warning'/>
+							</Box>
+							<Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDirection={"column"} gap={2} >
+								<Text fontSize={"18px"} fontWeight={600} color={"#2B2B2B"}>Reset without saving your design?</Text>
+								<Text fontSize={"12px"} textAlign={"center"} color={"#374144"}>
+								Your customizations will be lost if you go back now. You haven’t added this design to your cart yet.
+								</Text>
+							</Box>
+						</Box>
+          </ModalBody>
+
+          <ModalFooter display={"flex"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
+            <Button width={"50%"} bg={"#F46267"} color={"#ffffff"} mr={3} gap={"5px"} onClick={()=> setCurrentPage("all")}>
+						<RiLogoutCircleLine size={20}/>
+						Reset anyway
+            </Button>
+            <Button width={"50%"} color={"#374144"} bg={"#EBEBEB"} onClick={onResetModalClose}>
+							Keep editing
+						</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 		</>
 	);
 };

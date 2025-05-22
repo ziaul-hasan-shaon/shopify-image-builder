@@ -10,11 +10,12 @@ import toast from 'react-hot-toast';
 import { FaRegCircle } from 'react-icons/fa';
 import { handleImageUpload } from '../utils/handleImageUpload';
 import { IoIosCrop } from "react-icons/io";
-import { RiCrop2Fill, RiDeleteBin6Line } from "react-icons/ri";
+import { RiBringForward, RiCrop2Fill, RiDeleteBin6Line, RiSendBackward } from "react-icons/ri";
 import { LuImageUp } from "react-icons/lu";
 import { CiLock, CiUnlock } from "react-icons/ci";
 import { HiOutlineDuplicate } from "react-icons/hi";
 import { usePage } from '../hook/PageContext';
+import { PiDotsThreeBold } from "react-icons/pi";
 
 const Uploader = ({
 	loading,
@@ -44,11 +45,15 @@ const Uploader = ({
 	bgRemoveLoading,
 	toggleImageLock,
 	isImageLocked,
+	handleBringForoward,
+	handleSendBackward
 }) => {
 
 	const {currentPage} = usePage()
 
 	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
+	const [angle, setAngle] = useState(90)
+	const [openOtherOption, setOpenOtherOption] = useState(false)
 
 	useEffect(() => {
 		setLandOrPort(canvasWidth > canvasHeight ? "landscape" : "portrait")
@@ -67,6 +72,17 @@ const Uploader = ({
         toast,
       });
     },
+		onDropRejected: (fileRejections) => {
+      fileRejections.forEach((rejection) => {
+        rejection.errors.forEach((error) => {
+          if (error.code === 'file-too-large') {
+            toast.error('Each image must be under 4MB.');
+          } else if (error.code === 'file-invalid-type') {
+            toast.error('Only image files are allowed.');
+          }
+        });
+      });
+    },	
     accept: "image/*",
     multiple: true,
     maxSize: 4 * 1024 * 1024,
@@ -214,15 +230,49 @@ const Uploader = ({
 						</SliderThumb>
 					</Slider>
 				</Box>
-				<Flex align="center" justify="start" gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
-					<Box>
+				<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
+					<Box width={"60%"}>
 						<Heading fontSize={"16px"}>Rotate</Heading>
-						<Button onClick={() => rotateSelectedImages(-90)} mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
+						<Button onClick={() => rotateSelectedImages(-angle)} mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
 							<RxRotateCounterClockwise size={30} />
 						</Button>
-						<Button onClick={() => rotateSelectedImages(90)} mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
+						<Button onClick={() => rotateSelectedImages(angle)} mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
 							<RxRotateCounterClockwise size={30} />
 						</Button>
+					</Box>
+					<Box width={"40%"}>
+					<Heading fontSize={"16px"}>Set Angle</Heading>
+					<Box display={"flex"} alignItems={"center"} gap={3}>
+					<Slider
+						min={0.01}
+						max={.5}
+						step={.01}
+						value={resize}
+						onChange={handleScaleChange}
+						width="80px"
+						isDisabled={!activeFabricImage} // ✅ this is correct
+						sx={{
+							cursor: !activeFabricImage ? 'not-allowed' : 'pointer',
+						}}
+					>
+						<SliderTrack>
+							<SliderFilledTrack bg='tomato'/>
+						</SliderTrack>
+						<SliderThumb boxSize={5} bg={'transparent'} p={0}>
+							<FaRegCircle size={"20px"} color='#FF6347' style={{background: "#ffffff", padding: "0px"}} />
+						</SliderThumb>
+					</Slider>
+					<Input
+							value={angle}
+							onChange={(e) => setAngle(e.target.value)}
+							// placeholder="Enter your text"
+							width="25%"
+							padding={2}
+							marginY={2}
+							borderRadius="4px"
+							border="1px solid #ccc"
+						/>
+					</Box>
 					</Box>
 				</Flex>
 				<Flex align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>
@@ -241,7 +291,7 @@ const Uploader = ({
 				(activeFabricImage && !bgRemoveLoading) && 
 				<Box 
 					position={"absolute"} 
-					top={currentPage === "2d-acrylic" ? "7%" : "18%"} 
+					top={ "7%"} 
 					left={"215%"} 
 					zIndex={9999} 
 					bg={"#F8F8F8"} 
@@ -290,6 +340,20 @@ const Uploader = ({
 					>
 						<CgEditFlipH size={24}/>
 					</button>
+					<button onClick={() => setOpenOtherOption(!openOtherOption)}>
+						<PiDotsThreeBold size={24}/>
+					</button>
+					{
+						openOtherOption && 
+						<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} p={2} borderRadius={"10px"}>
+							<button onClick={handleBringForoward}>
+								<RiBringForward size={24}/>
+							</button>
+							<button onClick={handleSendBackward}>
+								<RiSendBackward size={24}/>
+							</button>
+						</Box>
+					}
 				</Box>
 			}
 		</Box>

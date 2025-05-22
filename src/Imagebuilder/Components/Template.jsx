@@ -17,7 +17,7 @@ const Template = ({
 	const [customH, setCustomH] = useState(sizeLabel?.h)
 
 	const ratios = [
-			{ labelW: "6.3", labelH: "6.3", w: 500, h: 500, width: "75px", height: "42px", ratio: "1:1" },
+			{ labelW: "6.3", labelH: "6.3", w: 500, h: 500, width: "60px", height: "60px", ratio: "1:1" },
 			{ labelW: "8.3", labelH: "4.2", w: 600, h: 400, width: "75px", height: "48px", ratio: "2:1" },
 			{ labelW: "6.3", labelH: "3.1", w: 600, h: 400, width: "75px", height: "54px", ratio: "2:1" },
 			{ labelW: "10.4", labelH: "6.3", w: 600, h: 400, width: "79px", height: "56px", ratio: "5:3" },
@@ -56,7 +56,7 @@ const Template = ({
 						w={"50%"}
 						textAlign="right"
 						onChange={(e) => setCustomW(e.target.value)}
-						placeholder="W"
+						placeholder="inches"
 					/>
 				</Box>
 				<Text fontSize="sm">×</Text>
@@ -69,7 +69,7 @@ const Template = ({
 					bg={"#EBEBEB"}
 					value={customH}
 					onChange={(e) => setCustomH(e.target.value)}
-					placeholder="H"
+					placeholder="inches"
 				/>
 				</Box>
 				<Button size="sm" bg={"#B1B1B1"} color={"white"} onClick={handleSetSize}>

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import ColorPicker from './ColorPicker';
 import { Box, Button, Flex, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Select, Text, VStack } from '@chakra-ui/react';
 import { FiRotateCcw, FiRotateCw } from 'react-icons/fi';
+import { HiOutlineDuplicate } from 'react-icons/hi';
+import { RiBringForward, RiDeleteBin6Line, RiSendBackward } from 'react-icons/ri';
+import { LuImageUp } from 'react-icons/lu';
+import { PiDotsThreeBold } from 'react-icons/pi';
+import { CiLock, CiUnlock } from 'react-icons/ci';
 
 const TextEditor = ({
 	text,
@@ -18,10 +23,20 @@ const TextEditor = ({
 	fontSizeCollection,
 	fontWightCollection,
 	fontOptions,
-	addTextToCanvas
+	addTextToCanvas,
+	handleBringForoward,
+	handleSendBackward,
+	activeText,
+	setActiveText,
+	toggleImageLock,
+	isImageLocked,
+	handleDuplicateText,
+	handleDeleteText
 }) => {
 
 	const [angle, setAngle] = useState(90)
+
+	console.log('activeText', activeText)
 
 	return (
 		<>
@@ -127,6 +142,48 @@ const TextEditor = ({
 							border="1px solid #ccc"
 						/>
 					</Flex>
+					{
+						activeText && 
+						<Box 
+							position={"absolute"} 
+							top={ "7%"} 
+							left={"215%"} 
+							zIndex={9999} 
+							bg={"#F8F8F8"} 
+							borderRadius={"25px"}
+							p={3}
+							display={"flex"}
+							alignItems={"center"}
+							justifyContent={"space-between"}
+							width={"280px"}
+							boxShadow={"md"}
+						>
+							
+							<button
+								onClick={handleDuplicateText}
+							>
+								<HiOutlineDuplicate size={24}/>
+							</button>
+							<button
+								onClick={handleDeleteText}
+							>
+								<RiDeleteBin6Line size={24}/>
+							</button>
+							<button
+								onClick={toggleImageLock}
+							>
+								{
+									isImageLocked ? <CiUnlock size = {24}/> : <CiLock size = {24}/>
+								}
+							</button>
+							<button onClick={handleBringForoward}>
+								<RiBringForward size={24}/>
+							</button>
+							<button onClick={handleSendBackward}>
+								<RiSendBackward size={24}/>
+							</button>
+						</Box>
+					}
 				</Box>
 			</VStack>
 		</>

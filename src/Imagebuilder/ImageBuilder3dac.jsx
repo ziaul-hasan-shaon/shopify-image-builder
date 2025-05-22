@@ -62,6 +62,7 @@ const ImageBuilder3dac = () => {
 	const [img3d, setImg3d] = useState(false)
 	const [originalImageMap, setOriginalImageMap] = useState(new Map());
 	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
+	const [activeText, setActiveText] = useState(null)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -405,34 +406,50 @@ const ImageBuilder3dac = () => {
 	useEffect(() => {
 		if (!canvas) return;
 	
-		// Called when no object is selected anymore
 		const handleSelectionCleared = () => {
 			setActiveFabricImage(null);
+			setActiveText(null);
 		};
 	
-		// Attach listener
 		canvas.on('selection:cleared', handleSelectionCleared);
 	
-		// Optional: Listen for active object changes
 		canvas.on('selection:created', (e) => {
-			if (e.selected && e.selected[0]?.type === 'image') {
-				setActiveFabricImage(e.selected[0]);
+			const selected = e.selected?.[0];
+	// 		console.log("Selected:", selected);
+  // console.log("Type:", selected.type);
+			if (selected && selected.type === 'image') {
+				setActiveFabricImage(selected);
+				setActiveText(null);
+			} else if (
+				selected && selected.type === 'i-text' 
+			) {
+				setActiveText(selected);
+				setActiveFabricImage(null);
 			}
 		});
 	
 		canvas.on('selection:updated', (e) => {
-			if (e.selected && e.selected[0]?.type === 'image') {
-				setActiveFabricImage(e.selected[0]);
+			const selected = e.selected?.[0];
+	// 		console.log("Selected:", selected);
+  // console.log("Type:", selected.type);
+			if (selected && selected.type === 'image') {
+				setActiveFabricImage(selected);
+				setActiveText(null);
+			} else if (
+				selected && selected.type === 'i-text' 
+			) {
+				setActiveText(selected);
+				setActiveFabricImage(null);
 			}
 		});
 	
-		// Clean up on unmount or canvas change
 		return () => {
 			canvas.off('selection:cleared', handleSelectionCleared);
 			canvas.off('selection:created');
 			canvas.off('selection:updated');
 		};
 	}, [canvas]);
+	
 	
 
 	const resizeCanvas = (newWidth, newHeight) => {
@@ -504,6 +521,7 @@ const ImageBuilder3dac = () => {
 		canvas.renderAll();
 		setText(""); // Clear input field after adding text
 		setCanvasText(textObject?.text)
+		setActiveText(textObject)
 	};
 
 	const updateTextProperties = (property, value) => {
@@ -541,7 +559,49 @@ const ImageBuilder3dac = () => {
 			canvas.off("text:changed", handleTextChanged);
 		};
 	}, [canvas]);
+
+	const handleDuplicateText = () => {
+		console.log('duplicate')
+		const activeObject = canvas.getActiveObject();
+		console.log('activeObject', activeObject)
+
+		if(activeObject){
+			const duplicateTextObject = new fabric.IText(text, {
+				left: activeObject?.left,
+				top: activeObject?.top,
+				fontSize: activeObject?.fontSize,
+				fill: activeObject?.fill,
+				fontFamily: activeObject?.fontFamily,
+				hasControls: true,
+				editable: true,
+				scaleX: activeObject?.scaleX,
+				scaleY: activeObject?.scaleY			});
+			// console.log('textObject', textObject)
 	
+			canvas.add(duplicateTextObject);
+			canvas.setActiveObject(duplicateTextObject);
+			canvas.renderAll();
+			setText(""); // Clear input field after adding text
+			setCanvasText(duplicateTextObject?.text)
+			setActiveText(duplicateTextObject)
+			console.log('ac', activeObject)
+		}
+		
+	}
+
+	const handleDeleteText = () => {
+		const activeObject = canvas.getActiveObject();
+		if(activeObject){
+			// Remove from canvas
+			canvas.remove(activeObject);
+			canvas.discardActiveObject();
+			canvas.renderAll();
+
+			// Reset any text-specific states
+			setCanvasText("");
+			setText("");
+		}
+	}	
 
 	useEffect(() => {
 		const handleKeyDown = (e) => {
@@ -784,6 +844,25 @@ const ImageBuilder3dac = () => {
 		});
 		canvas.renderAll();
 	};
+
+	const handleBringForoward = () => {
+		const activeObject = canvas.getActiveObject();
+		console.log("Active Object:", activeObject);
+		console.log("Available Methods:", Object.keys(activeObject));
+		if (activeObject) {
+			canvas.bringObjectToFront(activeObject); // Bring to front
+			canvas.requestRenderAll();
+		}
+	}
+
+	const handleSendBackward = () => {
+		const activeObject = canvas.getActiveObject();
+		if (activeObject) {
+			canvas.sendObjectToBack(activeObject);
+			canvas.requestRenderAll();
+		}
+	}
+
 
 	const saveCanvasAsImage = (format = "png", multiplier = 2) => {
 		if (!canvas) return;
@@ -1176,6 +1255,12 @@ const handleAddToCart = async () => {
 					handle3dPreview= {handle3dPreview}
 					sizeLabel = {sizeLabel}
 					setSizeLabel = {setSizeLabel}
+					handleBringForoward = {handleBringForoward}
+					handleSendBackward = {handleSendBackward}
+					activeText={activeText}
+					setActiveText={setActiveText}
+					handleDuplicateText = {handleDuplicateText}
+					handleDeleteText = {handleDeleteText}
 				/>
 			</Box>
 		</>

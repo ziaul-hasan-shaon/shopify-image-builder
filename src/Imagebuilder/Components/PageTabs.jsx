@@ -2,13 +2,6 @@
 import { HStack, Button, Grid, GridItem, Image, Box, Text, VStack } from '@chakra-ui/react';
 import { usePage } from '../hook/PageContext';
 
-const tabs = [
-	{ key: 'all', label: 'All' },
-	{ key: '2d-cutout', label: '2D CutOut' },
-	{ key: '3d-acrylic', label: '3D Acrylic' },
-	{ key: '2d-acrylic', label: '2D Acrylic' },
-];
-
 const cutOut2d = [
 	"https://i.ibb.co/fzSSWLqC/3c67dadc403c3478818c10ee03fef984e2fe63d3-2.jpg",
 	"https://i.ibb.co/x8Cz6khN/3c67dadc403c3478818c10ee03fef984e2fe63d3-1.jpg",
@@ -19,8 +12,12 @@ const cutOut2d = [
 ]
 
 const acrylic3d = [
-	{img:"https://i.ibb.co/pjDcZv5B/Image-Container.png", src: "https://i.ibb.co/pvTbHnQP/all-pattern-19.png"},
-	{img:"https://i.ibb.co/5WryGTCd/Image-Container-1.png", src: "https://i.ibb.co/wN0BpFW6/all-pattern-48.png"}
+	{img: "https://i.ibb.co/mrMmq6Fn/9f70819bc8232c4e3f5c80053daaa18bd6df360e-1.jpg", src: "https://i.ibb.co/jvsJmP8g/all-pattern-13-3x.png"},
+	{img: "https://i.ibb.co/LDmHX0nx/82d4b18ac541e5aef36a577789867b0ca8306c3c.jpg", src: "https://i.ibb.co/XxDNYLFw/all-pattern-27.png"},
+	{img: "https://i.ibb.co/Txw8bjMq/f473c673c1498c839b571cb6813f8de8a8122edf.jpg", src: "https://i.ibb.co/pvTbHnQP/all-pattern-19.png"},
+	{img: "https://i.ibb.co/s9CJBh0m/f0069f9852dccc20801361304ac2894af4babb17.jpg", src: "https://i.ibb.co/j9jK9bpJ/all-pattern-36.png"},
+	{img: "https://i.ibb.co/mCg1R524/45b2bbe6b18412b3f4450d814ce16cc53507471c.jpg", src: "https://i.ibb.co/7tXHpNgd/all-pattern-09-3x.png"},
+	{img: "https://i.ibb.co/mrMmq6Fn/9f70819bc8232c4e3f5c80053daaa18bd6df360e-1.jpg", src: "https://i.ibb.co/jvsJmP8g/all-pattern-13-3x.png"},
 ]
 
 const acrylic2d = [
@@ -42,27 +39,6 @@ const PageTabs = ({
 	return (
 		<>
 			<VStack>
-				<HStack spacing={4} width={"100%"} px={"16px"}>
-					{tabs.map((tab) => (
-						<Button
-							key={tab.key}
-							onClick={() => !tab.disabled && setCurrentPage(tab.key)}
-							bg={currentPage === tab.key ? '#2B2B2B' : 'transparent'}
-							color={currentPage === tab.key ? 'white' : '#2B2B2B'}
-							_hover={tab.disabled ? {} : { bg: 'gray.100' }}
-							borderRadius="8px"
-							px={4}
-							py={2}
-							fontSize={"14px"}
-							fontWeight={currentPage === tab.key ? 'bold' : 550}
-							isDisabled={tab.disabled}
-							opacity={tab.disabled ? 0.5 : 1}
-							cursor={tab.disabled ? 'not-allowed' : 'pointer'}
-						>
-							{tab.label}
-						</Button>
-					))}
-				</HStack>
 				{/* This is for 2d-cutout */}
 				<>
 				{
@@ -92,7 +68,7 @@ const PageTabs = ({
 					(currentPage === "all" || currentPage === "3d-acrylic") && 
 					<Box p={"16px"} width={"100%"}>
 						<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>3D Acrylic</Text>
-						<Grid gridTemplateColumns={'repeat(1, 1fr)'} gap={"10px"} my={"10px"}>
+						<Grid gridTemplateColumns={'repeat(3, 1fr)'} gap={"10px"} my={"10px"}>
 							{
 								acrylic3d?.map((img2d, index) => (
 									<GridItem key={index} >
@@ -101,6 +77,7 @@ const PageTabs = ({
 											src={img2d?.img}
 											alt="3d-acrylic"
 											borderRadius={"8px"}
+											cursor={"pointer"}
 											onClick={() => {
 												setGradientBg(false);
 												setPatternBg(true);
@@ -130,6 +107,7 @@ const PageTabs = ({
 											src={img2d?.img}
 											alt="2d-acrylic"
 											borderRadius={"8px"}
+											cursor={"pointer"}
 											onClick={() => {
 												setGradientBg(false);
 												setPatternBg(true);

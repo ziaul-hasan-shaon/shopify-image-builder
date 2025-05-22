@@ -60,6 +60,8 @@ const ImageBuilder = () => {
 	const [isImageLocked, setIsImageLocked] = useState(false);
 	const [originalImageMap, setOriginalImageMap] = useState(new Map());
 	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
+	const [activeText, setActiveText] = useState(null)
+	const [isCropping, setIsCropping] = useState(false);
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -178,8 +180,8 @@ const ImageBuilder = () => {
 			});
 			// console.log('fabric', fabricImage)
 	
-			const maxWidth = 300;
-			const maxHeight = 300;
+			const maxWidth = 400;
+			const maxHeight = 400;
 			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
 			fabricImage.scale(scaleFactor);
 
@@ -211,7 +213,7 @@ const ImageBuilder = () => {
 
 	const toggleImageLock = () => {
 		const activeObject = canvas.getActiveObject();
-		if (!activeObject || activeObject.type !== 'image') return;
+		if (!activeObject) return;
 	
 		const shouldLock = !isImageLocked;
 	
@@ -223,6 +225,7 @@ const ImageBuilder = () => {
 			lockRotation: shouldLock,
 			hasControls: !shouldLock,
 			hasBorders: !shouldLock,
+			editable: !shouldLock, // ✅ this disables/enables text editing
 		});
 	
 		canvas.renderAll();
@@ -244,6 +247,7 @@ const ImageBuilder = () => {
 			fill: 'rgba(0,0,0,0.3)',
 			stroke: 'red',
 			strokeWidth: 1,
+			name: 'cropBox',
 			hasBorders: true,
 			hasControls: true,
 			objectCaching: false,
@@ -251,9 +255,9 @@ const ImageBuilder = () => {
 	
 		setCropRect(rect);
 		canvas.add(rect);
+		setApplyImageCrop(true)
 		canvas.setActiveObject(rect);
 		canvas.renderAll();
-		setApplyImageCrop(true)
 	};
 	
 	
@@ -346,8 +350,10 @@ const ImageBuilder = () => {
 		};
 		img.onerror = () => {
 			console.error("Failed to load cropped image");
+			toast.error("Failed to load cropped image")
 		};
 		img.src = croppedDataUrl;
+		toast.success("Image croped successfully")
 	};
 
 	// console.log('activeId', activeFabricImage?.id)
@@ -402,34 +408,50 @@ const ImageBuilder = () => {
 	useEffect(() => {
 		if (!canvas) return;
 	
-		// Called when no object is selected anymore
 		const handleSelectionCleared = () => {
 			setActiveFabricImage(null);
+			setActiveText(null);
 		};
 	
-		// Attach listener
 		canvas.on('selection:cleared', handleSelectionCleared);
 	
-		// Optional: Listen for active object changes
 		canvas.on('selection:created', (e) => {
-			if (e.selected && e.selected[0]?.type === 'image') {
-				setActiveFabricImage(e.selected[0]);
+			const selected = e.selected?.[0];
+	// 		console.log("Selected:", selected);
+  // console.log("Type:", selected.type);
+			if (selected && selected.type === 'image') {
+				setActiveFabricImage(selected);
+				setActiveText(null);
+			} else if (
+				selected && selected.type === 'i-text' 
+			) {
+				setActiveText(selected);
+				setActiveFabricImage(null);
 			}
 		});
 	
 		canvas.on('selection:updated', (e) => {
-			if (e.selected && e.selected[0]?.type === 'image') {
-				setActiveFabricImage(e.selected[0]);
+			const selected = e.selected?.[0];
+	// 		console.log("Selected:", selected);
+  // console.log("Type:", selected.type);
+			if (selected && selected.type === 'image') {
+				setActiveFabricImage(selected);
+				setActiveText(null);
+			} else if (
+				selected && selected.type === 'i-text' 
+			) {
+				setActiveText(selected);
+				setActiveFabricImage(null);
 			}
 		});
 	
-		// Clean up on unmount or canvas change
 		return () => {
 			canvas.off('selection:cleared', handleSelectionCleared);
 			canvas.off('selection:created');
 			canvas.off('selection:updated');
 		};
 	}, [canvas]);
+	
 
 	const resizeCanvas = (newWidth, newHeight) => {
 		if (!canvas) return;
@@ -500,6 +522,7 @@ const ImageBuilder = () => {
 		canvas.renderAll();
 		setText(""); // Clear input field after adding text
 		setCanvasText(textObject?.text)
+		setActiveText(textObject)
 	};
 
 	const updateTextProperties = (property, value) => {
@@ -537,6 +560,49 @@ const ImageBuilder = () => {
 			canvas.off("text:changed", handleTextChanged);
 		};
 	}, [canvas]);
+
+	const handleDuplicateText = () => {
+		console.log('duplicate')
+		const activeObject = canvas.getActiveObject();
+		console.log('activeObject', activeObject)
+
+		if(activeObject){
+			const duplicateTextObject = new fabric.IText(text, {
+				left: activeObject?.left,
+				top: activeObject?.top,
+				fontSize: activeObject?.fontSize,
+				fill: activeObject?.fill,
+				fontFamily: activeObject?.fontFamily,
+				hasControls: true,
+				editable: true,
+				scaleX: activeObject?.scaleX,
+				scaleY: activeObject?.scaleY			});
+			// console.log('textObject', textObject)
+	
+			canvas.add(duplicateTextObject);
+			canvas.setActiveObject(duplicateTextObject);
+			canvas.renderAll();
+			setText(""); // Clear input field after adding text
+			setCanvasText(duplicateTextObject?.text)
+			setActiveText(duplicateTextObject)
+			console.log('ac', activeObject)
+		}
+		
+	}
+
+	const handleDeleteText = () => {
+		const activeObject = canvas.getActiveObject();
+		if(activeObject){
+			// Remove from canvas
+			canvas.remove(activeObject);
+			canvas.discardActiveObject();
+			canvas.renderAll();
+
+			// Reset any text-specific states
+			setCanvasText("");
+			setText("");
+		}
+	}
 	
 
 	useEffect(() => {
@@ -780,6 +846,25 @@ const ImageBuilder = () => {
 		});
 		canvas.renderAll();
 	};
+
+	const handleBringForoward = () => {
+		const activeObject = canvas.getActiveObject();
+		console.log("Active Object:", activeObject);
+		console.log("Available Methods:", Object.keys(activeObject));
+		if (activeObject) {
+			canvas.bringObjectToFront(activeObject); // Bring to front
+			canvas.requestRenderAll();
+		}
+	}
+
+	const handleSendBackward = () => {
+		const activeObject = canvas.getActiveObject();
+		if (activeObject) {
+			canvas.sendObjectToBack(activeObject);
+			canvas.requestRenderAll();
+		}
+	}
+
 
 	const saveCanvasAsImage = (format = "png", multiplier = 2) => {
 		if (!canvas) return;
@@ -1137,6 +1222,12 @@ const handleAddToCart = async () => {
 					isImageLocked = {isImageLocked}
 					sizeLabel = {sizeLabel}
 					setSizeLabel = {setSizeLabel}
+					handleBringForoward = {handleBringForoward}
+					handleSendBackward = {handleSendBackward}
+					activeText={activeText}
+					setActiveText={setActiveText}
+					handleDuplicateText = {handleDuplicateText}
+					handleDeleteText = {handleDeleteText}
 				/>
 			</Box>
 		</>

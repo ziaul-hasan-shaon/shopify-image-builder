@@ -93,7 +93,13 @@ const Layout = (
 		img3d, 
 		handle3dPreview, 
 		sizeLabel, 
-		setSizeLabel
+		setSizeLabel,
+		handleBringForoward,
+		handleSendBackward,
+		activeText,
+		setActiveText,
+		handleDuplicateText,
+		handleDeleteText,
 	}
 ) => {
 
@@ -247,6 +253,12 @@ const Layout = (
 						setCurrentState = {setCurrentState}
 						sizeLabel = {sizeLabel}
 						setSizeLabel={setSizeLabel}
+						handleBringForoward = {handleBringForoward}
+						handleSendBackward = {handleSendBackward}
+						activeText={activeText}
+						setActiveText={setActiveText}
+						handleDuplicateText = {handleDuplicateText}
+						handleDeleteText = {handleDeleteText}
 					/>
 					: 
 					<MobileLayout 
@@ -356,6 +368,12 @@ const Layout = (
 						setCurrentState = {setCurrentState}
 						sizeLabel = {sizeLabel}
 						setSizeLabel={setSizeLabel}
+						handleBringForoward = {handleBringForoward}
+						handleSendBackward = {handleSendBackward}
+						activeText={activeText}
+						setActiveText={setActiveText}
+						handleDuplicateText = {handleDuplicateText}
+						handleDeleteText = {handleDeleteText}
 					/>
 				}
 			</Box>

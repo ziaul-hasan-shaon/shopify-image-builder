@@ -171,12 +171,24 @@ const BackgroundPatternTabs = ({
 		"https://i.ibb.co/Hf2VyVWc/all-pattern-41.png"
 	]
 
+	const curveLine = [
+		"https://i.ibb.co/j9Qp8vW5/all-pattern-40.png",
+		"https://i.ibb.co/h1FmmmFS/all-pattern-39.png",
+		"https://i.ibb.co/BVj62jQZ/all-pattern-38.png",
+		"https://i.ibb.co/7N1kprm8/all-pattern-37.png",
+		"https://i.ibb.co/j9jK9bpJ/all-pattern-36.png",
+		"https://i.ibb.co/dsBYF4bZ/all-pattern-35.png",
+		"https://i.ibb.co/JwCTSFvY/all-pattern-34.png",
+		"https://i.ibb.co/G4ny999W/all-pattern-33.png",
+	]
+
 	const sections =[
 		{ title: "Cats", items: cats, type: "svg" },
 		{ title: "Bones", items: bones, type: "image" },
 		{ title: "Paws", items: paws, type: "image" },
 		{ title: "Hearts", items: hearts, type: "image" },
 		{ title: "Chess", items: chess, type: "image" },
+		{ title: "Curve line", items: curveLine, type: "image" },
 	 ]
 
 	return (
@@ -353,7 +365,7 @@ const BackgroundPatternTabs = ({
 							 </PopoverContent>
 					 </Popover> */}
 
-					 <Accordion defaultIndex={[0, 1, 2, 3, 4]} allowMultiple my={0}>
+					 <Accordion defaultIndex={[0, 1, 2, 3, 4, 5]} allowMultiple my={0}>
 							 { sections.map((section, index) => (
 								<AccordionItem 
 								key={index} 

@@ -90,10 +90,10 @@ const Canvas = ({
 							}}
 						></canvas>
 					</Box>
-					<Box mt={8} width={"10px"} height={"650px"} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"flex-end"} alignItems={"center"} position={"absolute"} right={0}>
+					<Box mt={10} width={"10px"} height={`${canvasHeight + 100}px`} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"flex-end"} alignItems={"center"} position={"absolute"} right={0}>
 						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: "10px"}}>height {sizeLabel?.h} inch</Text>
 					</Box>
-					<Box mt={8} height={"10px"} width={"600px"} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={"end"} position={"absolute"} bottom={0}>
+					<Box mt={8} height={"10px"} width={`${canvasWidth + 100}px`} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={"end"} position={"absolute"} bottom={0}>
 						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: "10px"}}>width {sizeLabel?.w} inch</Text>
 					</Box>
 				</Box>

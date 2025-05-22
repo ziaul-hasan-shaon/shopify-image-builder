@@ -177,6 +177,11 @@ const ImageBuilder2dac = () => {
 				originalId: image.id,
 			});
 			// console.log('fabric', fabricImage)
+
+			// 🚫 Hide rotation control (mtr)
+			fabricImage.setControlsVisibility({
+				mtr: false, // hide rotation control
+			});
 	
 			const maxWidth = 400;
 			const maxHeight = 400;
@@ -209,7 +214,6 @@ const ImageBuilder2dac = () => {
 		};
 	};
 	
-
 	const toggleImageLock = () => {
 		const activeObject = canvas.getActiveObject();
 		if (!activeObject || activeObject.type !== 'image') return;
@@ -780,6 +784,24 @@ const ImageBuilder2dac = () => {
 		canvas.renderAll();
 	};
 
+	const handleBringForoward = () => {
+		const activeObject = canvas.getActiveObject();
+		console.log("Active Object:", activeObject);
+		console.log("Available Methods:", Object.keys(activeObject));
+		if (activeObject) {
+			canvas.bringObjectToFront(activeObject); // Bring to front
+			canvas.requestRenderAll();
+		}
+	}
+
+	const handleSendBackward = () => {
+		const activeObject = canvas.getActiveObject();
+		if (activeObject) {
+			canvas.sendObjectToBack(activeObject);
+			canvas.requestRenderAll();
+		}
+	}
+
 	const saveCanvasAsImage = (format = "png", multiplier = 2) => {
 		if (!canvas) return;
 
@@ -1179,6 +1201,8 @@ const handleAddToCart = async () => {
 					isImageLocked = {isImageLocked}
 					sizeLabel = {sizeLabel}
 					setSizeLabel = {setSizeLabel}
+					handleBringForoward = {handleBringForoward}
+					handleSendBackward = {handleSendBackward}
 				/>
 			</Box>
 		</>

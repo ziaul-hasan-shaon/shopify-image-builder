@@ -61,7 +61,7 @@ const Cube3D = ({ img3d, bgImage }) => {
 				}
 				{/* Floating shadow */}
 				{
-					bgImage && <div className="shadow"></div>
+					img3d && <div className="shadow"></div>
 				}
       </div>
     </div>
