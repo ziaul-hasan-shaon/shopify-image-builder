@@ -114,7 +114,6 @@ const PageTabs = ({
 												setBgImage(img2d?.src);
 												setCurrentPage("2d-acrylic")
 											}}
-											cursor={"pointer"}
 										/>
 									</GridItem>
 								))

@@ -10,7 +10,7 @@ const tabs = [
 	{ key: '2d-acrylic', label: '2D Acrylic' },
 ];
 
-const Tabbuttons = () => {
+const Tabbuttons = ({device}) => {
 
 	const { currentPage, setCurrentPage } = usePage();
 	const [selectedTab, setSelectedTab] = useState(null)
@@ -24,17 +24,17 @@ const Tabbuttons = () => {
 
 	return (
 		<Box>
-			<HStack spacing={4} width={"100%"} px={"16px"}>
+			<HStack spacing={4} width={"100%"} px={"16px"} alignItems={"center"} justifyContent={"space-between"}>
 				{tabs.map((tab) => (
 					<Button
 						key={tab.key}
-						onClick={() => !tab.disabled && handleTabChange(tab.key)}
+						onClick={() => (!tab.disabled && currentPage !=="all") ? handleTabChange(tab.key) : setCurrentPage(tab?.key)}
 						bg={currentPage === tab.key ? '#2B2B2B' : 'transparent'}
 						color={currentPage === tab.key ? 'white' : '#2B2B2B'}
 						_hover={tab.disabled ? {} : { bg: currentPage === tab.key ? '#2B2B2B' : 'gray.100' }}
 						borderRadius="8px"
-						px={4}
-						py={2}
+						px={device === "Desktop" ? 4 : 2}
+						py={device === "Desktop" ? 2 : 1}
 						fontSize={"14px"}
 						fontWeight={currentPage === tab.key ? 'bold' : 550}
 						isDisabled={tab.disabled}
@@ -50,7 +50,7 @@ const Tabbuttons = () => {
 				<ModalContent
 					position={"absolute"}
 					top={"10%"}
-					left={"8%"}
+					left={device === "Desktop" ? "8%" : "5%"}
 				>
 					<ModalHeader fontSize={"16px"} color={"#374144"} fontWeight={550}>Unsaved Changes</ModalHeader>
 					<ModalCloseButton />

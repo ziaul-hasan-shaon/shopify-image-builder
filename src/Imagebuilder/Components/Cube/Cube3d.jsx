@@ -5,30 +5,65 @@ const Cube3D = ({ img3d, bgImage }) => {
   const cubeRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+  const [lastPointer, setLastPointer] = useState({ x: 0, y: 0 });
 
   // Utility: clamp value between min and max
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-  const handleMouseDown = (e) => {
+  // Mouse events
+  const handlePointerDown = (x, y) => {
     setIsDragging(true);
-    setLastMouse({ x: e.clientX, y: e.clientY });
+    setLastPointer({ x, y });
   };
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (x, y) => {
     if (!isDragging) return;
-
-    const deltaX = e.clientX - lastMouse.x;
+    const deltaX = x - lastPointer.x;
 
     setRotation((prev) => ({
-      x: 0, // always zero vertical rotation
+      x: 0, // no vertical rotation
       y: clamp(prev.y + deltaX, -20, 20),
     }));
 
-    setLastMouse({ x: e.clientX, y: e.clientY });
+    setLastPointer({ x, y });
   };
 
-  const handleMouseUp = () => setIsDragging(false);
+  const handlePointerUp = () => setIsDragging(false);
+
+  // Mouse handlers
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    handlePointerDown(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e) => {
+    e.preventDefault();
+    handlePointerMove(e.clientX, e.clientY);
+  };
+
+  const handleMouseUp = (e) => {
+    e.preventDefault();
+    handlePointerUp();
+  };
+
+  // Touch handlers
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      handlePointerDown(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      handlePointerMove(touch.clientX, touch.clientY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    handlePointerUp();
+  };
 
   return (
     <div
@@ -37,6 +72,11 @@ const Cube3D = ({ img3d, bgImage }) => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      style={{ touchAction: "none" }} // prevent scrolling when dragging
     >
       <div
         className="cube"
@@ -48,21 +88,13 @@ const Cube3D = ({ img3d, bgImage }) => {
         <div
           className="face front"
           style={{ backgroundColor: " rgba(187, 187, 187, 0.2)" }}
-          // style={{ backgroundImage: `url(${bgImage})` }}
         />
         <div className="face back" style={{ backgroundImage: `url(${bgImage})` }} />
         <div className="face right" style={{ backgroundImage: `url(${bgImage})` }} />
         <div className="face left" style={{ backgroundColor: " rgba(255, 255, 255, 0.2)" }} />
-        {/* <div className="face top" style={{ backgroundImage: `url(${bgImage})` }} />
-        <div className="face bottom" style={{ backgroundImage: `url(${bgImage})` }} /> */}
 
-        {
-					img3d && <img className="center-image" src={img3d} alt="Center Image" />
-				}
-				{/* Floating shadow */}
-				{
-					img3d && <div className="shadow"></div>
-				}
+        {img3d && <img className="center-image" src={img3d} alt="Center Image" />}
+        {img3d && <div className="shadow"></div>}
       </div>
     </div>
   );

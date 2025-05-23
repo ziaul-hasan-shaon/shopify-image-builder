@@ -146,7 +146,7 @@ const DesktopLayout = (
 	const [isFullScreen, setIsFullScreen] = useState(false)
 
 	const {currentPage, setCurrentPage} = usePage()
-	console.log('currentPage', currentPage)
+	// console.log('currentPage', currentPage)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const {
@@ -745,7 +745,7 @@ const DesktopLayout = (
 					position={"relative"}
 				>
 					<Box py={3}>
-						<Tabbuttons/>
+						<Tabbuttons device={device}/>
 					</Box>
 					{
 						isTemplateOpen &&
@@ -842,6 +842,7 @@ const DesktopLayout = (
 							isImageLocked = {isImageLocked}
 							handleDuplicateText = {handleDuplicateText}
 							handleDeleteText = {handleDeleteText}
+							device={device}
 						/>
 					}
 					{
@@ -857,7 +858,7 @@ const DesktopLayout = (
 					}
 					{
 						currentPage !== "all" &&
-						<Box position={"fixed"} bottom={0} p={4} bg={"white"} borderTop={"1px solid  #2B2B2B10"} width={footerWidth}>
+						<Box position={"fixed"} bottom={0} p={4} bg={"white"} borderTop={"1px solid  #2B2B2B10"} width={footerWidth} zIndex={999}>
 							<HStack px={2} gap={5}>
 								<Button 
 								width={"100%"} 

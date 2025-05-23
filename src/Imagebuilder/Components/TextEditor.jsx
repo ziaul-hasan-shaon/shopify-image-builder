@@ -31,7 +31,8 @@ const TextEditor = ({
 	toggleImageLock,
 	isImageLocked,
 	handleDuplicateText,
-	handleDeleteText
+	handleDeleteText,
+	device
 }) => {
 
 	const [angle, setAngle] = useState(90)
@@ -47,6 +48,11 @@ const TextEditor = ({
 					<Input
 						value={text}
 						onChange={(e) => setText(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								addTextToCanvas(); // ⬅️ Called directly, no useEffect needed
+							}
+						}}
 						placeholder="Enter your text"
 						width="100%"
 						padding={2}
@@ -146,8 +152,8 @@ const TextEditor = ({
 						activeText && 
 						<Box 
 							position={"absolute"} 
-							top={ "7%"} 
-							left={"215%"} 
+							top={device === "Desktop" ? "7%" : "12%"} 
+							left={device === "Desktop" ? "215%" : "25%"} 
 							zIndex={9999} 
 							bg={"#F8F8F8"} 
 							borderRadius={"25px"}
@@ -155,32 +161,32 @@ const TextEditor = ({
 							display={"flex"}
 							alignItems={"center"}
 							justifyContent={"space-between"}
-							width={"280px"}
+							width={device === "Desktop" ? "280px" : "200px"}
 							boxShadow={"md"}
 						>
 							
 							<button
 								onClick={handleDuplicateText}
 							>
-								<HiOutlineDuplicate size={24}/>
+								<HiOutlineDuplicate size={device === "Desktop" ? 24 : 20}/>
 							</button>
 							<button
 								onClick={handleDeleteText}
 							>
-								<RiDeleteBin6Line size={24}/>
+								<RiDeleteBin6Line size={device === "Desktop" ? 24 : 20}/>
 							</button>
 							<button
 								onClick={toggleImageLock}
 							>
 								{
-									isImageLocked ? <CiUnlock size = {24}/> : <CiLock size = {24}/>
+									isImageLocked ? <CiUnlock size = {device === "Desktop" ? 24 : 20}/> : <CiLock size = {device === "Desktop" ? 24 : 20}/>
 								}
 							</button>
 							<button onClick={handleBringForoward}>
-								<RiBringForward size={24}/>
+								<RiBringForward size={device === "Desktop" ? 24 : 20}/>
 							</button>
 							<button onClick={handleSendBackward}>
-								<RiSendBackward size={24}/>
+								<RiSendBackward size={device === "Desktop" ? 24 : 20}/>
 							</button>
 						</Box>
 					}

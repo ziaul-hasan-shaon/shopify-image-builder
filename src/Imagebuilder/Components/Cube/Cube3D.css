@@ -103,3 +103,48 @@
   pointer-events: none;
   z-index: 99;
 }
+
+/* Responsive constraints for cube */
+@media (max-width: 768px) {
+  :root {
+    --plate-width: 300px;
+    --plate-height: 200px;
+    --plate-depth: 8px;
+  }
+
+  .scene {
+    width: var(--plate-width);
+    height: var(--plate-height);
+    perspective: 800px;
+  }
+
+  .center-image {
+    width: var(--plate-width);
+    height: var(--plate-height);
+  }
+
+  .shadow {
+    width: 100px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --plate-width: 260px;
+    --plate-height: 180px;
+    --plate-depth: 6px;
+  }
+
+  .scene {
+    perspective: 600px;
+  }
+
+  .shadow {
+    width: 80px;
+    height: 30px;
+  }
+}
+
+
+

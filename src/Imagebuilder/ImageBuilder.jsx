@@ -179,6 +179,10 @@ const ImageBuilder = () => {
 				originalId: image.id,
 			});
 			// console.log('fabric', fabricImage)
+			// 🚫 Hide rotation control (mtr)
+			fabricImage.setControlsVisibility({
+				mtr: false, // hide rotation control
+			});
 	
 			const maxWidth = 400;
 			const maxHeight = 400;
@@ -230,6 +234,20 @@ const ImageBuilder = () => {
 	
 		canvas.renderAll();
 		setIsImageLocked(shouldLock);
+		if(isImageLocked){
+			if(activeObject?.type === "image"){
+				toast.success("Image is unlocked")
+			}else{
+				toast.success("Text is unlocked")
+			}
+		}
+		else{
+			if(activeObject?.type === "image"){
+				toast.success("Image is locked")
+			}else{
+				toast.success("Text is locked")
+			}
+		}
 	};
 
 	const showCropBox = () => {
@@ -385,6 +403,7 @@ const ImageBuilder = () => {
 	
 		setActiveFabricImage(originalImage);
 		setApplyImageCrop(false);
+		toast.success("Undo crop successfully")
 	};	
 	
 
@@ -516,6 +535,10 @@ const ImageBuilder = () => {
 			editable: true,
 		});
 		// console.log('textObject', textObject)
+			// 🚫 Hide rotation control (mtr)
+			textObject.setControlsVisibility({
+				mtr: false, // hide rotation control
+			});
 
 		canvas.add(textObject);
 		canvas.setActiveObject(textObject);
@@ -562,9 +585,9 @@ const ImageBuilder = () => {
 	}, [canvas]);
 
 	const handleDuplicateText = () => {
-		console.log('duplicate')
+		// console.log('duplicate')
 		const activeObject = canvas.getActiveObject();
-		console.log('activeObject', activeObject)
+		// console.log('activeObject', activeObject)
 
 		if(activeObject){
 			const duplicateTextObject = new fabric.IText(text, {
@@ -585,7 +608,7 @@ const ImageBuilder = () => {
 			setText(""); // Clear input field after adding text
 			setCanvasText(duplicateTextObject?.text)
 			setActiveText(duplicateTextObject)
-			console.log('ac', activeObject)
+			toast.success("Text duplicated successfully")
 		}
 		
 	}
@@ -601,6 +624,7 @@ const ImageBuilder = () => {
 			// Reset any text-specific states
 			setCanvasText("");
 			setText("");
+			toast.success("Text deleted successfully")
 		}
 	}
 	
@@ -627,7 +651,13 @@ const ImageBuilder = () => {
 					canvas.remove(activeObject);
 					canvas.discardActiveObject();
 					canvas.renderAll();
-	
+					
+					if(activeObject?.type === "image"){
+						toast.success("Image deleted successfully")
+					}
+					else if(activeObject?.type === "i-text"){
+						toast.success("Text deleted successfully")
+					}
 					// Reset any text-specific states
 					setCanvasText("");
 					setText("");
@@ -811,27 +841,57 @@ const ImageBuilder = () => {
 	
 
 	// Rotate selected image
-	const rotateSelectedImages = (angle) => {
+	const rotateSelectedImages = (delta) => {
+		const deltaAngle = Number(delta); // 🔐 Make sure it's a number
+		
 		if (!canvas) return;
+	
 		const selectedObjects = canvas.getActiveObjects();
 		if (selectedObjects.length === 0) {
-			alert("Please select at least one image to rotate.");
+			toast.error("Please select at least one image to rotate.");
 			return;
 		}
+	
 		selectedObjects.forEach((object) => {
 			if (object instanceof fabric.Image) {
-				object.rotate(object.angle + angle);
+				const prevAngle = object.angle || 0;
+				const newAngle = (prevAngle + deltaAngle) % 360;
+	
+				const center = object.getCenterPoint();
+				object.set({
+					originX: 'center',
+					originY: 'center',
+				});
+				object.setPositionByOrigin(center, 'center', 'center');
+	
+				object.rotate(newAngle);
 				object.setCoords();
+	
+				console.log("Previous:", prevAngle, "➤ New:", newAngle);
+				console.log({
+					current: object.angle,
+					delta: deltaAngle,
+					newAngle: (object.angle + deltaAngle) % 360
+				});
 			}
 		});
-		canvas.renderAll();
-	};
-
+	
+		canvas.discardActiveObject();
+		if (selectedObjects.length > 1) {
+			const group = new fabric.ActiveSelection(selectedObjects, { canvas });
+			canvas.setActiveObject(group);
+		} else {
+			canvas.setActiveObject(selectedObjects[0]);
+		}
+	
+		canvas.requestRenderAll();
+	};	
+	
 	const flipSelectedImages = (direction) => {
 		if (!canvas) return;
 		const selectedObjects = canvas.getActiveObjects();
 		if (selectedObjects.length === 0) {
-			alert("Please select at least one image to flip.");
+			toast.error("Please select at least one image to flip.");
 			return;
 		}
 		selectedObjects.forEach((object) => {
@@ -849,11 +909,12 @@ const ImageBuilder = () => {
 
 	const handleBringForoward = () => {
 		const activeObject = canvas.getActiveObject();
-		console.log("Active Object:", activeObject);
-		console.log("Available Methods:", Object.keys(activeObject));
+		// console.log("Active Object:", activeObject);
+		// console.log("Available Methods:", Object.keys(activeObject));
 		if (activeObject) {
 			canvas.bringObjectToFront(activeObject); // Bring to front
 			canvas.requestRenderAll();
+			toast.success("Object brought to forward")
 		}
 	}
 
@@ -862,6 +923,7 @@ const ImageBuilder = () => {
 		if (activeObject) {
 			canvas.sendObjectToBack(activeObject);
 			canvas.requestRenderAll();
+			toast.success("Object send to backward")
 		}
 	}
 
@@ -945,24 +1007,30 @@ const ImageBuilder = () => {
 	}, [canvas]); // Runs when the canvas is initialized or updated
 
 	// Function to rotate the selected text by adding previous and given angle
-	const rotateText = (newAngle) => {
-		const activeObject = canvas?.getActiveObject();
+	const rotateText = (deltaAngle) => {
+		if (!canvas) return;
+	
+		const activeObject = canvas.getActiveObject();
 		if (activeObject && activeObject.type === 'i-text') {
-			const currentAngle = activeObject.angle; // Get current angle
-			const updatedAngle = currentAngle + newAngle; // Add new angle to current angle
-
-			// Set the rotation point to the center of the text
+			const currentAngle = activeObject.angle || 0;
+			const updatedAngle = (currentAngle + Number(deltaAngle)) % 360;
+	
+			// Keep rotation origin at center to avoid jumping
+			const center = activeObject.getCenterPoint();
 			activeObject.set({
-				angle: updatedAngle,
-				originX: "center",
-				originY: "center",
+				originX: 'center',
+				originY: 'center',
 			});
-
-			canvas.renderAll(); // Re-render the canvas to apply the change
-
-			setPrevAngle(updatedAngle); // Store the updated angle as previous
+			activeObject.setPositionByOrigin(center, 'center', 'center');
+	
+			activeObject.rotate(updatedAngle);
+			activeObject.setCoords();
+	
+			canvas.requestRenderAll();
+	
+			setPrevAngle(updatedAngle); // If you want to store this angle somewhere
 		}
-	};
+	};	
 
 	const handlePreview = () => {
     const canvas = canvasRef.current;

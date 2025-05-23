@@ -46,31 +46,38 @@ const Canvas = ({
 				}
 			</style>
 			<Box >
-				<Box display="flex" justifyContent="center" margin="10px auto" position="relative">
+				<Box 
+					display="flex" 
+					justifyContent="center" 
+					margin="10px auto" 
+					position="relative"
+					width={`${canvasWidth + (device === "Desktop" ? 200 : 50)}px`}
+					height={`${canvasHeight + (device === "Desktop" ? 200 : 50)}px`}
+				>
 					<Box
 						className="canvas-container"
-						width={`${canvasWidth + (device === "Desktop" ? 200 : 50)}px`}
-						height={`${canvasHeight + (device === "Desktop" ? 200 : 50)}px`}
+						width={"100%"}
+						height={"100%"}
 						display="flex"
 						alignItems="center"
 						justifyContent="center"
 						position="relative"
 					>
-						<Box>
+						{/* <Box>
 							{selectedBorder ? (
 								<Image
 									src={selectedBorder}
 									alt="Background"
 									position="absolute"
-									width="100%"
-									height="100%"
-									top="-1%"
+									width="50%"
+									height="50%"
+									top={"-1%"}
 									left={0}
 									// zIndex={1}
 								/>
 							) : <></>
 							}
-						</Box>
+						</Box> */}
 
 						<canvas
 							ref={canvasRef}
@@ -83,6 +90,9 @@ const Canvas = ({
 								inset: 0,  // Centers the canvas
           			margin: "auto",
 								zIndex: 2,
+								backgroundImage:selectedBorder && `url(${selectedBorder})`,
+								backgroundSize: `${canvasWidth}px ${canvasHeight}px`,
+								backgroundRepeat: "no-repeat",
 								boxShadow: uploadedImages?.length > 0 ? '0 2px 5px rgba(0, 0, 0, 0.2)' : "",
 								// top: "52%", // Centers the canvas vertically
 								// left: "60%", // Centers the canvas horizontally
@@ -90,11 +100,11 @@ const Canvas = ({
 							}}
 						></canvas>
 					</Box>
-					<Box mt={10} width={"10px"} height={`${canvasHeight + 100}px`} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"flex-end"} alignItems={"center"} position={"absolute"} right={0}>
-						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: "10px"}}>height {sizeLabel?.h} inch</Text>
+					<Box mt={10} width={device === "Desktop" ? "10px" : "2px"} height={`${device === "Desktop" ? canvasHeight + 100 : canvasHeight + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={device === "Desktop" ? "flex-end" : "flex-start"} alignItems={"center"} position={"absolute"} right={0}>
+						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>height {sizeLabel?.h} inch</Text>
 					</Box>
-					<Box mt={8} height={"10px"} width={`${canvasWidth + 100}px`} border={"5px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={"end"} position={"absolute"} bottom={0}>
-						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: "10px"}}>width {sizeLabel?.w} inch</Text>
+					<Box mt={8} height={device === "Desktop" ? "10px" : "2px"} width={`${device === "Desktop" ? canvasWidth + 100 : canvasWidth + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={device === "Desktop" ? "flex-end" : "flex-start"} position={"absolute"} bottom={0}>
+						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>width {sizeLabel?.w} inch</Text>
 					</Box>
 				</Box>
 				</Box>

@@ -55,6 +55,22 @@ const Uploader = ({
 	const [angle, setAngle] = useState(90)
 	const [openOtherOption, setOpenOtherOption] = useState(false)
 
+	const toggleRef = useRef(null);
+
+	 // Close on outside click
+	 useEffect(() => {
+    function handleClickOutside(event) {
+      if (toggleRef.current && !toggleRef.current.contains(event.target)) {
+        setOpenOtherOption(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
 	useEffect(() => {
 		setLandOrPort(canvasWidth > canvasHeight ? "landscape" : "portrait")
 	}, [canvasWidth, canvasHeight])
@@ -110,8 +126,9 @@ const Uploader = ({
 	
 
 	return (
-		<Box position={"relative"}>
-			<Box w="100%" >
+		<>
+		<Box position={"relative"} >
+			<Box w="100%" height={"calc(100vh - 200px)"} overflowY={"auto"} sx={{scrollbarWidth: "none"}} >
 				<Box p={5}>
 					<Heading fontSize={"16px"} textAlign="start">Upload Image</Heading>
 					<Box
@@ -143,7 +160,7 @@ const Uploader = ({
 									<Text fontWeight="bold" my={2}>Upload image</Text>
 									<Text fontSize="sm">Drag or click to browse (4 MB max)</Text>
 								</Flex> : 
-								<Flex align="center" justify="space-between">
+								<Flex align="center" justify="space-between" width={"100%"}>
 									<Flex align="center" justify="start" gap={"15px"}>
 										<FiUploadCloud size={40} color="#d63031" />
 										<Box textAlign={"start"}>
@@ -208,7 +225,7 @@ const Uploader = ({
 						</RadioGroup>
 					</Box>
 				}
-				<Box mt={5} px={5} display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"}>
+				<Box mt={device === "Desktop" ? 5 : 0} px={5} display={"flex"} alignItems={"center"} justifyContent={"start"} gap={"20px"}>
 					<Text >Resize Image</Text>
 					<Slider
 						min={0.01}
@@ -288,10 +305,10 @@ const Uploader = ({
 				</Flex>
 			</Box>
 			{
-				(activeFabricImage && !bgRemoveLoading) && 
+				(activeFabricImage && device === "Desktop" && !bgRemoveLoading ) && 
 				<Box 
 					position={"absolute"} 
-					top={ "7%"} 
+					top={0} 
 					left={"215%"} 
 					zIndex={9999} 
 					bg={"#F8F8F8"} 
@@ -314,12 +331,19 @@ const Uploader = ({
 						</button>
 					}
 					<button
-						onClick={() => handleImageSelect(duplicateIMage)}
+						onClick={() => {
+							handleImageSelect(duplicateIMage)
+							toast.success("Image duplicated successfully")
+						}}
 					>
 						<HiOutlineDuplicate size={24}/>
 					</button>
 					<button
-						onClick={() => handleSelectedImageDelet(activeFabricImage?.id)}
+						onClick={() => {
+							handleSelectedImageDelet(activeFabricImage?.id)
+							toast.success("Image deleted successfully")
+						} 
+					}
 					>
 						<RiDeleteBin6Line size={24}/>
 					</button>
@@ -340,23 +364,109 @@ const Uploader = ({
 					>
 						<CgEditFlipH size={24}/>
 					</button>
-					<button onClick={() => setOpenOtherOption(!openOtherOption)}>
+					<Box ref={toggleRef}>
+					<button style={{paddingTop: "5px"}} onClick={() => setOpenOtherOption(!openOtherOption)}>
 						<PiDotsThreeBold size={24}/>
 					</button>
-					{
-						openOtherOption && 
-						<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} p={2} borderRadius={"10px"}>
-							<button onClick={handleBringForoward}>
-								<RiBringForward size={24}/>
-							</button>
-							<button onClick={handleSendBackward}>
-								<RiSendBackward size={24}/>
-							</button>
-						</Box>
-					}
+						{
+							openOtherOption && 
+							<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} p={2} borderRadius={"10px"}>
+								<button onClick={handleBringForoward}>
+									<RiBringForward size={24}/>
+								</button>
+								<button onClick={handleSendBackward}>
+									<RiSendBackward size={24}/>
+								</button>
+							</Box>
+						}
+					</Box>
 				</Box>
 			}
 		</Box>
+		{
+			device !== "Desktop" &&
+			<>
+			{
+				(activeFabricImage && !bgRemoveLoading) && 
+				<Box 
+					position={"absolute"} 
+					top={"12%"} 
+					left={"20%"} 
+					zIndex={9999} 
+					bg={"#F8F8F8"} 
+					borderRadius={"25px"}
+					p={2}
+					display={"flex"}
+					alignItems={"center"}
+					justifyContent={"space-between"}
+					width={"250px"}
+					boxShadow={"md"}
+				>
+					{
+						applyImageCrop ? 
+						<button onClick={applyCrop}>
+							<RiCrop2Fill size={20}/>
+						</button> 
+						: 
+						<button onClick={showCropBox}>
+							<IoIosCrop size={20}/>
+						</button>
+					}
+					<button
+						onClick={() => {
+							handleImageSelect(duplicateIMage)
+							toast.success("Image duplicated successfully")
+						}}
+					>
+						<HiOutlineDuplicate size={20}/>
+					</button>
+					<button
+						onClick={() => {
+							handleSelectedImageDelet(activeFabricImage?.id)
+							toast.success("Image deleted successfully")
+						} 
+					}
+					>
+						<RiDeleteBin6Line size={20}/>
+					</button>
+					<button
+						onClick={open}
+					>
+						<LuImageUp size={20}/>
+					</button>
+					<button
+						onClick={toggleImageLock}
+					>
+						{
+							isImageLocked ? <CiUnlock size = {20}/> : <CiLock size = {20}/>
+						}
+					</button>
+					<button
+						onClick={() => flipSelectedImages('horizontal')}
+					>
+						<CgEditFlipH size={20}/>
+					</button>
+					<Box ref={toggleRef}>
+					<button style={{paddingTop: "2px"}} onClick={() => setOpenOtherOption(!openOtherOption)}>
+						<PiDotsThreeBold size={20}/>
+					</button>
+						{
+							openOtherOption && 
+							<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} boxShadow={"md"} p={2} borderRadius={"10px"}>
+								<button onClick={handleBringForoward}>
+									<RiBringForward size={20}/>
+								</button>
+								<button onClick={handleSendBackward}>
+									<RiSendBackward size={20}/>
+								</button>
+							</Box>
+						}
+					</Box>
+				</Box>
+			}
+			</>
+		}
+		</>
 	);
 };
 

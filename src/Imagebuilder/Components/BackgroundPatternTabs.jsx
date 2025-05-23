@@ -193,7 +193,7 @@ const BackgroundPatternTabs = ({
 
 	return (
 		<>
-			<Box p={5} height={"calc(100vh - 130px)"} overflowY={"auto"}>
+			<Box p={5} height={"calc(100vh - 200px)"} overflowY={"auto"} sx={{scrollbarWidth: "none"}}>
 				{
 					currentPage !== "3d-acrylic" &&
 					<HStack>

@@ -7,16 +7,18 @@ const Border = ({
 }) => {
 
 	const empty = "https://i.ibb.co.com/8Dww7125/Unframed.png"
-	const border1 = "https://i.ibb.co.com/y1pGV09/border-151768-1920.png"
-	const border3 = "https://i.ibb.co.com/6Rxx6jyX/frame-2487087-1280.png"
-	const border4 = "https://i.ibb.co.com/0VyGJ4ZT/frame-4236931-1280.png"
-	const border5 = "https://i.ibb.co.com/Dgpv9Hb3/frame-5507782-1920.png"
-	const border6 = "https://i.ibb.co.com/dJ5RGxqm/frame-7558618-1920.png"
-	const border7 = "https://i.ibb.co.com/0y92m3hS/frame-7872263-1920.png"
-	const border8 = "https://i.ibb.co.com/vCkx8GMc/paisley-decorated-square-frame-4auzo2kaca3tsl7b.png"
+	const border1 = "https://i.ibb.co/YBYxK6Sb/borders-01-1.png"
+	const border3 = "https://i.ibb.co/hJjkrZSf/borders-02-1.png"
+	const border4 = "https://i.ibb.co/MxBQRBMG/borders-03-1.png"
+	const border5 = "https://i.ibb.co/BK3jYCBs/borders-04-1.png"
+	const border6 = "https://i.ibb.co/vybn2VH/borders-05-1.png"
+	const border7 = "https://i.ibb.co/ynktShMx/borders-06-1.png"
+	const border8 = "https://i.ibb.co/v4MCFMPV/borders-07-1.png"
+	const border9 = "https://i.ibb.co/hFrGvYNZ/borders-08-1.png"
+	const border10 = "https://i.ibb.co/vCqtb3YX/borders-09-1.png"
 
 	const borders = [
-		border1, border3, border4, border5, border6, border7, border8
+		border1, border3, border4, border5, border6, border7, border8, border9, border10
 	]
 
 	return (
@@ -42,6 +44,7 @@ const Border = ({
 					<Box display={"flex"} alignItems={"center"} justifyContent={"start"} gap={2} mt={'10px'} flexWrap={"wrap"}>
 						{borders?.map((border, index) => (
 							<Box
+								pointerEvents={"none"}
 								display={"flex"}
 								alignItems={"center"}
 								justifyContent={"center"}
@@ -57,7 +60,7 @@ const Border = ({
 									alt="abastruct image"
 									onClick={() => setSelectedBorder(border)}
 									style={{
-										width: "90px",
+										width: "80px",
 										height: "60px",
 										borderRadius: "5px",
 										marginBottom: "10px",
