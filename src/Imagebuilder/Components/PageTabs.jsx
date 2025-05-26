@@ -43,7 +43,7 @@ const PageTabs = ({
 				<>
 				{
 					(currentPage === "all" || currentPage === "2d-cutout") &&
-						<Box p={"16px"}>
+						<Box p={"16px"} height={"auto"}>
 							<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>2D Cutout</Text>
 							<Grid gridTemplateColumns={'repeat(3, 1fr)'} gap={"10px"} my={"10px"}>
 								{
@@ -66,7 +66,7 @@ const PageTabs = ({
 				<>
 				{
 					(currentPage === "all" || currentPage === "3d-acrylic") && 
-					<Box p={"16px"} width={"100%"}>
+					<Box p={"16px"} width={"100%"} height={"auto"}>
 						<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>3D Acrylic</Text>
 						<Grid gridTemplateColumns={'repeat(3, 1fr)'} gap={"10px"} my={"10px"}>
 							{
@@ -96,7 +96,7 @@ const PageTabs = ({
 				<>
 				{
 					(currentPage === "all" || currentPage === "2d-acrylic") &&
-					<Box p={"16px"} width={"100%"}>
+					<Box p={"16px"} width={"100%"} height={"auto"}>
 						<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>2D Acrylic</Text>
 						<Grid gridTemplateColumns={'repeat(3, 1fr)'} gap={"10px"} my={"10px"}>
 							{

@@ -10,7 +10,8 @@ const Template = ({
 		tempRatio,
 		setTempRatio,
 		sizeLabel,
-		setSizeLabel 
+		setSizeLabel,
+		device
 }) => {
 	const [selectedRatio, setSelectedRatio] = useState(0);
 	const [customW, setCustomW] = useState(sizeLabel?.w);
@@ -82,7 +83,7 @@ const Template = ({
 				{ratios.map((ratio, index) => (
 					<GridItem
 						key={index}
-						py="4"
+						py= {device === "Desktop" ? 4 : 2} 
 						borderRadius="md"
 						bg={selectedRatio === index ? "#F8F8F8" : "white"}
 						border={selectedRatio === index ? "1px solid #00070B" : ""}

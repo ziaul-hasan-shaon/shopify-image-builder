@@ -124,7 +124,8 @@ const Layout = (
   const detectDevice = () => {
     if (window.screen.width <= 767) {
       setDevice("Mobile");
-    } else if (window.screen.width <= 1023) {
+    }
+		 else if (window.screen.width <= 1023) {
       setDevice("Tablet");
     } else {
       setDevice("Desktop");

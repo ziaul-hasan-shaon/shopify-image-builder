@@ -10,7 +10,7 @@ const tabs = [
 	{ key: '2d-acrylic', label: '2D Acrylic' },
 ];
 
-const Tabbuttons = ({device}) => {
+const Tabbuttons = ({device, tinyDevice}) => {
 
 	const { currentPage, setCurrentPage } = usePage();
 	const [selectedTab, setSelectedTab] = useState(null)
@@ -45,7 +45,7 @@ const Tabbuttons = ({device}) => {
 					</Button>
 				))}
 			</HStack>
-			<Modal size={"sm"} isOpen={isOpen} onClose={onClose}>
+			<Modal size={tinyDevice === "small-mobile" ? "xs" : device === "Mobile" ? "sm" : "md"} isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent
 					position={"absolute"}
@@ -60,7 +60,7 @@ const Tabbuttons = ({device}) => {
 								<Image width={"100%"} src={"https://i.ibb.co/JRvBsCqP/72f4fd645f32c39d6c938de423c9947044a72f4c.png"} alt='warning' />
 							</Box>
 							<Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDirection={"column"} gap={2} >
-								<Text fontSize={"18px"} fontWeight={600} color={"#2B2B2B"}>Leave without saving your design?</Text>
+								<Text fontSize={tinyDevice === "small-mobile" ? "14px" : device === "Mobile" ? "16px" : "18px"} fontWeight={600} color={"#2B2B2B"}>Leave without saving your design?</Text>
 								<Text fontSize={"12px"} textAlign={"center"} color={"#374144"}>
 									Your customizations will be lost if you go back now. You haven’t added this design to your cart yet.
 								</Text>

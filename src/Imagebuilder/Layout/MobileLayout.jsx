@@ -136,7 +136,7 @@ const MobileLayout = (
 		handleDeleteText,
 		handle3dPreview,
 		img3d,
-		handleDuplicateImage
+		handleDuplicateImage,
 	}
 ) => {
 
@@ -258,6 +258,27 @@ const MobileLayout = (
 		onResetModalOpnen()
 	}
 
+	const [tinyDevice, setTinyDevice] = useState(undefined);
+
+  const detectSmallDevice = () => {
+    if (window.screen.width >= 375 && window.screen.width < 400) {
+      setTinyDevice("small-mobile");
+    } else {
+      setTinyDevice(undefined); // reset if it doesn't match
+    }
+  };
+
+  useEffect(() => {
+    detectSmallDevice();
+    window.addEventListener("resize", detectSmallDevice);
+
+    return () => {
+      window.removeEventListener("resize", detectSmallDevice);
+    };
+  }, []);
+
+  console.log("device", tinyDevice);
+
 	const isDisabled = currentPage === "all"
 
 	const menu = (
@@ -281,7 +302,7 @@ const MobileLayout = (
 						flexDir={"column"}
 						alignItems={"center"}
 						justifyContent={"center"}
-						gap={"10px"}
+						gap={"5px"}
 						onClick={handleIsTemplateOpen}
 						cursor={"pointer"}
 					>
@@ -414,13 +435,13 @@ const MobileLayout = (
 				>
 					<Box display={"flex"} alignItems={"center"} gap={"10px"} width={"35%"}>
 						<Box p={3} display={"flex"} alignItems={"center"} gap={"10px"} borderRight={"1px solid #D9D9D9"}>
-							<GrUndo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={20} />
-							<GrRedo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={20} />
+							<GrUndo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={tinyDevice === "small-mobile" ? 16 : 20} />
+							<GrRedo style={{ cursor: "not-allowed", opacity: ".5" }} color='#333333' size={tinyDevice === "small-mobile" ? 16 : 20} />
 						</Box>
 						<Box>
 							<FaRegEdit
 								color='#333333'
-								size={20}
+								size={tinyDevice === "small-mobile" ? 16 : 20}
 								onClick={() => setIsOpenNote(!isOpenNote)}
 								cursor={"pointer"}
 							/>
@@ -485,7 +506,7 @@ const MobileLayout = (
 									}
 								}}
 						>
-							<GoArrowUpRight color='#F46267' size={20} />
+							<GoArrowUpRight color='#F46267' size={tinyDevice === "small-mobile" ? 16 : 20} />
 						</Box>
 					</Box>
 					<Box
@@ -495,16 +516,16 @@ const MobileLayout = (
 						gap={"20px"}
 						width={"55%"}
 					>
-						<Text>
+						<Text fontSize={tinyDevice === "small-mobile" ? "12px" : "14px"}>
 							$ {price}
 						</Text>
 						<Button
 							bg={"#F46267"}
 							color={"white"}
 							onClick={handleAddToCart}
-							fontSize={"14px"}
+							fontSize={tinyDevice === "small-mobile" ? "12px" : "14px"}
 							// width={"60%"}
-							height={"30px"}
+							height={tinyDevice === "small-mobile" ? "26px" : "30px"}
 						>
 							{atcLoading ? <Spinner /> : "Add to Cart"}
 						</Button>
@@ -521,7 +542,7 @@ const MobileLayout = (
 											>
 												
 											</Button> */}
-											<FiSave size={22} color='#F46267'/>
+											<FiSave size={tinyDevice === "small-mobile" ? 20 : 22} color='#F46267'/>
 										</PopoverTrigger>
 										<PopoverContent width={'280px'}>
 											<PopoverArrow/>
@@ -702,9 +723,9 @@ const MobileLayout = (
 					position={"relative"}
 					mb={"30px"}
 				>
-					<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={device === "Mobile" ? 260 : 400} canvasWidth={device === "Mobile" ? 320 : 500} scale={""} device={device} />
+					<Canvas canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={tinyDevice === "small-mobile" ? 200 : device === "Mobile" ? 240 : 400} canvasWidth={tinyDevice === "small-mobile" ? 260 : device === "Mobile" ? 300 : 500} scale={""} device={device} sizeLabel={sizeLabel}/>
 				</Box>
-				<Box w={"100%"} height={"calc(100vh - 550px)"} overflowY={"auto"}>
+				<Box w={"100%"} height={tinyDevice === "small-mobile" ? "calc(100vh - 480px)" : "calc(100vh - 550px)"} overflowY={"auto"}>
 					<Box
 						display={"flex"}
 						flexDir={"column"}
@@ -742,7 +763,7 @@ const MobileLayout = (
 										{isArtboardOpen ? <GoChevronUp size={24} /> : <GoChevronDown size={24} />}
 									</Button>
 								</PopoverTrigger>
-								<PopoverContent width={'450px'}>
+								<PopoverContent width={tinyDevice === "small-mobile" ? "350px" : device === "Mobile" ? '400px' : "450px"}>
 									{/* <PopoverArrow /> */}
 									{/* <PopoverCloseButton /> */}
 									<PopoverBody>
@@ -754,6 +775,9 @@ const MobileLayout = (
 											onClose={onArtboardClose}
 											tempRatio={tempRatio}
 											setTempRatio={setTempRatio}
+											setSizeLabel={setSizeLabel}
+											sizeLabel={sizeLabel}
+											device = {device}
 										/>
 									</PopoverBody>
 								</PopoverContent>
@@ -764,13 +788,13 @@ const MobileLayout = (
 						isContentOpen &&
 						<Box>
 							<Box my={2}>
-								<Tabbuttons device ={device}/>
+								<Tabbuttons device ={device} tinyDevice={tinyDevice}/>
 							</Box>
 							<Box>
 								{
 									isTemplateOpen &&
 									<>
-										<Box height={"100%"} py={"10px"} display={"flex"} alignItems={"start"} justifyContent={"start"} >
+										<Box height={"auto"} py={"10px"} display={"flex"} alignItems={"start"} justifyContent={"start"} >
 											<PageTabs 
 												setPatternBg ={setPatternBg}
 												setBgImage={setBgImage}
@@ -1002,7 +1026,7 @@ const MobileLayout = (
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
-			<Modal size={"sm"} isOpen={isResetModalOpen} onClose={onResetModalClose}>
+			<Modal size={tinyDevice === "small-mobile" ? "xs" : device === "Mobile" ? "sm" : "md"} isOpen={isResetModalOpen} onClose={onResetModalClose}>
         <ModalOverlay />
         <ModalContent 
 					position={"absolute"}
@@ -1017,7 +1041,7 @@ const MobileLayout = (
 								<Image width={"100%"} src={"https://i.ibb.co/JRvBsCqP/72f4fd645f32c39d6c938de423c9947044a72f4c.png"} alt='warning'/>
 							</Box>
 							<Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDirection={"column"} gap={2} >
-								<Text fontSize={"18px"} fontWeight={600} color={"#2B2B2B"}>Reset without saving your design?</Text>
+								<Text fontSize={tinyDevice === "small-mobile" ? "14px" : device === "Mobile" ? "16px" : "18px"} fontWeight={600} color={"#2B2B2B"}>Reset without saving your design?</Text>
 								<Text fontSize={"12px"} textAlign={"center"} color={"#374144"}>
 								Your customizations will be lost if you go back now. You haven’t added this design to your cart yet.
 								</Text>

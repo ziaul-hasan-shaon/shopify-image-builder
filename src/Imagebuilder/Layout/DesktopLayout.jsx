@@ -461,6 +461,7 @@ const DesktopLayout = (
 										setTempRatio={setTempRatio}
 										sizeLabel={sizeLabel}
 										setSizeLabel = {setSizeLabel}
+										device = {device}
 									/>
 								</PopoverBody>
 							</PopoverContent>
