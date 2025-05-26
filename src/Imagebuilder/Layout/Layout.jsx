@@ -100,6 +100,7 @@ const Layout = (
 		setActiveText,
 		handleDuplicateText,
 		handleDeleteText,
+		handleDuplicateImage
 	}
 ) => {
 
@@ -259,6 +260,7 @@ const Layout = (
 						setActiveText={setActiveText}
 						handleDuplicateText = {handleDuplicateText}
 						handleDeleteText = {handleDeleteText}
+						handleDuplicateImage = {handleDuplicateImage}
 					/>
 					: 
 					<MobileLayout 
@@ -374,6 +376,7 @@ const Layout = (
 						setActiveText={setActiveText}
 						handleDuplicateText = {handleDuplicateText}
 						handleDeleteText = {handleDeleteText}
+						handleDuplicateImage = {handleDuplicateImage}
 					/>
 				}
 			</Box>

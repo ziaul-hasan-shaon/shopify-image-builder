@@ -471,7 +471,68 @@ const ImageBuilder3dac = () => {
 		};
 	}, [canvas]);
 	
-	
+	const handleDuplicateImage = () => {
+		const activeObject = canvas.getActiveObject();
+		// console.log('active', activeObject)
+
+		if (activeObject && activeObject.type === 'image') {
+			activeObject.clone()
+				.then((clonedImg) => {
+					if (!clonedImg) {
+						console.error("Failed to clone image.");
+						return;
+					}
+
+					let baseId = activeObject.id || 'image';
+					let uniqueId = baseId;
+					let counter = 1;
+
+					while (canvas.getObjects().some(obj => obj.id === uniqueId)) {
+						uniqueId = `${baseId}-${counter}`;
+						counter++;
+					}
+
+					// Apply position offset
+					clonedImg.set({
+						left: activeObject.left + 20,
+						top: activeObject.top + 20,
+						id: uniqueId,
+						originalId: baseId,
+						selectable: true,
+						evented: true,
+					});
+
+					// Preserve scaling
+					clonedImg.scaleX = activeObject.scaleX;
+					clonedImg.scaleY = activeObject.scaleY;
+
+					// Add to canvas
+					canvas.add(clonedImg);
+					canvas.setActiveObject(clonedImg);
+					canvas.requestRenderAll();
+
+					// ✅ Get base64 of the cloned image
+					const base64 = clonedImg.toDataURL({
+						format: 'png', // or 'jpeg'
+						quality: 1,
+					});
+
+					const originalImage = selectedImage?.find(img => img.originalId === baseId);
+					const title = originalImage?.title+ "-copy"
+
+					setSelectedImage((prevSelected) => {
+						return [...prevSelected, { title: title, id: uniqueId, originalId: baseId, base64: base64, url: base64 }];
+					});
+					toast.success("Image duplicated successfully")
+				})
+				.catch((error) => {
+					console.error("Image cloning failed:", error);
+					toast.error("Failed to clone image. Check console for details.");
+				});
+		} else {
+			toast.error("Please select an image to clone.");
+		}
+	}
 
 	const resizeCanvas = (newWidth, newHeight) => {
 		if (!canvas) return;
@@ -1333,6 +1394,7 @@ const handleAddToCart = async () => {
 					setActiveText={setActiveText}
 					handleDuplicateText = {handleDuplicateText}
 					handleDeleteText = {handleDeleteText}
+					handleDuplicateImage = {handleDuplicateImage}
 				/>
 			</Box>
 		</>

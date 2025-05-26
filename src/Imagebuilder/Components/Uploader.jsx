@@ -46,7 +46,8 @@ const Uploader = ({
 	toggleImageLock,
 	isImageLocked,
 	handleBringForoward,
-	handleSendBackward
+	handleSendBackward,
+	handleDuplicateImage
 }) => {
 
 	const {currentPage} = usePage()
@@ -332,8 +333,9 @@ const Uploader = ({
 					}
 					<button
 						onClick={() => {
-							handleImageSelect(duplicateIMage)
-							toast.success("Image duplicated successfully")
+							// handleImageSelect(duplicateIMage)
+							handleDuplicateImage()
+							// toast.success("Image duplicated successfully")
 						}}
 					>
 						<HiOutlineDuplicate size={24}/>
@@ -414,8 +416,9 @@ const Uploader = ({
 					}
 					<button
 						onClick={() => {
-							handleImageSelect(duplicateIMage)
-							toast.success("Image duplicated successfully")
+							handleDuplicateImage()
+							// handleImageSelect(duplicateIMage)
+							// toast.success("Image duplicated successfully")
 						}}
 					>
 						<HiOutlineDuplicate size={20}/>

@@ -138,7 +138,8 @@ const DesktopLayout = (
 		activeText,
 		setActiveText,
 		handleDuplicateText,
-		handleDeleteText
+		handleDeleteText,
+		handleDuplicateImage
 	}
 ) => {
 
@@ -795,6 +796,7 @@ const DesktopLayout = (
 							isImageLocked = {isImageLocked}
 							handleBringForoward = {handleBringForoward}
 							handleSendBackward = {handleSendBackward}
+							handleDuplicateImage = {handleDuplicateImage}
 						/>
 					}
 					{

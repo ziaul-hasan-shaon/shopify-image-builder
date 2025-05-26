@@ -135,7 +135,8 @@ const MobileLayout = (
 		handleDuplicateText,
 		handleDeleteText,
 		handle3dPreview,
-		img3d
+		img3d,
+		handleDuplicateImage
 	}
 ) => {
 
@@ -815,6 +816,7 @@ const MobileLayout = (
 											isImageLocked = {isImageLocked}
 											handleBringForoward = {handleBringForoward}
 											handleSendBackward = {handleSendBackward}
+											handleDuplicateImage = {handleDuplicateImage}
 										/>
 									</Box>
 								}
