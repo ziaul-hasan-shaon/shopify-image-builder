@@ -472,7 +472,7 @@ const ImageBuilder2dac = () => {
 						uniqueId = `${baseId}-${counter}`;
 						counter++;
 					}
-
+//dfdfds
 					// Apply position offset
 					clonedImg.set({
 						left: activeObject.left + 20,
