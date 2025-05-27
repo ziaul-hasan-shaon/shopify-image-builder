@@ -153,6 +153,7 @@ const ImageBuilder2dac = () => {
 		// console.log('image', image);
 	
 		const imgElement = new Image();
+		imgElement.crossOrigin = "anonymous";
 		// console.log("imageElement", imgElement)
 	
 		imgElement.onload = () => {

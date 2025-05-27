@@ -155,6 +155,7 @@ const ImageBuilder = () => {
 		// console.log('image', image);
 	
 		const imgElement = new Image();
+		imgElement.crossOrigin = "anonymous";
 		// console.log("imageElement", imgElement)
 	
 		imgElement.onload = () => {
@@ -336,7 +337,7 @@ const ImageBuilder = () => {
 		const ctx = tempCanvas.getContext("2d");
 	
 		ctx.drawImage(imageEl, sx, sy, sw, sh, 0, 0, sw, sh);
-		const croppedDataUrl = tempCanvas.toDataURL("image/png");
+		const croppedDataUrl = tempCanvas?.toDataURL("image/png");
 	
 		// Debug check
 		const imgPreview = new Image();
@@ -524,7 +525,7 @@ const ImageBuilder = () => {
 					canvas.requestRenderAll();
 
 					// ✅ Get base64 of the cloned image
-					const base64 = clonedImg.toDataURL({
+					const base64 = clonedImg?.toDataURL({
 						format: 'png', // or 'jpeg'
 						quality: 1,
 					});

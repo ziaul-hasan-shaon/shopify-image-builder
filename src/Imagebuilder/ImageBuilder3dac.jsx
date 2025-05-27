@@ -156,6 +156,7 @@ const ImageBuilder3dac = () => {
 		// console.log('image', image);
 	
 		const imgElement = new Image();
+		imgElement.crossOrigin = "anonymous";
 		// console.log("imageElement", imgElement)
 	
 		imgElement.onload = () => {
