@@ -258,14 +258,19 @@ const ImageBuilder2dac = () => {
 		const rect = new fabric.Rect({
 			left: activeFabricImage.left + 20,
 			top: activeFabricImage.top + 20,
-			width: 100,
-			height: 100,
+			width: 200,
+			height: 200,
 			fill: 'rgba(0,0,0,0.3)',
 			stroke: 'red',
 			strokeWidth: 1,
 			hasBorders: true,
 			hasControls: true,
 			objectCaching: false,
+		});
+
+		// 🚫 Hide rotation control (mtr)
+		rect.setControlsVisibility({
+			mtr: false, // hide rotation control
 		});
 	
 		setCropRect(rect);
@@ -425,6 +430,9 @@ const ImageBuilder2dac = () => {
 		// Called when no object is selected anymore
 		const handleSelectionCleared = () => {
 			setActiveFabricImage(null);
+			setApplyImageCrop(false)
+			canvas.remove(cropRect);
+			setCropRect(null);
 		};
 	
 		// Attach listener
@@ -449,7 +457,7 @@ const ImageBuilder2dac = () => {
 			canvas.off('selection:created');
 			canvas.off('selection:updated');
 		};
-	}, [canvas]);
+	}, [canvas, cropRect, applyImageCrop]);
 	
 
 	const handleDuplicateImage = () => {

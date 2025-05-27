@@ -260,8 +260,8 @@ const ImageBuilder = () => {
 		const rect = new fabric.Rect({
 			left: activeFabricImage.left + 20,
 			top: activeFabricImage.top + 20,
-			width: 100,
-			height: 100,
+			width: 200,
+			height: 200,
 			fill: 'rgba(0,0,0,0.3)',
 			stroke: 'red',
 			strokeWidth: 1,
@@ -269,6 +269,11 @@ const ImageBuilder = () => {
 			hasBorders: true,
 			hasControls: true,
 			objectCaching: false,
+		});
+
+		// 🚫 Hide rotation control (mtr)
+		rect.setControlsVisibility({
+			mtr: false, // hide rotation control
 		});
 	
 		setCropRect(rect);
@@ -430,6 +435,9 @@ const ImageBuilder = () => {
 		const handleSelectionCleared = () => {
 			setActiveFabricImage(null);
 			setActiveText(null);
+			setApplyImageCrop(false)
+			canvas.remove(cropRect);
+			setCropRect(null);
 		};
 	
 		canvas.on('selection:cleared', handleSelectionCleared);
@@ -441,11 +449,13 @@ const ImageBuilder = () => {
 			if (selected && selected.type === 'image') {
 				setActiveFabricImage(selected);
 				setActiveText(null);
+				setApplyImageCrop(false)
 			} else if (
 				selected && selected.type === 'i-text' 
 			) {
 				setActiveText(selected);
 				setActiveFabricImage(null);
+				setApplyImageCrop(false)
 			}
 		});
 	
@@ -456,11 +466,13 @@ const ImageBuilder = () => {
 			if (selected && selected.type === 'image') {
 				setActiveFabricImage(selected);
 				setActiveText(null);
+				setApplyImageCrop(false)
 			} else if (
 				selected && selected.type === 'i-text' 
 			) {
 				setActiveText(selected);
 				setActiveFabricImage(null);
+				setApplyImageCrop(false)
 			}
 		});
 	
@@ -469,7 +481,7 @@ const ImageBuilder = () => {
 			canvas.off('selection:created');
 			canvas.off('selection:updated');
 		};
-	}, [canvas]);
+	}, [canvas, cropRect, applyImageCrop]);
 
 	const handleDuplicateImage = () => {
 		const activeObject = canvas.getActiveObject();
