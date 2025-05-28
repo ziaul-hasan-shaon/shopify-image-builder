@@ -425,7 +425,7 @@ const DesktopLayout = (
 					borderRight={"1px solid #EEEEEE"}
 					py={4}
 				>
-					<Box width={"50px"} height={"50px"}>
+					<Box cursor={'pointer'} as='a' href='/' width={"50px"} height={"50px"}>
 						<Image width={'100%'} height={'100%'} src={logo} alt='logo' />
 					</Box>
 				</GridItem>

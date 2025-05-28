@@ -104,7 +104,7 @@ const Layout = (
 	}
 ) => {
 
-	const logo = "https://i.ibb.co.com/GfpxDdYd/Logo.png"
+	const logo = "https://fureverprint.com/cdn/shop/t/6/assets/logo.png?v=116727186958264181951748007873"
 
 	const {currentPage} = usePage()
 	// console.log('currentPage', currentPage)
