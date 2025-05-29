@@ -1264,6 +1264,8 @@ const handleAddToCart = async () => {
 		isJpgActive: isJpgActive,
 		note: note,
 		price: price,
+		canvas_width: sizeLabel?.w,
+		canvas_height: sizeLabel?.h
 	};
 
 	const canvas = canvasRef.current;
