@@ -61,7 +61,8 @@ const ImageBuilder = () => {
 	const [originalImageMap, setOriginalImageMap] = useState(new Map());
 	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
 	const [activeText, setActiveText] = useState(null)
-	const [isCropping, setIsCropping] = useState(false);
+	const [angle, setAngle] = useState(null)
+	const [textAngle, setTextAngle] = useState(null)
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -253,20 +254,25 @@ const ImageBuilder = () => {
 
 	const showCropBox = () => {
 		if (!canvas || !activeFabricImage) return;
+
+		const cropWidth = 250;
+		const cropHeight = 250;
+
+		// Get center of the active image
+		const imageCenter = activeFabricImage.getCenterPoint();
 	
 		if (cropRect) {
 			canvas.remove(cropRect);
 		}
 	
 		const rect = new fabric.Rect({
-			left: activeFabricImage.left + 20,
-			top: activeFabricImage.top + 20,
-			width: 200,
-			height: 200,
+			left: imageCenter.x - cropWidth / 2,
+			top: imageCenter.y - cropHeight / 2,
+			width: cropWidth,
+			height: cropHeight,
 			fill: 'rgba(0,0,0,0.3)',
 			stroke: 'red',
 			strokeWidth: 1,
-			name: 'cropBox',
 			hasBorders: true,
 			hasControls: true,
 			objectCaching: false,
@@ -279,20 +285,19 @@ const ImageBuilder = () => {
 	
 		setCropRect(rect);
 		canvas.add(rect);
-		setApplyImageCrop(true)
 		canvas.setActiveObject(rect);
 		canvas.renderAll();
+		setApplyImageCrop(true)
 	};
-	
 	
 	const applyCrop = () => {
 		if (!canvas || !cropRect || !activeFabricImage) {
 			console.warn("Missing canvas, cropRect, or activeFabricImage");
 			return;
 		}
-
-		const imageId = activeFabricImage?.id;
-
+	
+		const imageId = activeFabricImage.id;
+	
 		setOriginalImageMap(prev => {
 			const newMap = new Map(prev);
 			if (!newMap.has(imageId)) {
@@ -308,43 +313,36 @@ const ImageBuilder = () => {
 			return;
 		}
 	
-		// Calculate relative crop area
-		const cropLeft = cropRect.left - activeFabricImage.left;
-		const cropTop = cropRect.top - activeFabricImage.top;
-		const cropWidth = cropRect.width * cropRect.scaleX;
-		const cropHeight = cropRect.height * cropRect.scaleY;
+		// Get the position of cropRect relative to the image
+		const imageBounds = activeFabricImage.getBoundingRect();
+		const cropBounds = cropRect.getBoundingRect();
 	
+		const cropLeft = cropBounds.left - imageBounds.left;
+		const cropTop = cropBounds.top - imageBounds.top;
+	
+		// Divide by image scale to get original image pixels
 		const scaleX = activeFabricImage.scaleX || 1;
 		const scaleY = activeFabricImage.scaleY || 1;
 	
 		const sx = cropLeft / scaleX;
 		const sy = cropTop / scaleY;
-		const sw = cropWidth / scaleX;
-		const sh = cropHeight / scaleY;
+		const sw = cropRect.width * (cropRect.scaleX || 1) / scaleX;
+		const sh = cropRect.height * (cropRect.scaleY || 1) / scaleY;
 	
-		console.log("Crop Coordinates:", { sx, sy, sw, sh });
-	
-		// Make sure crop area is valid
+		// ✅ Ensure valid crop
 		if (sw <= 0 || sh <= 0) {
 			console.error("Invalid crop size");
 			return;
 		}
 	
-		// Create temporary canvas
 		const tempCanvas = document.createElement("canvas");
 		tempCanvas.width = sw;
 		tempCanvas.height = sh;
 		const ctx = tempCanvas.getContext("2d");
 	
 		ctx.drawImage(imageEl, sx, sy, sw, sh, 0, 0, sw, sh);
-		const croppedDataUrl = tempCanvas?.toDataURL("image/png");
+		const croppedDataUrl = tempCanvas.toDataURL("image/png");
 	
-		// Debug check
-		const imgPreview = new Image();
-		imgPreview.src = croppedDataUrl;
-		// document.body.appendChild(imgPreview); // <- Remove this after test
-	
-		// Final step: load cropped image manually
 		const img = new Image();
 		img.crossOrigin = "anonymous";
 		img.onload = () => {
@@ -352,15 +350,14 @@ const ImageBuilder = () => {
 				left: cropRect.left,
 				top: cropRect.top,
 				selectable: true,
-			});
-
-			// ✨ Normalize scaling
-			fabricCropped.set({
 				scaleX: activeFabricImage.scaleX,
 				scaleY: activeFabricImage.scaleY,
 				id: activeFabricImage.id,
 				originalId: activeFabricImage.originalId
 			});
+	
+			// Hide rotation
+			fabricCropped.setControlsVisibility({ mtr: false });
 	
 			canvas.remove(activeFabricImage);
 			canvas.remove(cropRect);
@@ -371,15 +368,14 @@ const ImageBuilder = () => {
 			setActiveFabricImage(fabricCropped);
 			setCropRect(null);
 			setApplyImageCrop(false);
+			toast.success("Image cropped successfully");
 		};
 		img.onerror = () => {
 			console.error("Failed to load cropped image");
-			toast.error("Failed to load cropped image")
+			toast.error("Failed to load cropped image");
 		};
 		img.src = croppedDataUrl;
-		toast.success("Image croped successfully")
 	};
-
 	// console.log('activeId', activeFabricImage?.id)
 	// console.log('activeOriginalId', activeFabricImage?.originalId)
 
@@ -961,6 +957,43 @@ const ImageBuilder = () => {
 	
 		canvas.requestRenderAll();
 	};	
+
+	const setExactRotation = (angle) => {
+		const targetAngle = Number(angle); // Make sure it's a number
+	
+		if (!canvas) return;
+	
+		const selectedObjects = canvas.getActiveObjects();
+		if (selectedObjects.length === 0) {
+			toast.error("Please select at least one image to rotate.");
+			return;
+		}
+	
+		selectedObjects.forEach((object) => {
+			if (object instanceof fabric.Image) {
+				const center = object.getCenterPoint();
+	
+				object.set({
+					originX: 'center',
+					originY: 'center',
+				});
+				object.setPositionByOrigin(center, 'center', 'center');
+	
+				object.rotate(targetAngle); // ✅ Absolute set, not relative
+				object.setCoords();
+			}
+		});
+	
+		canvas.discardActiveObject();
+		if (selectedObjects.length > 1) {
+			const group = new fabric.ActiveSelection(selectedObjects, { canvas });
+			canvas.setActiveObject(group);
+		} else {
+			canvas.setActiveObject(selectedObjects[0]);
+		}
+	
+		canvas.requestRenderAll();
+	};
 	
 	const flipSelectedImages = (direction) => {
 		if (!canvas) return;
@@ -1030,7 +1063,8 @@ const ImageBuilder = () => {
 				color: activeObject.fill,            // Get the fill color
 				fontSize: activeObject.fontSize,     // Get the font size
 				fontWeight: activeObject.fontWeight, // Get the font weight
-				fontFamily: activeObject.fontFamily  // Get the font family
+				fontFamily: activeObject.fontFamily,  // Get the font family
+				angle: activeObject.angle || 0 // ✅ Get rotation angle
 			};
 
 			// console.log(textProperties); // You can return or use this object to display the properties elsewhere
@@ -1042,8 +1076,24 @@ const ImageBuilder = () => {
       setFontWeight(matchedFont ? matchedFont.label : 'Regular'); // Default to 'Regular' if not found
 			setFontFamily(textProperties.fontFamily);
 			setText(activeObject.type === 'i-text' ? activeObject?.text : "")
+			setTextAngle(textProperties.angle)
 		}
 	};
+
+	const getImageProperties = () => {
+		const activeObject = canvas.getActiveObject();
+	
+		if (activeObject && activeObject.type === 'image') {
+			const currentAngle = activeObject.angle || 0;
+			setAngle(currentAngle); // ✅ Sync the image's angle to your UI state
+		}
+	};
+
+	useEffect(() => {
+		if(activeFabricImage){
+			getImageProperties()
+		}
+	}, [activeFabricImage])
 
 	useEffect(() => {
 		updateTextProperties('fill', textColor);
@@ -1106,6 +1156,30 @@ const ImageBuilder = () => {
 			setPrevAngle(updatedAngle); // If you want to store this angle somewhere
 		}
 	};	
+
+	const setTextRotation = (angle) => {
+		if (!canvas) return;
+	
+		const activeObject = canvas.getActiveObject();
+		if (activeObject && activeObject.type === 'i-text') {
+			const absoluteAngle = Number(angle) % 360;
+	
+			// Ensure rotation around center
+			const center = activeObject.getCenterPoint();
+			activeObject.set({
+				originX: 'center',
+				originY: 'center',
+			});
+			activeObject.setPositionByOrigin(center, 'center', 'center');
+	
+			activeObject.rotate(absoluteAngle); // ✅ Set absolute angle
+			activeObject.setCoords();
+	
+			canvas.requestRenderAll();
+	
+			setPrevAngle(absoluteAngle); // optional
+		}
+	};
 
 	const handlePreview = () => {
     const canvas = canvasRef.current;
@@ -1372,6 +1446,12 @@ const handleAddToCart = async () => {
 					handleDuplicateText = {handleDuplicateText}
 					handleDeleteText = {handleDeleteText}
 					handleDuplicateImage = {handleDuplicateImage}
+					setExactRotation={setExactRotation}
+					setTextRotation = {setTextRotation}
+					angle = {angle}
+					setAngle = {setAngle}
+					textAngle = {textAngle}
+					setTextAngle = {setTextAngle}
 				/>
 			</Box>
 		</>

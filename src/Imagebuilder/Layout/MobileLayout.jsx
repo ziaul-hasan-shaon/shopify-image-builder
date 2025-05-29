@@ -137,6 +137,12 @@ const MobileLayout = (
 		handle3dPreview,
 		img3d,
 		handleDuplicateImage,
+		setExactRotation,
+		setTextRotation,
+		angle ,
+		setAngle ,
+		textAngle ,
+		setTextAngle 
 	}
 ) => {
 
@@ -841,6 +847,7 @@ const MobileLayout = (
 											handleBringForoward = {handleBringForoward}
 											handleSendBackward = {handleSendBackward}
 											handleDuplicateImage = {handleDuplicateImage}
+											setExactRotation = {setExactRotation}
 										/>
 									</Box>
 								}
@@ -894,6 +901,7 @@ const MobileLayout = (
 											handleDuplicateText = {handleDuplicateText}
 											handleDeleteText = {handleDeleteText}
 											device={device}
+											setTextRotation = {setTextRotation}
 										/>
 									</Box>
 								}

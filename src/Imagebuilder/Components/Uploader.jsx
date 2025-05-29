@@ -47,13 +47,15 @@ const Uploader = ({
 	isImageLocked,
 	handleBringForoward,
 	handleSendBackward,
-	handleDuplicateImage
+	handleDuplicateImage,
+	setExactRotation,
+	angle,
+	setAngle
 }) => {
 
 	const {currentPage} = usePage()
 
 	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
-	const [angle, setAngle] = useState(90)
 	const [openOtherOption, setOpenOtherOption] = useState(false)
 
 	const toggleRef = useRef(null);
@@ -71,6 +73,12 @@ const Uploader = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+	useEffect(()=> {
+		if(angle !== null){
+			setExactRotation(angle)
+		}
+	}, [angle])
 
 	useEffect(() => {
 		setLandOrPort(canvasWidth > canvasHeight ? "landscape" : "portrait")
@@ -251,46 +259,69 @@ const Uploader = ({
 				<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
 					<Box width={"60%"}>
 						<Heading fontSize={"16px"}>Rotate</Heading>
-						<Button onClick={() => rotateSelectedImages(-angle)} mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
+						<Button onClick={() => {
+							rotateSelectedImages(-90)
+							setAngle(angle-90)
+						}} 
+							mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
 							<RxRotateCounterClockwise size={30} />
 						</Button>
-						<Button onClick={() => rotateSelectedImages(angle)} mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
+						<Button onClick={() => {
+							rotateSelectedImages(90)
+							setAngle(angle+90)
+						}} 
+							mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
 							<RxRotateCounterClockwise size={30} />
 						</Button>
 					</Box>
 					<Box width={"40%"}>
-					<Heading fontSize={"16px"}>Set Angle</Heading>
+					{/* <Heading fontSize={"16px"}>Set Angle</Heading> */}
 					<Box display={"flex"} alignItems={"center"} gap={3}>
 					<Slider
-						min={0.01}
-						max={.5}
-						step={.01}
-						value={resize}
-						onChange={handleScaleChange}
-						width="80px"
-						isDisabled={!activeFabricImage} // ✅ this is correct
+						min={0}
+						max={360}
+						step={1}
+						value={angle}
+						onChange={setAngle} // ✅ Fixed: this is now correct
+						width="100px"
+						isDisabled={!activeFabricImage}
 						sx={{
 							cursor: !activeFabricImage ? 'not-allowed' : 'pointer',
 						}}
 					>
 						<SliderTrack>
-							<SliderFilledTrack bg='tomato'/>
+							<SliderFilledTrack bg="tomato" />
 						</SliderTrack>
-						<SliderThumb boxSize={5} bg={'transparent'} p={0}>
-							<FaRegCircle size={"20px"} color='#FF6347' style={{background: "#ffffff", padding: "0px"}} />
+						<SliderThumb 
+						boxSize={5} 
+						bg="transparent" 
+						p={0}
+						sx={{
+							'&:focus': { boxShadow: 'none !important' },
+							'&:focus-visible': { boxShadow: 'none !important' },
+							'&:hover': { boxShadow: 'none' }, // optional
+						}}
+						>
+							<FaRegCircle
+								size={"20px"}
+								color="#FF6347"
+								style={{ background: "#ffffff", padding: "0px" }}
+							/>
 						</SliderThumb>
 					</Slider>
+
 					<Input
-							value={angle}
-							onChange={(e) => setAngle(e.target.value)}
-							// placeholder="Enter your text"
-							width="25%"
-							padding={2}
-							marginY={2}
-							borderRadius="4px"
-							border="1px solid #ccc"
-						/>
-					</Box>
+						isDisabled={!activeFabricImage}
+						value={angle}
+						onChange={(e) => setAngle(Number(e.target.value))} // ✅ Ensure numeric value
+						width="25%"
+						padding={2}
+						marginY={2}
+						type='number'
+						borderRadius="4px"
+						border="1px solid #ccc"
+					/>
+				</Box>
 					</Box>
 				</Flex>
 				<Flex align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>

@@ -139,7 +139,13 @@ const DesktopLayout = (
 		setActiveText,
 		handleDuplicateText,
 		handleDeleteText,
-		handleDuplicateImage
+		handleDuplicateImage,
+		setExactRotation,
+		setTextRotation,
+		angle ,
+		setAngle ,
+		textAngle ,
+		setTextAngle 
 	}
 ) => {
 
@@ -798,6 +804,10 @@ const DesktopLayout = (
 							handleBringForoward = {handleBringForoward}
 							handleSendBackward = {handleSendBackward}
 							handleDuplicateImage = {handleDuplicateImage}
+							setExactRotation = {setExactRotation}
+							angle = {angle}
+							setAngle = {setAngle}
+						
 						/>
 					}
 					{
@@ -846,6 +856,9 @@ const DesktopLayout = (
 							handleDuplicateText = {handleDuplicateText}
 							handleDeleteText = {handleDeleteText}
 							device={device}
+							setTextRotation = {setTextRotation}
+							textAngle = {textAngle}
+							setTextAngle = {setTextAngle}
 						/>
 					}
 					{

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ColorPicker from './ColorPicker';
-import { Box, Button, Flex, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Select, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Input, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, VStack } from '@chakra-ui/react';
 import { FiRotateCcw, FiRotateCw } from 'react-icons/fi';
 import { HiOutlineDuplicate } from 'react-icons/hi';
 import { RiBringForward, RiDeleteBin6Line, RiSendBackward } from 'react-icons/ri';
 import { LuImageUp } from 'react-icons/lu';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import { CiLock, CiUnlock } from 'react-icons/ci';
+import { FaRegCircle } from 'react-icons/fa';
 
 const TextEditor = ({
 	text,
@@ -32,10 +33,17 @@ const TextEditor = ({
 	isImageLocked,
 	handleDuplicateText,
 	handleDeleteText,
-	device
+	device,
+	setTextRotation,
+	textAngle, 
+	setTextAngle
 }) => {
 
-	const [angle, setAngle] = useState(90)
+	useEffect(()=> {
+		if(textAngle !== null){
+			setTextRotation(textAngle)
+		}
+	}, [textAngle])
 
 	console.log('activeText', activeText)
 
@@ -128,25 +136,68 @@ const TextEditor = ({
 						</Box>
 					</Box>
 
-					<Flex mt={4} gap={2} alignItems={"center"}>
-						<Box>
-							<Button bg="none" onClick={() => rotateText(angle)}>
+					<Flex mt={4} gap={2} alignItems={"center"} width={"100%"}>
+						<Box width={"40%"}>
+							<Button bg="none" onClick={() => {
+								rotateText(90)
+								setTextAngle(textAngle + 90)
+								}}>
 								<FiRotateCcw size={30} />
 							</Button>
-							<Button bg="none" onClick={() => rotateText(-angle)}>
+							<Button bg="none" onClick={() => {
+								rotateText(-90)
+								setTextAngle(textAngle - 90)
+								}}>
 								<FiRotateCw size={30} />
 							</Button>
 						</Box>
+						<Box display={"flex"} alignItems={"center"} gap={3} width={"60%"}>
+						<Slider
+							className='textAngle-slider'
+							min={0}
+							max={360}
+							step={1}
+							value={textAngle}
+							onChange={setTextAngle} // ✅ Fixed: this is now correct
+							width="100px"
+							isDisabled={!activeText}
+							sx={{
+								cursor: !activeText ? 'not-allowed' : 'pointer',
+							}}
+						>
+							<SliderTrack>
+								<SliderFilledTrack bg="tomato" />
+							</SliderTrack>
+							<SliderThumb
+							 boxSize={5} 
+							 bg="transparent" 
+							 p={0}
+							 sx={{
+								'&:focus': { boxShadow: 'none !important' },
+								'&:focus-visible': { boxShadow: 'none !important' },
+								'&:hover': { boxShadow: 'none' }, // optional
+							}}
+							 >
+								<FaRegCircle
+									size={"20px"}
+									color="#FF6347"
+									style={{ background: "#ffffff", padding: "0px" }}
+								/>
+							</SliderThumb>
+						</Slider>
+
 						<Input
-							value={angle}
-							onChange={(e) => setAngle(e.target.value)}
-							// placeholder="Enter your text"
-							width="20%"
+							isDisabled={!activeText}
+							value={textAngle}
+							onChange={(e) => setTextAngle(Number(e.target.value))} // ✅ Ensure numeric value
+							width="25%"
 							padding={2}
 							marginY={2}
+							type='number'
 							borderRadius="4px"
 							border="1px solid #ccc"
 						/>
+					</Box>
 					</Flex>
 					{
 						activeText && 

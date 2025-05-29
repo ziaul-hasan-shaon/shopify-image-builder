@@ -100,7 +100,13 @@ const Layout = (
 		setActiveText,
 		handleDuplicateText,
 		handleDeleteText,
-		handleDuplicateImage
+		handleDuplicateImage,
+		setExactRotation,
+		setTextRotation,
+		angle ,
+		setAngle ,
+		textAngle ,
+		setTextAngle 
 	}
 ) => {
 
@@ -262,6 +268,12 @@ const Layout = (
 						handleDuplicateText = {handleDuplicateText}
 						handleDeleteText = {handleDeleteText}
 						handleDuplicateImage = {handleDuplicateImage}
+						setExactRotation = {setExactRotation}
+						setTextRotation = {setTextRotation}
+						angle = {angle}
+						setAngle = {setAngle}
+						textAngle = {textAngle}
+						setTextAngle = {setTextAngle}
 					/>
 					: 
 					<MobileLayout 
@@ -378,6 +390,12 @@ const Layout = (
 						handleDuplicateText = {handleDuplicateText}
 						handleDeleteText = {handleDeleteText}
 						handleDuplicateImage = {handleDuplicateImage}
+						setExactRotation = {setExactRotation}
+						setTextRotation = {setTextRotation}
+						angle = {angle}
+						setAngle = {setAngle}
+						textAngle = {textAngle}
+						setTextAngle = {setTextAngle}
 					/>
 				}
 			</Box>
