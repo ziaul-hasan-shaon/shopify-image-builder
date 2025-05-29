@@ -1086,6 +1086,10 @@ const ImageBuilder = () => {
 		if (activeObject && activeObject.type === 'image') {
 			const currentAngle = activeObject.angle || 0;
 			setAngle(currentAngle); // ✅ Sync the image's angle to your UI state
+			// ✅ Safely get uniform scale
+			const scale = (activeObject.scaleX + activeObject.scaleY) / 2;
+
+			setResize(scale);
 		}
 	};
 

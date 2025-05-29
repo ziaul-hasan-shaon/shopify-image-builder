@@ -1092,6 +1092,9 @@ const ImageBuilder3dac = () => {
 		if (activeObject && activeObject.type === 'image') {
 			const currentAngle = activeObject.angle || 0;
 			setAngle(currentAngle); // ✅ Sync the image's angle to your UI state
+			const scale = (activeObject.scaleX + activeObject.scaleY) / 2;
+
+			setResize(scale);
 		}
 	};
 

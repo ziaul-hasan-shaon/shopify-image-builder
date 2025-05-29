@@ -238,7 +238,7 @@ const Uploader = ({
 					<Text >Resize Image</Text>
 					<Slider
 						min={0.01}
-						max={.5}
+						max={1}
 						step={.01}
 						value={resize}
 						onChange={handleScaleChange}
