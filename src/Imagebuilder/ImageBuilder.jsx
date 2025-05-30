@@ -131,89 +131,41 @@ const ImageBuilder = () => {
     "Lucida Console, monospace",
   ];
 
-	// console.log('canvas', canvasRef)
-	// Initialize Fabric.js Canvas
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (canvasRef.current) {
-				const newCanvas = new fabric.Canvas(canvasRef.current, {
-					width: canvasWidth,
-					height: canvasHeight,
-				});
-				newCanvas.setDimensions({ width: canvasWidth, height: canvasHeight });
-				setCanvas(newCanvas);
-			}
-		}, 0); // Wait 1 tick
 	
-		return () => clearTimeout(timeout);
-	}, []);
 
 	// console.log('can', canvas)
 	// Handle Selecting an Image from Uploaded List
 	const handleImageSelect = (image) => {
-		// console.log('canvas', canvas)
-		if (!canvas) return;
-		// console.log('image', image);
-	
-		const imgElement = new Image();
-		imgElement.crossOrigin = "anonymous";
-		// console.log("imageElement", imgElement)
-	
-		imgElement.onload = () => {
-			// Generate a unique ID
-			let baseId = image.id || 'image';
-			let uniqueId = baseId;
-			let counter = 1;
-	
-			// Check if the ID already exists on the canvas
-			while (canvas.getObjects().some(obj => obj.id === uniqueId)) {
-				uniqueId = `${baseId}-${counter}`;
-				counter++;
-			}
-	
-			const fabricImage = new fabric.Image(imgElement, {
-				left: 50,
-				top: 50,
-				cornerSize: 10,
-				hasControls: true,
-				lockScalingFlip: true,
-				id: uniqueId,
-				originalId: image.id,
-			});
-			// console.log('fabric', fabricImage)
-			// 🚫 Hide rotation control (mtr)
-			fabricImage.setControlsVisibility({
-				mtr: false, // hide rotation control
-			});
-	
-			const maxWidth = 400;
-			const maxHeight = 400;
-			const scaleFactor = Math.min(maxWidth / fabricImage.width, maxHeight / fabricImage.height);
-			fabricImage.scale(scaleFactor);
+		console.log('handleImageCalled')
+		const img = new window.Image();
+		img.crossOrigin = 'anonymous'; // in case you're loading remote images
+		img.src = image.url;
 
-			// ✅ Save original size/position only ONCE
-			fabricImage.customProps = {
-				originalLeft: fabricImage.left,
-				originalTop: fabricImage.top,
-				originalScale: scaleFactor,
-			};
-	
-			canvas.add(fabricImage);
-			canvas.setActiveObject(fabricImage);
-			canvas.renderAll();
-			setActiveFabricImage(fabricImage); // 👈 Save for crop logic
-	
-			fabricImage.setCoords();
-	
-			setSelectedImage((prevSelected) => {
-				return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
-			});
-		};
-		// console.log('imgElement', image.url)
-		imgElement.src = image.url;
-	
-		imgElement.onerror = (err) => {
-			console.error('Failed to load image:', err);
+		img.onload = () => {
+			const maxSize = 300;
+
+			const originalWidth = img.width;
+			const originalHeight = img.height;
+
+			const scale = Math.min(maxSize / originalWidth, maxSize / originalHeight, 1);
+
+			const width = originalWidth * scale;
+			const height = originalHeight * scale;
+
+			setSelectedImage((prev) => [
+				...prev,
+				{
+					id: image.id,
+					url: image.url,
+					x: 50,
+					y: 50,
+					width: width,
+					height: height,
+					originalWidth: width,
+					originalHeight: height,
+					rotation: 0,
+				},
+			]);
 		};
 	};
 
@@ -1367,6 +1319,7 @@ const handleAddToCart = async () => {
 					setLoading ={setLoading}
 					uploadedImages={uploadedImages}
 					selectedImage = {selectedImage}
+					setSelectedImage = {setSelectedImage}
 					setUploadedImages = {setUploadedImages}
 					handleImageSelect = {handleImageSelect}
 					handleDeleteButtonClick = {handleDeleteButtonClick}

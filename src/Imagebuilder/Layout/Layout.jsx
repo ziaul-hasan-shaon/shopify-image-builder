@@ -106,7 +106,8 @@ const Layout = (
 		angle ,
 		setAngle ,
 		textAngle ,
-		setTextAngle 
+		setTextAngle,
+		setSelectedImage
 	}
 ) => {
 
@@ -274,6 +275,7 @@ const Layout = (
 						setAngle = {setAngle}
 						textAngle = {textAngle}
 						setTextAngle = {setTextAngle}
+						setSelectedImage = {setSelectedImage}
 					/>
 					: 
 					<MobileLayout 
@@ -396,6 +398,7 @@ const Layout = (
 						setAngle = {setAngle}
 						textAngle = {textAngle}
 						setTextAngle = {setTextAngle}
+						setSelectedImage = {setSelectedImage}
 					/>
 				}
 			</Box>

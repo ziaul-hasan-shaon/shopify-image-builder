@@ -145,7 +145,8 @@ const DesktopLayout = (
 		angle ,
 		setAngle ,
 		textAngle ,
-		setTextAngle 
+		setTextAngle, 
+		setSelectedImage
 	}
 ) => {
 
@@ -919,7 +920,7 @@ const DesktopLayout = (
 							transition="transform 0.2s ease-in-out"
 							position={"relative"}
 						>
-							<Canvas uploadedImages={uploadedImages} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device} is3dPreview = {is3dPreview} setIs3dPreview = {setIs3dPreview} img3d={img3d} bgImage={bgImage} sizeLabel={sizeLabel}/>
+							<Canvas uploadedImages={uploadedImages} selectedImage = {selectedImage} setSelectedImage={setSelectedImage} canvasRef={canvasRef} selectedBorder={selectedBorder} canvasHeight={canvasHeight} canvasWidth={canvasWidth} scale={scale} device = {device} is3dPreview = {is3dPreview} setIs3dPreview = {setIs3dPreview} img3d={img3d} bgImage={bgImage} sizeLabel={sizeLabel}/>
 						</Box>
 
 						<Box
