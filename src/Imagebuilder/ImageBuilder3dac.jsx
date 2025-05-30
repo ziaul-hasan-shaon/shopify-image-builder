@@ -4,6 +4,7 @@ import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { usePage } from './hook/PageContext';
 
 const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
 const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
@@ -61,7 +62,7 @@ const ImageBuilder3dac = () => {
 	const [is3dPreview, setIs3dPreview] = useState(false)
 	const [img3d, setImg3d] = useState(false)
 	const [originalImageMap, setOriginalImageMap] = useState(new Map());
-	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
+	const [sizeLabel, setSizeLabel] = useState({w: "6.3 inches", h: "6.3 inches"})
 	const [activeText, setActiveText] = useState(null)
 	const [angle, setAngle] = useState(null)
 	const [textAngle, setTextAngle] = useState(null)
@@ -83,6 +84,50 @@ const ImageBuilder3dac = () => {
 	// 	note: note,
 	// 	price: price,
 	// });
+
+	const { setPageStateChanged } = usePage();
+	const initialState = useRef({
+		uploadedImages: [],
+		selectedImage: [],
+		bgImage: null,
+		text: "",
+		canvasText: null,
+		selectedBorder: "",
+		canvasWidth: 500,
+		canvasHeight: 500,
+		sizeLabel: { w: "6.3 inches", h: "6.3 inches" }
+	});
+
+	useEffect(() => {
+		setPageStateChanged(false)
+		const current = {
+			uploadedImages,
+			selectedImage,
+			bgImage,
+			text,
+			canvasText,
+			selectedBorder,
+			canvasWidth,
+			canvasHeight,
+			sizeLabel
+		};
+	
+		const hasChanged = JSON.stringify(current) !== JSON.stringify(initialState.current);
+	
+		if (hasChanged) {
+			setPageStateChanged(true);
+		}
+	}, [
+		uploadedImages,
+		selectedImage,
+		bgImage,
+		text,
+		canvasText,
+		selectedBorder,
+		canvasWidth,
+		canvasHeight,
+		sizeLabel
+	]);
 	
 	useEffect(() => {
 		let newPrice = 0;

@@ -1,6 +1,6 @@
 // import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button, Flex, Heading, Image, Input, Radio, RadioGroup, ring, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, Flex, Heading, Image, Input, Radio, RadioGroup, ring, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useDropzone } from 'react-dropzone';
 import { FiUploadCloud } from 'react-icons/fi';
 import { HiXMark } from 'react-icons/hi2';
@@ -50,13 +50,18 @@ const Uploader = ({
 	handleDuplicateImage,
 	setExactRotation,
 	angle,
-	setAngle
+	setAngle,
+	sizeLabel,
+	setSizeLabel,
 }) => {
 
 	const {currentPage} = usePage()
 
 	const [landOrPort, setLandOrPort] =useState(canvasWidth > canvasHeight ? "landscape" : "portrait")
 	const [openOtherOption, setOpenOtherOption] = useState(false)
+	const [customW, setCustomW] = useState(sizeLabel?.w?.split(" ").shift());
+	const [customH, setCustomH] = useState(sizeLabel?.h?.split(" ").shift())
+	const [unit, setUnit] = useState("inches")
 
 	const toggleRef = useRef(null);
 
@@ -126,6 +131,22 @@ const Uploader = ({
         setCanvasHeight(Math.max(canvasWidth, canvasHeight)); // Assign the larger value to height
     }
 	};
+
+	const handleSetSize = () => {
+		setSizeLabel({w: customW + " " + unit, h: customH + " " + unit})
+		if(Number(customW) > Number(customH)){
+			setCanvasWidth(600)
+			setCanvasHeight(400)
+		}
+		else if(Number(customW) < Number(customH)){
+			setCanvasWidth(400)
+			setCanvasHeight(500)
+		}
+		else{
+			setCanvasWidth(500)
+			setCanvasHeight(500)
+		}
+	}
 
 	// console.log('activeImage', activeFabricImage)
 
@@ -256,6 +277,73 @@ const Uploader = ({
 						</SliderThumb>
 					</Slider>
 				</Box>
+
+				{
+					currentPage === "2d-cutout" && 
+					<Box p={4} display={"flex"} flexDir={"column"} gap={4}>
+						<Box p={2} bg={"#F9F9F9"} borderRadius={"10px"} >
+							<Text color={"#C0C0C0"} fontSize={"14px"}>
+								Material
+							</Text>
+							<Text fontSize={"16px"}>
+								Acrylic glass
+							</Text>
+						</Box>
+						<Box p={2} bg={"#F9F9F9"} borderRadius={"10px"} >
+							<Text color={"#C0C0C0"} fontSize={"14px"}>
+								Custom size
+							</Text>
+							<Text fontSize={"16px"}>
+								{sizeLabel?.w?.split(" ").shift()} x {sizeLabel?.h?.split(" ").shift()} {unit}
+							</Text>
+						</Box>
+						<Box p={2} bg={"#F9F9F9"} borderRadius={"10px"}>
+							<Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} p={2}>
+								<Text fontSize={"14px"} fontWeight={550}>
+									Custom sizes
+								</Text>
+								<ButtonGroup isAttached size={'sm'}>
+									<Button border={unit === "mm" ? "1px solid #E5E5E5" : "1px solid #F46267"} onClick={() => setUnit("mm")}>
+										mm
+									</Button>
+									<Button border={unit === "inches" ? "1px solid #E5E5E5" : "1px solid #F46267"} onClick={() => setUnit("inches")}>
+										inches
+									</Button>
+								</ButtonGroup>
+							</Box>
+							<Box display="flex" gap="2" mb="4" alignItems="center" justifyContent={"center"} p={2}>
+								<Box px={2} display={"flex"} alignItems={"center"} justifyContent={"space-between"} borderRadius={"5px"} w="40%" bg={"#EBEBEB"}>
+									<Text>W</Text>
+									<Input
+										size="sm"
+										value={customW}
+										w={"50%"}
+										textAlign="right"
+										onChange={(e) => setCustomW(e.target.value)}
+										placeholder={unit}
+									/>
+								</Box>
+								<Text fontSize="sm">×</Text>
+								<Box px={2} display={"flex"} alignItems={"center"} justifyContent={"space-between"} borderRadius={"5px"} w="40%" bg={"#EBEBEB"}>
+									<Text>H</Text>
+								<Input
+									size="sm"
+									borderRadius={"5px"}
+									w="40%"
+									bg={"#EBEBEB"}
+									value={customH}
+									onChange={(e) => setCustomH(e.target.value)}
+									placeholder={unit}
+								/>
+								</Box>
+								<Button size="sm" bg={"#2B2B2B"} color={"white"} onClick={handleSetSize}>
+									Set
+								</Button>
+							</Box>
+						</Box>
+					</Box>
+				}
+
 				<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
 					<Box width={"60%"}>
 						<Heading fontSize={"16px"}>Rotate</Heading>

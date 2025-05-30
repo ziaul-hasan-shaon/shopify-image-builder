@@ -106,7 +106,9 @@ const Layout = (
 		angle ,
 		setAngle ,
 		textAngle ,
-		setTextAngle 
+		setTextAngle ,
+		addOnInfo,
+		setAddOnInfo
 	}
 ) => {
 
@@ -274,6 +276,8 @@ const Layout = (
 						setAngle = {setAngle}
 						textAngle = {textAngle}
 						setTextAngle = {setTextAngle}
+						addOnInfo = {addOnInfo}
+						setAddOnInfo = {setAddOnInfo}
 					/>
 					: 
 					<MobileLayout 
@@ -396,6 +400,8 @@ const Layout = (
 						setAngle = {setAngle}
 						textAngle = {textAngle}
 						setTextAngle = {setTextAngle}
+						addOnInfo = {addOnInfo}
+						setAddOnInfo = {setAddOnInfo}
 					/>
 				}
 			</Box>

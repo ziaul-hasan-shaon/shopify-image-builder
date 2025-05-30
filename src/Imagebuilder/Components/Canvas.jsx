@@ -51,8 +51,8 @@ const Canvas = ({
 					justifyContent="center" 
 					margin="10px auto" 
 					position="relative"
-					width={`${canvasWidth + (device === "Desktop" ? 200 : 50)}px`}
-					height={`${canvasHeight + (device === "Desktop" ? 200 : 50)}px`}
+					width={`${canvasWidth + (device === "Desktop" ? 160 : 50)}px`}
+					height={`${canvasHeight + (device === "Desktop" ? 160 : 50)}px`}
 				>
 					<Box
 						className="canvas-container"
@@ -100,11 +100,11 @@ const Canvas = ({
 							}}
 						></canvas>
 					</Box>
-					<Box mt={10} width={device === "Desktop" ? "10px" : "2px"} height={`${device === "Desktop" ? canvasHeight + 100 : canvasHeight + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={device === "Desktop" ? "flex-end" : "flex-start"} alignItems={"center"} position={"absolute"} right={0}>
-						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>height {sizeLabel?.h} inch</Text>
+					<Box mt={10} width={device === "Desktop" ? "10px" : "2px"} height={`${device === "Desktop" ? canvasHeight + 80 : canvasHeight + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={"flex-start"} alignItems={"center"} position={"absolute"} right={0}>
+						<Text style={{writingMode: "vertical-rl", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>height {sizeLabel?.h}</Text>
 					</Box>
-					<Box mt={8} height={device === "Desktop" ? "10px" : "2px"} width={`${device === "Desktop" ? canvasWidth + 100 : canvasWidth + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={device === "Desktop" ? "flex-end" : "flex-start"} position={"absolute"} bottom={0}>
-						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>width {sizeLabel?.w} inch</Text>
+					<Box mt={8} height={device === "Desktop" ? "10px" : "2px"} width={`${device === "Desktop" ? canvasWidth + 80 : canvasWidth + 10}px`} border={device === "Desktop" ? "5px solid #2B2B2B" : "2px solid #2B2B2B"} display={"flex"} justifyContent={"center"} alignItems={"flex-start"} position={"absolute"} bottom={0}>
+						<Text style={{writingMode: "horizontal-tb", textOrientation: "sideways", padding: device === "Desktop" ? "10px" : "5px"}}>width {sizeLabel?.w}</Text>
 					</Box>
 				</Box>
 				</Box>

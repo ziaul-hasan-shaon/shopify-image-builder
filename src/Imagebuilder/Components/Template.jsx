@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, GridItem, Input, Button, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Input, Button, Text, ButtonGroup } from "@chakra-ui/react";
 
 const Template = ({
 		canvasWidth,
@@ -14,28 +14,29 @@ const Template = ({
 		device
 }) => {
 	const [selectedRatio, setSelectedRatio] = useState(0);
-	const [customW, setCustomW] = useState(sizeLabel?.w);
-	const [customH, setCustomH] = useState(sizeLabel?.h)
+	const [customW, setCustomW] = useState(sizeLabel?.w?.split(" ").shift());
+	const [customH, setCustomH] = useState(sizeLabel?.h?.split(" ").shift())
+	const [unit, setUnit] = useState("inches")
 
 	const ratios = [
-			{ labelW: "6.3", labelH: "6.3", w: 500, h: 500, width: "60px", height: "60px", ratio: "1:1" },
-			{ labelW: "8.3", labelH: "4.2", w: 600, h: 400, width: "75px", height: "48px", ratio: "2:1" },
-			{ labelW: "6.3", labelH: "3.1", w: 600, h: 400, width: "75px", height: "54px", ratio: "2:1" },
-			{ labelW: "10.4", labelH: "6.3", w: 600, h: 400, width: "79px", height: "56px", ratio: "5:3" },
+			{ labelW: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, labelH: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, w: 500, h: 500, width: "60px", height: "60px", ratio: "1:1" },
+			{ labelW: `${unit === "mm" ? "210.82" : "8.3"} ${unit}`, labelH: `${unit === "mm" ? "106.68" : "4.2"} ${unit}`, w: 600, h: 400, width: "75px", height: "48px", ratio: "2:1" },
+			{ labelW: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, labelH: `${unit === "mm" ? "78.74" : "3.1"} ${unit}`, w: 600, h: 400, width: "75px", height: "54px", ratio: "2:1" },
+			{ labelW: `${unit === "mm" ? "256.54" : "10.4"} ${unit}`, labelH: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, w: 600, h: 400, width: "79px", height: "56px", ratio: "5:3" },
 			// { label: "12.5×6.3", w: 1200, h: 600, width: "79px", height: "72px", ratio: "2:1" },
-			{ labelW: "3.1", labelH: "6.3", w: 400, h: 500, width: "79px", height: "88px", ratio: "1:2" },
-			{ labelW: "4.2", labelH: "8.3", w: 400, h: 500, width: "79px", height: "96px", ratio: "1:2" },
-			{ labelW: "6.3", labelH: "10.4", w: 400, h: 500, width: "63px", height: "96px", ratio: "3:5" },
+			{ labelW: `${unit === "mm" ? "78.74" : "3.1"} ${unit}`, labelH: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, w: 400, h: 500, width: "79px", height: "88px", ratio: "1:2" },
+			{ labelW: `${unit === "mm" ? "106.68" : "4.2"} ${unit}`, labelH: `${unit === "mm" ? "210.82" : "8.3"} ${unit}`, w: 400, h: 500, width: "79px", height: "96px", ratio: "1:2" },
+			{ labelW: `${unit === "mm" ? "160.02" : "6.3"} ${unit}`, labelH: `${unit === "mm" ? "256.54" : "10.4"} ${unit}`, w: 400, h: 500, width: "63px", height: "96px", ratio: "3:5" },
 			// { label: "6.3×12.5 inches", w: 600, h: 1200, width: "64px", height: "96px", ratio: "1:2" }
 	];
 
 	const handleSetSize = () => {
-		setSizeLabel({w: customW, h: customH})
-		if(customW > customH){
+		setSizeLabel({w: customW + " " + unit, h: customH + " " + unit})
+		if(Number(customW) > Number(customH)){
 			setCanvasWidth(600)
 			setCanvasHeight(400)
 		}
-		else if(customW < customH){
+		else if(Number(customW) < Number(customH)){
 			setCanvasWidth(400)
 			setCanvasHeight(500)
 		}
@@ -47,6 +48,19 @@ const Template = ({
 
 	return (
 		<Box w="100%" p={2} borderRadius="md" >
+			<Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} p={2}>
+				<Text fontSize={"16px"} fontWeight={550}>
+					Custom sizes
+				</Text>
+				<ButtonGroup isAttached size={'sm'}>
+					<Button bg={unit === "mm" ? "#2B2B2B" : "#F8F8F8"} color={unit === "mm" ? "#ffffff" : ""} onClick={() => setUnit("mm")}>
+						mm
+					</Button>
+					<Button bg={unit === "inches" ? "#2B2B2B" : "#F8F8F8"} color={unit === "inches" ? "#ffffff" : ""} onClick={() => setUnit("inches")}>
+						inches
+					</Button>
+				</ButtonGroup>
+			</Box>
 			{/* Input Section */}
 			<Box display="flex" gap="2" mb="4" alignItems="center" justifyContent={"center"} p={2}>
 				<Box px={2} display={"flex"} alignItems={"center"} justifyContent={"space-between"} borderRadius={"5px"} w="40%" bg={"#EBEBEB"}>
@@ -73,7 +87,7 @@ const Template = ({
 					placeholder="inches"
 				/>
 				</Box>
-				<Button size="sm" bg={"#B1B1B1"} color={"white"} onClick={handleSetSize}>
+				<Button size="sm" bg={"#2B2B2B"} color={"white"} onClick={handleSetSize}>
 					Set
 				</Button>
 			</Box>
@@ -114,7 +128,7 @@ const Template = ({
 						>
 							<Text fontSize={"12px"} fontWeight={"light"} color={"#B1B1B1"}>{ratio.ratio}</Text>
 						</Box>
-						<Text fontSize="xs">{ratio.labelW} x {ratio.labelH} inches</Text>
+						<Text textAlign={"center"} fontSize="xs">{ratio.labelW} x {ratio.labelH}</Text>
 					</GridItem>
 				))}
 			</Grid>

@@ -142,12 +142,14 @@ const MobileLayout = (
 		angle ,
 		setAngle ,
 		textAngle ,
-		setTextAngle 
+		setTextAngle,
+		addOnInfo,
+		setAddOnInfo
 	}
 ) => {
 
 	const {currentPage, setCurrentPage} = usePage()
-	console.log('currentPage', currentPage)
+	// console.log('currentPage', currentPage)
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
 	const [isContentOpen, setIsContentOpen] = useState(true)
 
@@ -283,7 +285,7 @@ const MobileLayout = (
     };
   }, []);
 
-  console.log("device", tinyDevice);
+  // console.log("device", tinyDevice);
 
 	const isDisabled = currentPage === "all"
 
@@ -848,6 +850,10 @@ const MobileLayout = (
 											handleSendBackward = {handleSendBackward}
 											handleDuplicateImage = {handleDuplicateImage}
 											setExactRotation = {setExactRotation}
+											angle = {angle}
+											setAngle = {setAngle}
+											sizeLabel = {sizeLabel}
+											setSizeLabel = {setSizeLabel}
 										/>
 									</Box>
 								}
@@ -902,6 +908,8 @@ const MobileLayout = (
 											handleDeleteText = {handleDeleteText}
 											device={device}
 											setTextRotation = {setTextRotation}
+											textAngle = {textAngle}
+											setTextAngle = {setTextAngle}
 										/>
 									</Box>
 								}
@@ -916,7 +924,10 @@ const MobileLayout = (
 								}
 								{
 									isAddonOpen && 
-									<AddOns/>
+									<AddOns
+									addOnInfo = {addOnInfo}
+									setAddOnInfo = {setAddOnInfo}
+									/>
 								}
 								{
 									currentPage !== "all" &&

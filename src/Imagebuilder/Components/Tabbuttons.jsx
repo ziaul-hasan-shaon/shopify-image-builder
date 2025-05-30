@@ -12,7 +12,7 @@ const tabs = [
 
 const Tabbuttons = ({device, tinyDevice}) => {
 
-	const { currentPage, setCurrentPage } = usePage();
+	const { currentPage, setCurrentPage, pageStateChanged } = usePage();
 	const [selectedTab, setSelectedTab] = useState(null)
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -22,13 +22,15 @@ const Tabbuttons = ({device, tinyDevice}) => {
 		setSelectedTab(tabName)
 	}
 
+	// console.log('pagestateChanged', pageStateChanged)
+
 	return (
 		<Box>
 			<HStack spacing={4} width={"100%"} px={"16px"} alignItems={"center"} justifyContent={"space-between"}>
 				{tabs.map((tab) => (
 					<Button
 						key={tab.key}
-						onClick={() => (!tab.disabled && currentPage !=="all") ? handleTabChange(tab.key) : setCurrentPage(tab?.key)}
+						onClick={() => (!tab.disabled && currentPage !=="all" && pageStateChanged) ? handleTabChange(tab.key) : setCurrentPage(tab?.key)}
 						bg={currentPage === tab.key ? '#2B2B2B' : 'transparent'}
 						color={currentPage === tab.key ? 'white' : '#2B2B2B'}
 						_hover={tab.disabled ? {} : { bg: currentPage === tab.key ? '#2B2B2B' : 'gray.100' }}

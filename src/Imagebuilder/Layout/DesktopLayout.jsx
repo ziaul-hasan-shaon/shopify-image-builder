@@ -145,7 +145,9 @@ const DesktopLayout = (
 		angle ,
 		setAngle ,
 		textAngle ,
-		setTextAngle 
+		setTextAngle,
+		addOnInfo,
+		setAddOnInfo
 	}
 ) => {
 
@@ -807,6 +809,8 @@ const DesktopLayout = (
 							setExactRotation = {setExactRotation}
 							angle = {angle}
 							setAngle = {setAngle}
+							sizeLabel = {sizeLabel}
+							setSizeLabel = {setSizeLabel}
 						
 						/>
 					}
@@ -870,7 +874,10 @@ const DesktopLayout = (
 					}
 					{
 						isAddonOpen && 
-						<AddOns/>
+						<AddOns 
+						addOnInfo = {addOnInfo}
+						setAddOnInfo = {setAddOnInfo}
+						/>
 					}
 					{
 						currentPage !== "all" &&

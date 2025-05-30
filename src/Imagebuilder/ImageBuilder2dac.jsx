@@ -4,6 +4,7 @@ import Layout from './Layout/Layout';
 import * as fabric from "fabric"; // Fabric.js v6
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { usePage } from './hook/PageContext';
 
 const gradient1 = "https://i.ibb.co.com/hrX85sy/thumb-1920-1343513.png"
 const gradient2 = "https://i.ibb.co.com/Q7SWMjF5/gradient1.png"
@@ -59,9 +60,10 @@ const ImageBuilder2dac = () => {
 	const [applyImageCrop, setApplyImageCrop] = useState(false);
 	const [isImageLocked, setIsImageLocked] = useState(false);
 	const [originalImageMap, setOriginalImageMap] = useState(new Map());
-	const [sizeLabel, setSizeLabel] = useState({w: 6.3, h: 6.3})
+	const [sizeLabel, setSizeLabel] = useState({w: "6.3 inches", h: "6.3 inches"})
 	const [angle, setAngle] = useState(null)
 	const [textAngle, setTextAngle] = useState(null)
+	const [addOnInfo, setAddOnInfo] = useState({id:"", status: false, title: "wall mount", price: null})
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -80,6 +82,56 @@ const ImageBuilder2dac = () => {
 	// 	note: note,
 	// 	price: price,
 	// });
+
+	// console.log('addonPrice', addOnInfo)
+
+	const { setPageStateChanged } = usePage();
+	const initialState = useRef({
+		uploadedImages: [],
+		selectedImage: [],
+		bgImage: null,
+		text: "",
+		canvasText: null,
+		selectedBorder: "",
+		canvasWidth: 500,
+		canvasHeight: 500,
+		sizeLabel: { w: "6.3 inches", h: "6.3 inches" },
+		addOnInfo: {id:"", status: false, title: "wall mount", price: null}
+	});
+
+	useEffect(() => {
+		setPageStateChanged(false)
+		const current = {
+			uploadedImages,
+			selectedImage,
+			bgImage,
+			text,
+			canvasText,
+			selectedBorder,
+			canvasWidth,
+			canvasHeight,
+			sizeLabel,
+			addOnInfo
+		};
+	
+		const hasChanged = JSON.stringify(current) !== JSON.stringify(initialState.current);
+	
+		if (hasChanged) {
+			setPageStateChanged(true);
+		}
+	}, [
+		uploadedImages,
+		selectedImage,
+		bgImage,
+		text,
+		canvasText,
+		selectedBorder,
+		canvasWidth,
+		canvasHeight,
+		sizeLabel,
+		addOnInfo,
+	]);
+
 	
 	useEffect(() => {
 		let newPrice = 0;
@@ -105,10 +157,13 @@ const ImageBuilder2dac = () => {
 			if(selectedBorder){
 				newPrice +=4
 			}
+			if(addOnInfo?.status){
+				newPrice += addOnInfo?.price
+			}
 		}
 	
 		setprice(newPrice); // Update the price with the calculated value
-	}, [canvas, color, selectedImage, gradientBg, patterBg, canvasText, selectedBorder]); // Dependencies based on canvas, selectedImage, gradientBg, and patterBg
+	}, [canvas, color, selectedImage, gradientBg, patterBg, canvasText, selectedBorder, addOnInfo]); // Dependencies based on canvas, selectedImage, gradientBg, and patterBg
 
 	// console.log('price', price)
 	// console.log('text', text)
@@ -1265,7 +1320,11 @@ const handleAddToCart = async () => {
 		note: note,
 		price: price,
 		canvas_width: sizeLabel?.w,
-		canvas_height: sizeLabel?.h
+		canvas_height: sizeLabel?.h,
+		isAddOn: addOnInfo?.status,
+		addOnId: addOnInfo?.id,
+		addOnTitle: addOnInfo?.title,
+		addOnPrice: addOnInfo?.price,
 	};
 
 	const canvas = canvasRef.current;
@@ -1401,6 +1460,8 @@ const handleAddToCart = async () => {
 					setAngle = {setAngle}
 					textAngle = {textAngle}
 					setTextAngle = {setTextAngle}
+					addOnInfo = {addOnInfo}
+					setAddOnInfo = {setAddOnInfo}
 				/>
 			</Box>
 		</>
