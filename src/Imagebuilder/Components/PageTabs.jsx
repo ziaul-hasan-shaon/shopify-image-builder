@@ -4,11 +4,11 @@ import { usePage } from '../hook/PageContext';
 
 const cutOut2d = [
 	"https://i.ibb.co/fzSSWLqC/3c67dadc403c3478818c10ee03fef984e2fe63d3-2.jpg",
-	"https://i.ibb.co/x8Cz6khN/3c67dadc403c3478818c10ee03fef984e2fe63d3-1.jpg",
+	// "https://i.ibb.co/x8Cz6khN/3c67dadc403c3478818c10ee03fef984e2fe63d3-1.jpg",
 	"https://i.ibb.co/skzkDGD/6675c3e125c616f7e772ef608c642accaf3ad43d.png",
 	"https://i.ibb.co/9DJxzBX/47e09dc1a0593c63ef193afc10ded52704cb1cbc.png",
-	"https://i.ibb.co/V0HfbjRq/9802a195b1b06de1024d1d0d489a93cd6c786a7a.png",
-	"https://i.ibb.co/d08Y5wxf/3c67dadc403c3478818c10ee03fef984e2fe63d3.jpg"
+	// "https://i.ibb.co/V0HfbjRq/9802a195b1b06de1024d1d0d489a93cd6c786a7a.png",
+	// "https://i.ibb.co/d08Y5wxf/3c67dadc403c3478818c10ee03fef984e2fe63d3.jpg"
 ]
 
 const acrylic3d = [

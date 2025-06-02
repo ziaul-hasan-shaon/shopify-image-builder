@@ -154,7 +154,7 @@ const DesktopLayout = (
 	const [scale, setScale] = useState(1); // Default zoom level
 	const [isFullScreen, setIsFullScreen] = useState(false)
 
-	const {currentPage, setCurrentPage} = usePage()
+	const {currentPage, setCurrentPage, pageStateChanged} = usePage()
 	// console.log('currentPage', currentPage)
 
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Controls the popover state
@@ -280,6 +280,20 @@ const DesktopLayout = (
 	const handleReset = () => {
 		onResetModalOpnen()
 	}
+
+	const handleBacktoshop = () => {
+		if (pageStateChanged) {
+			const confirmLeave = window.confirm(
+				"Your customizations will be lost if you go back now. You haven’t added this design to your cart yet.\n\nDo you want to leave?"
+			);
+			if (confirmLeave) {
+				window.location.href = "/";
+			}
+			// Else, do nothing (stay on page)
+		} else {
+			window.location.href = "/";
+		}
+	};
 
 	const isDisabled = currentPage === "all"
 	const gridItem = (
@@ -523,6 +537,7 @@ const DesktopLayout = (
 					<Button
 						color={"#F46267"}
 						bg={"#FEEFF0"}
+						onClick={handleBacktoshop}
 						border={"1px solid #FCCED0"}
 					>
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -726,7 +741,7 @@ const DesktopLayout = (
 					overflowY={"auto"}
 					sx={{ scrollbarWidth: "none" }}
 				>
-					{!isFullScreen && 
+					{!isFullScreen && (
 						isDisabled ? (
 							<Tooltip 
 								label = "Please switch to other tab to continue" 
@@ -742,8 +757,9 @@ const DesktopLayout = (
 							 >
 								<span style={{ display: "inline-block" }}>{gridItem}</span>
 							</Tooltip>
-						) : (
-							gridItem
+							) : (
+								gridItem
+							)
 						)
 					}
 					{!isFullScreen && 
@@ -884,6 +900,7 @@ const DesktopLayout = (
 						<Box position={"fixed"} bottom={0} p={4} bg={"white"} borderTop={"1px solid  #2B2B2B10"} width={footerWidth} zIndex={999}>
 							<HStack px={2} gap={5}>
 								<Button 
+								disabled = {!pageStateChanged}
 								width={"100%"} 
 								bg={"#E5E5E5"}
 								onClick={handleReset}
@@ -903,7 +920,7 @@ const DesktopLayout = (
 					}
 				</GridItem>}
 					<GridItem 
-						colSpan={isFullScreen ? 15 : 11} 
+						colSpan={isFullScreen ? 16 : 11} 
 						position="sticky" top="0" 
 						h={canvasHeight >= 800 ? 
 							(isFullScreen ? "150vh" : "calc(150vh - 85px)") : 

@@ -1,11 +1,13 @@
-import { Box, Button, Grid, GridItem, Image, Text, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { FiPlus } from 'react-icons/fi';
+import { Box, Button, Grid, GridItem, Image, Select, Text, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 const AddOns = ({
 	addOnInfo,
 	setAddOnInfo
 }) => {
+
+	// const [buttonText, setButtonText] = useState("Add")
 
 	const addons = [
 		{ img: "https://i.ibb.co/MxjKGkhX/508cd3704d087474d422490c474d3dc5678475ce.png", title: "Wall Mount" },
@@ -13,6 +15,7 @@ const AddOns = ({
 	]
 
 	const addOnproducts = window.addonProducts || []  
+	const [selectedVariants, setSelectedVariants] = useState({});
 
 	const staticAddOnproducts = [
 		{
@@ -25,7 +28,7 @@ const AddOns = ({
 			variants: [
 				{
 					id: 41849072287840,
-					title: "Default Title",
+					title: "variant 1",
 					option1: "Default Title",
 					option2: null,
 					option3: null,
@@ -38,6 +41,28 @@ const AddOns = ({
 					public_title: null,
 					options: ["Default Title"],
 					price: 799,
+					weight: 0,
+					compare_at_price: null,
+					inventory_management: "shopify",
+					barcode: "",
+					requires_selling_plan: false,
+					selling_plan_allocations: []
+				},
+				{
+					id: 41849072287841,
+					title: "Default Title",
+					option1: "Default Title",
+					option2: null,
+					option3: null,
+					sku: "A10",
+					requires_shipping: true,
+					taxable: true,
+					featured_image: null,
+					available: true,
+					name: "Adhesive Acrylic Easel Back",
+					public_title: null,
+					options: ["Default Title"],
+					price: 899,
 					weight: 0,
 					compare_at_price: null,
 					inventory_management: "shopify",
@@ -83,50 +108,122 @@ const AddOns = ({
 
 	const [addedAddOns, setAddedAddOns] = useState(new Set());
 
-	const handleAddAddOn = (id, title, price) => {
-		setAddedAddOns((prev) => new Set(prev).add(id));
-		setAddOnInfo({id: id, status: true, title: title, price: Number(price)})
+	const handleVariantChange = (productId, variantId) => {
+		const product = (addOnproducts.length > 0 ? addOnproducts : staticAddOnproducts).find(p => p.id === productId);
+		const selectedVariant = product?.variants.find(v => v.id.toString() === variantId.toString());
+	
+		if (selectedVariant) {
+			setSelectedVariants(prev => ({
+				...prev,
+				[productId]: selectedVariant
+			}));
+		}
 	};
 
+	const handleAddAddOn = (product) => {
+		const selectedVariant =
+			selectedVariants[product.id] ||
+			product.variants?.find((v) => v != null); // fallback to first non-null
 	
+		if (!selectedVariant) return; // avoid adding invalid data
+	
+		const productWithSelectedVariant = {
+			...product,
+			variants: [selectedVariant], // store selected only
+		};
+	
+		setAddedAddOns((prev) => new Set(prev).add(product.id));
+	
+		// Prevent duplicates if re-adding same product
+		setAddOnInfo((prev) => {
+			const filtered = prev.filter((item) => item.id !== product.id);
+			return [...filtered, productWithSelectedVariant];
+		});
+	};
+
+	const handleRemoveAddOn = (id) => {
+		setAddedAddOns((prev) => {
+			const updated = new Set(prev);
+			updated.delete(id);
+			return updated;
+		});
+	
+		setAddOnInfo((prev) => prev.filter((item) => item.id !== id));
+	};
+
+	// console.log('addOnInfo', addOnInfo)
+	// console.log('selectedVariants', selectedVariants)
 
 	return (
 		<>
 			<Box p={"16px"}>
 				<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>Add ons</Text>
 				<Grid gridTemplateColumns={'repeat(2, 1fr)'} gap={"10px"} my={"10px"}>
-					{
-							(addOnproducts && addOnproducts.length > 0 ? addOnproducts : staticAddOnproducts)?.map((product) => (
-									<GridItem key={product?.id}>
-										<VStack spacing={"6px"} alignItems={"start"}>
-											<Image
-												width={"100%"}
-												height={"120px"}
-												src={product?.image}
-												alt="2d-cutout"
-												borderRadius={"8px"}
-											/>
-											<Text>{product?.title}</Text>
+				{
+					(addOnproducts && addOnproducts.length > 0 ? addOnproducts : staticAddOnproducts)?.map((product) => {
+						const variant = selectedVariants[product.id] || product.variants[0]; // fallback
+						console.log('variant', variant)
+						const price = variant ? (variant.price / 100).toFixed(2) : "0.00";
+
+						return ( // ✅ add this
+							<GridItem key={product?.id}>
+								<VStack spacing={"6px"} alignItems={"start"}>
+									<Image
+										width={"100%"}
+										height={"120px"}
+										src={product?.image}
+										alt="2d-cutout"
+										borderRadius={"8px"}
+									/>
+									<Text>{product?.title}</Text>
+									{
+										product?.variants?.length > 1 && (
+											<Select
+												disabled={addedAddOns.has(product?.id)}
+												onChange={(e) => handleVariantChange(product.id, e.target.value)}
+												value={(selectedVariants[product.id]?.id || product.variants[0].id).toString()}
+											>
+												{product.variants.map((variant) => (
+													<option key={variant.id} value={variant.id}>
+														{variant.title}
+													</option>
+												))}
+											</Select>
+										)
+									}
+									{
+										addedAddOns.has(product?.id) ? 
 											<Button
-												disabled={addedAddOns.has(product.id)}
 												bg={"#F46267"}
 												color={"#ffffff"}
 												borderRadius={"8px"}
 												width={"100%"}
 												display={"flex"}
 												alignItems={"center"}
-												onClick={() => handleAddAddOn(product?.id, product?.title, product?.price)}
+												onClick={() => handleRemoveAddOn(product?.id)}
 											>
-												{addedAddOns.has(product.id) ? "Added" : 
-												<>
-												<FiPlus size={20} />
-												Add - ${product?.price}
-												</>}
+												<FiMinus size={20} />
+												Remove
 											</Button>
-										</VStack>
-									</GridItem>
-								))
-							}
+										: 
+											<Button
+												bg={"#F46267"}
+												color={"#ffffff"}
+												borderRadius={"8px"}
+												width={"100%"}
+												display={"flex"}
+												alignItems={"center"}
+												onClick={() => handleAddAddOn(product)}
+											>
+												<FiPlus size={20} />
+												Add - ${price}
+											</Button>
+									}
+								</VStack>
+							</GridItem>
+						); // ✅ and close return block
+					})
+				}
 				</Grid>
 			</Box>
 		</>

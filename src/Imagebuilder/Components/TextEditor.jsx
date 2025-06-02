@@ -45,7 +45,7 @@ const TextEditor = ({
 		}
 	}, [textAngle])
 
-	console.log('activeText', activeText)
+	// console.log('activeText', activeText)
 
 	return (
 		<>

@@ -63,7 +63,7 @@ const ImageBuilder2dac = () => {
 	const [sizeLabel, setSizeLabel] = useState({w: "6.3 inches", h: "6.3 inches"})
 	const [angle, setAngle] = useState(null)
 	const [textAngle, setTextAngle] = useState(null)
-	const [addOnInfo, setAddOnInfo] = useState({id:"", status: false, title: "wall mount", price: null})
+	const [addOnInfo, setAddOnInfo] = useState([])
 	// const [imageInfo, setImageInfo] = useState({
 	// 	selectedImage: selectedImage, // Track selected image
 	// 	bgcolor: color,
@@ -96,7 +96,7 @@ const ImageBuilder2dac = () => {
 		canvasWidth: 500,
 		canvasHeight: 500,
 		sizeLabel: { w: "6.3 inches", h: "6.3 inches" },
-		addOnInfo: {id:"", status: false, title: "wall mount", price: null}
+		addOnInfo: []
 	});
 
 	useEffect(() => {
@@ -157,9 +157,13 @@ const ImageBuilder2dac = () => {
 			if(selectedBorder){
 				newPrice +=4
 			}
-			if(addOnInfo?.status){
-				newPrice += addOnInfo?.price
-			}
+			// Add all selected add-ons
+			const totalAddOnPrice = addOnInfo.reduce((sum, item) => {
+				const variantPrice = item?.variants?.[0]?.price || 0;
+				return sum + parseFloat(variantPrice) / 100;
+			}, 0);
+
+			newPrice += totalAddOnPrice;
 		}
 	
 		setprice(newPrice); // Update the price with the calculated value
@@ -1321,11 +1325,14 @@ const handleAddToCart = async () => {
 		price: price,
 		canvas_width: sizeLabel?.w,
 		canvas_height: sizeLabel?.h,
-		isAddOn: addOnInfo?.status,
-		addOnId: addOnInfo?.id,
-		addOnTitle: addOnInfo?.title,
-		addOnPrice: addOnInfo?.price,
 	};
+
+	const finalOrderData = [
+		{
+			...imageInfo
+		},
+		addOnInfo // full array as one element
+	];
 
 	const canvas = canvasRef.current;
 	let file;
@@ -1334,7 +1341,6 @@ const handleAddToCart = async () => {
 		const dataURL = canvas.toDataURL('image/png', 1); // no need to pass an object
 		file = dataURLtoFile(dataURL, 'canvas-image.png');
 	}
-
 
 	try {
 		const imgUrl = await uploadCanvasImageToLamda(file); // 🛠️ Await this!
@@ -1345,7 +1351,7 @@ const handleAddToCart = async () => {
 				id: 50374829605158,
 				quantity: 1,
 				properties: {
-					_image_info: imageInfo,
+					_image_info: finalOrderData,
 					_preview_url: imgUrl?.file_url,
 				},
 			};

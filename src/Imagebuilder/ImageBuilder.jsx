@@ -1366,6 +1366,12 @@ const handleAddToCart = async () => {
 		canvas_height: sizeLabel?.h
 	};
 
+	const finalOrderData = [
+		{
+			...imageInfo
+		}
+	];
+
 	const canvas = canvasRef.current;
 	let file;
 
@@ -1373,7 +1379,6 @@ const handleAddToCart = async () => {
 		const dataURL = canvas.toDataURL('image/png', 1); // no need to pass an object
 		file = dataURLtoFile(dataURL, 'canvas-image.png');
 	}
-
 
 	try {
 		const imgUrl = await uploadCanvasImageToLamda(file); // 🛠️ Await this!
@@ -1384,7 +1389,7 @@ const handleAddToCart = async () => {
 				id: 50374829605158,
 				quantity: 1,
 				properties: {
-					_image_info: imageInfo,
+					_image_info: finalOrderData,
 					_preview_url: imgUrl?.file_url,
 				},
 			};

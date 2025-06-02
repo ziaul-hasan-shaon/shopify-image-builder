@@ -303,10 +303,10 @@ const Uploader = ({
 									Custom sizes
 								</Text>
 								<ButtonGroup isAttached size={'sm'}>
-									<Button border={unit === "mm" ? "1px solid #E5E5E5" : "1px solid #F46267"} onClick={() => setUnit("mm")}>
+									<Button border={unit === "mm" ? "1px solid #F46267" : "1px solid #E5E5E5"} onClick={() => setUnit("mm")}>
 										mm
 									</Button>
-									<Button border={unit === "inches" ? "1px solid #E5E5E5" : "1px solid #F46267"} onClick={() => setUnit("inches")}>
+									<Button border={unit === "inches" ? "1px solid #F46267" : "1px solid #E5E5E5"} onClick={() => setUnit("inches")}>
 										inches
 									</Button>
 								</ButtonGroup>

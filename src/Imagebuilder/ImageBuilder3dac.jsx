@@ -1401,6 +1401,12 @@ const handleAddToCart = async () => {
 		canvas_height: sizeLabel?.h
 	};
 
+	const finalOrderData = [
+		{
+			...imageInfo
+		}
+	];
+
 	const canvas = canvasRef.current;
 	let file;
 
@@ -1419,7 +1425,7 @@ const handleAddToCart = async () => {
 				id: 50374829605158,
 				quantity: 1,
 				properties: {
-					_image_info: imageInfo,
+					_image_info: finalOrderData,
 					_preview_url: imgUrl?.file_url,
 				},
 			};
