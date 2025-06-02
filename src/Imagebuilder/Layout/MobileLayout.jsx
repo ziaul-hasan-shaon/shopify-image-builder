@@ -529,6 +529,7 @@ const MobileLayout = (
 						</Text>
 						<Button
 							bg={"#F46267"}
+							_hover={{bg: "#DC585D"}}
 							color={"white"}
 							onClick={handleAddToCart}
 							fontSize={tinyDevice === "small-mobile" ? "12px" : "14px"}

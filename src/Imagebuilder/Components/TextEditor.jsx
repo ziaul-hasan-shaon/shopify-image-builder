@@ -68,7 +68,7 @@ const TextEditor = ({
 						borderRadius="4px"
 						border="1px solid #ccc"
 					/>
-					<Button width="100%" bg="#FF5A5F" color="white" onClick={addTextToCanvas}>
+					<Button width="100%" bg="#FF5A5F" _hover={{bg: "#DC585D"}} color="white" onClick={addTextToCanvas}>
 						Add to design
 					</Button>
 				</Box>

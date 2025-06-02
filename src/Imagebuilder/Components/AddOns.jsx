@@ -156,26 +156,27 @@ const AddOns = ({
 
 	return (
 		<>
-			<Box p={"16px"}>
-				<Text fontSize={"16px"} fontWeight={550} color={"#2B2B2B"}>Add ons</Text>
-				<Grid gridTemplateColumns={'repeat(2, 1fr)'} gap={"10px"} my={"10px"}>
+			<Box p={8}>
+				<Text fontSize={"18px"} fontWeight={600} color={"#00070B"}>Add ons</Text>
+				<Grid gridTemplateColumns={'repeat(1, 1fr)'} gap={"10px"} my={"10px"}>
 				{
 					(addOnproducts && addOnproducts.length > 0 ? addOnproducts : staticAddOnproducts)?.map((product) => {
 						const variant = selectedVariants[product.id] || product.variants[0]; // fallback
-						console.log('variant', variant)
+						// console.log('variant', variant)
 						const price = variant ? (variant.price / 100).toFixed(2) : "0.00";
 
 						return ( // ✅ add this
 							<GridItem key={product?.id}>
-								<VStack spacing={"6px"} alignItems={"start"}>
+								<VStack spacing={"10px"} alignItems={"start"}>
 									<Image
 										width={"100%"}
-										height={"120px"}
+										height={"200px"}
 										src={product?.image}
 										alt="2d-cutout"
+										objectFit={"cover"}
 										borderRadius={"8px"}
 									/>
-									<Text>{product?.title}</Text>
+									<Text fontSize={"16px"} fontWeight={550} color={"#00070B"}>{product?.title}</Text>
 									{
 										product?.variants?.length > 1 && (
 											<Select
@@ -195,6 +196,7 @@ const AddOns = ({
 										addedAddOns.has(product?.id) ? 
 											<Button
 												bg={"#F46267"}
+												_hover={{bg: "#DC585D"}}
 												color={"#ffffff"}
 												borderRadius={"8px"}
 												width={"100%"}
@@ -208,6 +210,7 @@ const AddOns = ({
 										: 
 											<Button
 												bg={"#F46267"}
+												_hover={{bg: "#DC585D"}}
 												color={"#ffffff"}
 												borderRadius={"8px"}
 												width={"100%"}

@@ -1058,6 +1058,7 @@ const DesktopLayout = (
 								</Text>
 								<Button 
 									bg={"#F46267"} 
+									_hover={{bg: "#DC585D"}}
 									color={"white"}
 									onClick={handleAddToCart}
 								>
