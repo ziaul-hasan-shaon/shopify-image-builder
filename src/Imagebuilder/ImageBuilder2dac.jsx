@@ -952,7 +952,7 @@ const ImageBuilder2dac = () => {
 	
 		const selectedObjects = canvas.getActiveObjects();
 		if (selectedObjects.length === 0) {
-			toast.error("Please select at least one image to rotate.");
+			// toast.error("Please select at least one image to rotate.");
 			return;
 		}
 	
@@ -987,7 +987,7 @@ const ImageBuilder2dac = () => {
 		if (!canvas) return;
 		const selectedObjects = canvas.getActiveObjects();
 		if (selectedObjects.length === 0) {
-			alert("Please select at least one image to flip.");
+			toast.error("Please select at least one image to flip.");
 			return;
 		}
 		selectedObjects.forEach((object) => {

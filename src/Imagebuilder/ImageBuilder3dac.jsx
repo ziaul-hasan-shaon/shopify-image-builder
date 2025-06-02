@@ -1016,7 +1016,7 @@ const ImageBuilder3dac = () => {
 	
 		const selectedObjects = canvas.getActiveObjects();
 		if (selectedObjects.length === 0) {
-			toast.error("Please select at least one image to rotate.");
+			// toast.error("Please select at least one image to rotate.");
 			return;
 		}
 	
