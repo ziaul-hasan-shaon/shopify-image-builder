@@ -106,7 +106,7 @@ const Uploader = ({
       fileRejections.forEach((rejection) => {
         rejection.errors.forEach((error) => {
           if (error.code === 'file-too-large') {
-            toast.error('Each image must be under 4MB.');
+            toast.error('Each image must be under 8MB.');
           } else if (error.code === 'file-invalid-type') {
             toast.error('Only image files are allowed.');
           }
@@ -115,7 +115,7 @@ const Uploader = ({
     },	
     accept: "image/*",
     multiple: true,
-    maxSize: 4 * 1024 * 1024,
+    maxSize: 8 * 1024 * 1024,
   });
 
 	const handleChange = (value) => {
@@ -188,7 +188,7 @@ const Uploader = ({
 								<Flex direction="column" align="center" justify="center">
 									<FiUploadCloud size={40} color="#d63031" />
 									<Text fontWeight="bold" my={2}>Upload image</Text>
-									<Text fontSize="sm">Drag or click to browse (4 MB max)</Text>
+									<Text fontSize="sm">Drag or click to browse (8 MB max)</Text>
 								</Flex> : 
 								<Flex align="center" justify="space-between" width={"100%"}>
 									<Flex align="center" justify="start" gap={"15px"}>
