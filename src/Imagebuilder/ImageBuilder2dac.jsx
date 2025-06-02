@@ -1343,7 +1343,7 @@ const handleAddToCart = async () => {
 			const payload = {
 				items: [
 					{
-						id: 50374829605158,
+						id: 41846564618336,
 						quantity: 1,
 						properties: {
 							_image_info: imageInfo,
