@@ -5,7 +5,7 @@ export function formatMoney(cents) {
 	 }
 	 let value = ''
 	 const placeholderRegex = /\{\{\s*(\w+)\s*\}\}/
-	 const formatString = nvdShopCurrency
+	 const formatString = window.storeShopCurrency
 	 function defaultOption(opt, def) {
 		 return typeof opt === 'undefined' ? def : opt
 	 }

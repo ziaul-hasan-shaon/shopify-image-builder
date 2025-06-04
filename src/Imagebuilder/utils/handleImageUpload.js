@@ -62,7 +62,7 @@ export const handleImageUpload = async ({
 	
 				try {
 					const response = await axios.post(
-						"https://prefix-welfare-therapy-actors.trycloudflare.com/remove-bg",
+						"https://bgremove.navidiumhooks.com/remove-bg",
 						formData,
 						{
 							headers: { "Content-Type": "multipart/form-data" },
