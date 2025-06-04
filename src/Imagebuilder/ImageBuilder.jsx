@@ -142,16 +142,14 @@ const ImageBuilder = () => {
 		img.src = image.url;
 
 		img.onload = () => {
-			const maxSize = 300;
-
 			const originalWidth = img.width;
 			const originalHeight = img.height;
-
+			const maxSize = 300;
+		
 			const scale = Math.min(maxSize / originalWidth, maxSize / originalHeight, 1);
-
 			const width = originalWidth * scale;
 			const height = originalHeight * scale;
-
+		
 			setSelectedImage((prev) => [
 				...prev,
 				{
@@ -159,14 +157,19 @@ const ImageBuilder = () => {
 					url: image.url,
 					x: 50,
 					y: 50,
-					width: width,
-					height: height,
-					originalWidth: width,
-					originalHeight: height,
+					width,  // visual width
+					height, // visual height
+					cropX: 0,
+					cropY: 0,
+					cropWidth: originalWidth,
+					cropHeight: originalHeight,
+					originalWidth,
+					originalHeight,
+					imageScale: scale, // <== key to everything!
 					rotation: 0,
 				},
 			]);
-		};
+		};		
 	};
 
 	const toggleImageLock = () => {
