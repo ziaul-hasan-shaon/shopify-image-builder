@@ -107,13 +107,13 @@ const PageTabs = ({
 											src={img2d?.img}
 											alt="2d-acrylic"
 											borderRadius={"8px"}
-											cursor={"pointer"}
-											onClick={() => {
-												setGradientBg(false);
-												setPatternBg(true);
-												setBgImage(img2d?.src);
-												setCurrentPage("2d-acrylic")
-											}}
+											cursor={"not-allowed"}
+											// onClick={() => {
+											// 	setGradientBg(false);
+											// 	setPatternBg(true);
+											// 	setBgImage(img2d?.src);
+											// 	setCurrentPage("2d-acrylic")
+											// }}
 										/>
 									</GridItem>
 								))

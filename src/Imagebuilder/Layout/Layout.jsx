@@ -117,14 +117,14 @@ const Layout = (
 	const {currentPage} = usePage()
 	// console.log('currentPage', currentPage)
 
-	const [isUploadOpen, setIsUploadOpen] = useState(currentPage === '2d-cutout' ? true : false)
-	const [isTemplateOpen, setIsTemplateOpen] = useState(currentPage !== '2d-cutout' ? true : false)
+	const [isUploadOpen, setIsUploadOpen] = useState((currentPage === '2d-cutout' || currentPage === '2d-acrylic') ? true : false)
+	const [isTemplateOpen, setIsTemplateOpen] = useState((currentPage !== '2d-cutout' && currentPage !== '2d-acrylic') ? true : false)
 	const [isBackgroundOpen, setIsBackgroundOpen] = useState(false)
 	const [isTextOpen, setIsTextOpen] = useState(false)
 	const [isBorderOpen, setIsBorderOpen] = useState(false)
 	const [isOpenNote, setIsOpenNote] = useState(false)
 	const [isAddonOpen, setIsAddonOpen] = useState(false)
-	const [currentState, setCurrentState] = useState(currentPage === '2d-cutout' ? "upload" : "template")
+	const [currentState, setCurrentState] = useState((currentPage === '2d-cutout' || currentPage === '2d-acrylic') ? "upload" : "template")
 
 	//to detect media
 	const [device, setDevice] = useState("");

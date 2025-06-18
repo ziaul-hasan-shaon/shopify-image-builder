@@ -236,10 +236,10 @@ const DesktopLayout = (
 		if(currentState === 'template'){
 			handleIsUploadOpen()
 		}
-		else if(currentState === 'upload' && currentPage !== "2d-cutout"){
+		else if(currentState === 'upload' && currentPage === "3d-acrylic"){
 			handleIsBackgroundOpen()
 		}
-		else if(currentState === 'background' && currentPage !== "2d-cutout"){
+		else if(currentState === 'background' && currentPage === "3d-acrylic"){
 			handleIsTextOpen()
 		}
 		else if(currentState === 'text' && currentPage !== "2d-cutout"){
@@ -251,6 +251,8 @@ const DesktopLayout = (
 			handleIsAddOnsOpen()
 		}else if(currentState === 'addons' && currentPage === "2d-cutout"){
 			handleIsTemplateOpen()
+		}else if(currentState === 'upload' && currentPage === "2d-acrylic"){
+			handleIsTextOpen()
 		}
 	}
 
@@ -347,7 +349,7 @@ const DesktopLayout = (
 						<Text fontSize={"14px"}>Upload</Text>
 					</Box>
 					{
-						currentPage !== "2d-cutout" && 
+						(currentPage !== "2d-cutout" && currentPage !== "2d-acrylic") && 
 						<Box
 						p={4}
 						display={"flex"}

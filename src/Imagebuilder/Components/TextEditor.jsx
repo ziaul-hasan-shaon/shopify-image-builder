@@ -202,6 +202,7 @@ const TextEditor = ({
 					{
 						activeText && 
 						<Box 
+							className='floating-option'
 							position={"absolute"} 
 							top={device === "Desktop" ? "7%" : "12%"} 
 							left={device === "Desktop" ? "215%" : "25%"} 

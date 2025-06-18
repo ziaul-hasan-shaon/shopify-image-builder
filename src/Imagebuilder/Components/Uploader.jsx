@@ -100,6 +100,7 @@ const Uploader = ({
         handleImageSelect,
         handleSelectedImageDelet,
         toast,
+				currentPage
       });
     },
 		onDropRejected: (fileRejections) => {
@@ -150,7 +151,7 @@ const Uploader = ({
 
 	// console.log('activeImage', activeFabricImage)
 
-	const duplicateIMage = uploadedImages?.find(img => img.id === activeFabricImage?.id)
+	// const duplicateIMage = uploadedImages?.find(img => img.id === activeFabricImage?.id)
 
 	// console.log("duplicate", duplicateIMage)
 	
@@ -205,43 +206,106 @@ const Uploader = ({
 						)}
 					</Box>
 				</Box>
-				{uploadedImages?.length > 0 &&
+				{(Array.isArray(uploadedImages) ? uploadedImages.length > 0 : uploadedImages) && (
 					<Box p={5}>
-						<Heading fontSize={"16px"} textAlign="start">Uploaded Images</Heading>
+						<Heading fontSize="16px" textAlign="start">
+							Uploaded Images
+						</Heading>
 						<Flex overflow="hidden" align="center" wrap="wrap" gap={3} p={2} my={2}>
-							{uploadedImages?.map((image) => (
-								<Box key={image.id} border="1px solid #ccc" borderRadius="5px" p={2} position="relative"  cursor={
-									selectedImage.some((img) => img.id === image.id) ? "not-allowed" : "pointer"
-								}
-								onClick={() => {
-									if (!selectedImage.some((img) => img.id === image.id)) {
-										handleImageSelect(image);
+							{(Array.isArray(uploadedImages) ? uploadedImages : [uploadedImages]).map((image) => (
+								<Box
+									key={image.id}
+									border="1px solid #ccc"
+									borderRadius="5px"
+									p={2}
+									position="relative"
+									cursor={Array.isArray(selectedImage)
+										? selectedImage.some((img) => img.id === image.id)
+											? "not-allowed"
+											: "pointer"
+										: selectedImage?.id === image.id
+										? "not-allowed"
+										: "pointer"
 									}
-								}}
+									
+									onClick={() => {
+										if (
+											(Array.isArray(selectedImage)
+												? !selectedImage.some((img) => img.id === image.id)
+												: selectedImage?.id !== image.id)
+										) {
+											handleImageSelect(image);
+										}
+									}}
 								>
-									{/* {console.log("selectedImage", selectedImage)} */}
-									<Image src={image.url} alt={image.title} boxSize="60px" objectFit="cover" />
-									<Button onClick={(e) => handleDeleteButtonClick(e, image.id)} size={"xs"} bg={'#F46267'} color={"#ffffff"} position="absolute" top="-10px" right="-10px" borderRadius="full" padding={"1px"}>
+									<Image
+										src={image.url}
+										alt={image.title}
+										boxSize="60px"
+										objectFit="cover"
+									/>
+									<Button
+										onClick={(e) => handleDeleteButtonClick(e, image.id)}
+										size="xs"
+										bg="#F46267"
+										color="#ffffff"
+										position="absolute"
+										top="-10px"
+										right="-10px"
+										borderRadius="full"
+										padding="1px"
+									>
 										<HiXMark />
 									</Button>
 								</Box>
 							))}
 						</Flex>
 					</Box>
-				}
-				{selectedImage?.length > 0 && (
+				)}
+				{(Array.isArray(selectedImage) ? selectedImage.length > 0 : selectedImage) && (
 					<Box px={5}>
-						<Heading fontSize={"16px"} textAlign="start">Selected Images</Heading>
-						{selectedImage?.map((image) => (
-							<Flex key={image.id} border="1px solid #E5E5E5" p={2} borderRadius="10px" align="center" justify="space-between" my={2} bg="#F9F9F9">
+						<Heading fontSize={"16px"} textAlign="start">
+							{Array.isArray(selectedImage) ? "Selected Images" : "Selected Image"}
+						</Heading>
+
+						{Array.isArray(selectedImage) ? (
+							selectedImage.map((image) => (
+								<Flex
+									key={image.id}
+									border="1px solid #E5E5E5"
+									p={2}
+									borderRadius="10px"
+									align="center"
+									justify="space-between"
+									my={2}
+									bg="#F9F9F9"
+								>
+									<Box border="1px solid #ccc" borderRadius="5px" p={0}>
+										<Image src={image.url} alt={image.title} boxSize="50px" objectFit="cover" />
+									</Box>
+									<Button onClick={() => handleSelectedImageDelet(image.id)} bg="none">
+										<HiXMark size={24} color="#00070B" />
+									</Button>
+								</Flex>
+							))
+						) : (
+							<Flex
+								border="1px solid #E5E5E5"
+								p={2}
+								borderRadius="10px"
+								align="center"
+								justify="space-between"
+								my={2}
+								bg="#F9F9F9"
+							>
 								<Box border="1px solid #ccc" borderRadius="5px" p={0}>
-									<Image src={image.url} alt={image.title} boxSize="50px" objectFit="cover" />
+									<Image src={selectedImage.url} alt={selectedImage.title} boxSize="50px" objectFit="cover" />
 								</Box>
-								<Button onClick={() => handleSelectedImageDelet(image.id)} bg="none">
+								<Button onClick={() => handleSelectedImageDelet(selectedImage.id)} bg="none">
 									<HiXMark size={24} color="#00070B" />
 								</Button>
 							</Flex>
-						))}
+						)}
 					</Box>
 				)}
 				{
@@ -344,89 +408,96 @@ const Uploader = ({
 					</Box>
 				}
 
-				<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
-					<Box width={"60%"}>
-						<Heading fontSize={"16px"}>Rotate</Heading>
-						<Button onClick={() => {
-							rotateSelectedImages(-90)
-							setAngle(angle-90)
-						}} 
-							mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
-							<RxRotateCounterClockwise size={30} />
-						</Button>
-						<Button onClick={() => {
-							rotateSelectedImages(90)
-							setAngle(angle+90)
-						}} 
-							mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
-							<RxRotateCounterClockwise size={30} />
-						</Button>
-					</Box>
-					<Box width={"40%"}>
-					{/* <Heading fontSize={"16px"}>Set Angle</Heading> */}
-					<Box display={"flex"} alignItems={"center"} gap={3}>
-					<Slider
-						min={0}
-						max={360}
-						step={1}
-						value={angle}
-						onChange={setAngle} // ✅ Fixed: this is now correct
-						width="100px"
-						isDisabled={!activeFabricImage}
-						sx={{
-							cursor: !activeFabricImage ? 'not-allowed' : 'pointer',
-						}}
-					>
-						<SliderTrack>
-							<SliderFilledTrack bg="tomato" />
-						</SliderTrack>
-						<SliderThumb 
-						boxSize={5} 
-						bg="transparent" 
-						p={0}
-						sx={{
-							'&:focus': { boxShadow: 'none !important' },
-							'&:focus-visible': { boxShadow: 'none !important' },
-							'&:hover': { boxShadow: 'none' }, // optional
-						}}
-						>
-							<FaRegCircle
-								size={"20px"}
-								color="#FF6347"
-								style={{ background: "#ffffff", padding: "0px" }}
-							/>
-						</SliderThumb>
-					</Slider>
+				{
+				currentPage !== "2d-acrylic" &&
+					<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
+						<Box width={"60%"}>
+							<Heading fontSize={"16px"}>Rotate</Heading>
+							<Button onClick={() => {
+								rotateSelectedImages(-90)
+								setAngle(angle-90)
+							}} 
+								mt={2} p={2} bg={"none"} borderRadius="5px" _hover={{ opacity: 0.8 }}>
+								<RxRotateCounterClockwise size={30} />
+							</Button>
+							<Button onClick={() => {
+								rotateSelectedImages(90)
+								setAngle(angle+90)
+							}} 
+								mt={2} p={2} bg={"none"} transform="scaleX(-1)" borderRadius="5px" _hover={{ opacity: 0.8 }}>
+								<RxRotateCounterClockwise size={30} />
+							</Button>
+						</Box>
+						<Box width={"40%"}>
+						{/* <Heading fontSize={"16px"}>Set Angle</Heading> */}
+						<Box display={"flex"} alignItems={"center"} gap={3}>
+							<Slider
+								min={0}
+								max={360}
+								step={1}
+								value={angle}
+								onChange={setAngle} // ✅ Fixed: this is now correct
+								width="100px"
+								isDisabled={!activeFabricImage}
+								sx={{
+									cursor: !activeFabricImage ? 'not-allowed' : 'pointer',
+								}}
+							>
+								<SliderTrack>
+									<SliderFilledTrack bg="tomato" />
+								</SliderTrack>
+								<SliderThumb 
+								boxSize={5} 
+								bg="transparent" 
+								p={0}
+								sx={{
+									'&:focus': { boxShadow: 'none !important' },
+									'&:focus-visible': { boxShadow: 'none !important' },
+									'&:hover': { boxShadow: 'none' }, // optional
+								}}
+								>
+									<FaRegCircle
+										size={"20px"}
+										color="#FF6347"
+										style={{ background: "#ffffff", padding: "0px" }}
+									/>
+								</SliderThumb>
+							</Slider>
 
-					<Input
-						isDisabled={!activeFabricImage}
-						value={angle}
-						onChange={(e) => setAngle(Number(e.target.value))} // ✅ Ensure numeric value
-						width="25%"
-						padding={2}
-						marginY={2}
-						type='number'
-						borderRadius="4px"
-						border="1px solid #ccc"
-					/>
-				</Box>
-					</Box>
-				</Flex>
-				<Flex align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>
-					<Box>
-						<Heading fontSize={"16px"}>Flip</Heading>
-						<Button onClick={() => flipSelectedImages('horizontal')} mt={2} p={2} bg="none" borderRadius="5px" _hover={{ opacity: 0.8 }}>
-							<CgEditFlipH size={30} />
-						</Button>
-						<Button onClick={() => flipSelectedImages('vertical')} mt={2} p={2} bg="none" borderRadius="5px" _hover={{ opacity: 0.8 }}>
-							<CgEditFlipV size={30} />
-						</Button>
-					</Box>
-				</Flex>
+							<Input
+								isDisabled={!activeFabricImage}
+								value={angle}
+								onChange={(e) => setAngle(Number(e.target.value))} // ✅ Ensure numeric value
+								width="25%"
+								padding={2}
+								marginY={2}
+								type='number'
+								borderRadius="4px"
+								border="1px solid #ccc"
+							/>
+						</Box>
+						</Box>
+					</Flex>
+				}
+				{
+					currentPage !== "2d-acrylic" &&
+					<Flex align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>
+						<Box>
+							<Heading fontSize={"16px"}>Flip</Heading>
+							<Button onClick={() => flipSelectedImages('horizontal')} mt={2} p={2} bg="none" borderRadius="5px" _hover={{ opacity: 0.8 }}>
+								<CgEditFlipH size={30} />
+							</Button>
+							<Button onClick={() => flipSelectedImages('vertical')} mt={2} p={2} bg="none" borderRadius="5px" _hover={{ opacity: 0.8 }}>
+								<CgEditFlipV size={30} />
+							</Button>
+						</Box>
+					</Flex>
+				}
 			</Box>
 			{
 				(activeFabricImage && device === "Desktop" && !bgRemoveLoading ) && 
 				<Box 
+					className='floating-option'
 					position={"absolute"} 
 					top={0} 
 					left={"215%"} 
@@ -450,15 +521,18 @@ const Uploader = ({
 							<IoIosCrop size={26}/>
 						</button>
 					}
-					<button
-						onClick={() => {
-							// handleImageSelect(duplicateIMage)
-							handleDuplicateImage()
-							// toast.success("Image duplicated successfully")
-						}}
-					>
-						<HiOutlineDuplicate size={24}/>
-					</button>
+					{
+						currentPage !== "2d-acrylic" &&
+						<button
+							onClick={() => {
+								// handleImageSelect(duplicateIMage)
+								handleDuplicateImage()
+								// toast.success("Image duplicated successfully")
+							}}
+						>
+							<HiOutlineDuplicate size={24}/>
+						</button>
+					}
 					<button
 						onClick={() => {
 							handleSelectedImageDelet(activeFabricImage?.id)
@@ -480,27 +554,44 @@ const Uploader = ({
 							isImageLocked ? <CiUnlock size = {24}/> : <CiLock size = {24}/>
 						}
 					</button>
-					<button
-						onClick={() => flipSelectedImages('horizontal')}
-					>
-						<CgEditFlipH size={24}/>
-					</button>
-					<Box ref={toggleRef}>
-					<button style={{paddingTop: "5px"}} onClick={() => setOpenOtherOption(!openOtherOption)}>
-						<PiDotsThreeBold size={24}/>
-					</button>
-						{
-							openOtherOption && 
-							<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} p={2} borderRadius={"10px"}>
-								<button onClick={handleBringForoward}>
-									<RiBringForward size={24}/>
-								</button>
-								<button onClick={handleSendBackward}>
-									<RiSendBackward size={24}/>
-								</button>
-							</Box>
-						}
-					</Box>
+					{
+						currentPage !== "2d-acrylic" &&
+						<button
+							onClick={() => flipSelectedImages('horizontal')}
+						>
+							<CgEditFlipH size={24}/>
+						</button>
+					}
+					{
+						currentPage === "2d-acrylic" && 
+						<Box display={"flex"} gap={4}>
+							<button onClick={handleBringForoward}>
+								<RiBringForward size={24}/>
+							</button>
+							<button onClick={handleSendBackward}>
+								<RiSendBackward size={24}/>
+							</button>
+						</Box>
+					}
+					{
+						currentPage !== "2d-acrylic" &&
+						<Box ref={toggleRef}>
+							<button style={{paddingTop: "5px"}} onClick={() => setOpenOtherOption(!openOtherOption)}>
+								<PiDotsThreeBold size={24}/>
+							</button>
+								{
+									openOtherOption && 
+									<Box display={"flex"} flexDir={"column"} gap={4} position={"absolute"} top={"110%"} right={0} bg={"#ffffff"} p={2} borderRadius={"10px"}>
+										<button onClick={handleBringForoward}>
+											<RiBringForward size={24}/>
+										</button>
+										<button onClick={handleSendBackward}>
+											<RiSendBackward size={24}/>
+										</button>
+									</Box>
+								}
+							</Box> 
+					}
 				</Box>
 			}
 		</Box>
@@ -510,6 +601,7 @@ const Uploader = ({
 			{
 				(activeFabricImage && !bgRemoveLoading) && 
 				<Box 
+					className='floating-option'
 					position={"absolute"} 
 					top={"12%"} 
 					left={"20%"} 

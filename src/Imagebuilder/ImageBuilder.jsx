@@ -24,7 +24,7 @@ const ImageBuilder = () => {
 	const canvasRef = useRef(null);
 	const [canvas, setCanvas] = useState(null);
 	const [uploadedImages, setUploadedImages] = useState([]);
-	const [selectedImage, setSelectedImage] = useState([]); // Track selected image
+	const [selectedImage, setSelectedImage] = useState(null); // Track selected image
 	const [loading, setLoading] = useState(false); // Loading state for image upload
 	const [color, setColor] = useState("");
 	const [gradientBg, setGradientBg] = useState(false);
@@ -86,7 +86,7 @@ const ImageBuilder = () => {
 	const { setPageStateChanged } = usePage();
 	const initialState = useRef({
 		uploadedImages: [],
-		selectedImage: [],
+		selectedImage: null,
 		bgImage: null,
 		text: "",
 		canvasText: null,
@@ -206,6 +206,13 @@ const ImageBuilder = () => {
 		// console.log("imageElement", imgElement)
 	
 		imgElement.onload = () => {
+
+			canvas.getObjects().forEach(obj => {
+				if (obj.type === 'image') {
+					canvas.remove(obj);
+				}
+			});			
+
 			// Generate a unique ID
 			let baseId = image.id || 'image';
 			let uniqueId = baseId;
@@ -251,9 +258,7 @@ const ImageBuilder = () => {
 	
 			fabricImage.setCoords();
 	
-			setSelectedImage((prevSelected) => {
-				return [...prevSelected, { ...image, id: uniqueId, originalId: image.id }];
-			});
+			setSelectedImage({ ...image, id: uniqueId, originalId: image.id });
 		};
 		// console.log('imgElement', image.url)
 		imgElement.src = image.url;
@@ -526,6 +531,33 @@ const ImageBuilder = () => {
 		};
 	}, [canvas, cropRect, applyImageCrop]);
 
+	const setupUnselectOnOutsideClick = (canvas, canvasRef) => {
+		const handleOutsideClick = (event) => {
+			const target = event.target;
+			const isFabricCanvasClick =
+				target.tagName === "CANVAS" &&
+				(target.classList.contains("upper-canvas") || target.classList.contains("lower-canvas"));
+
+			// Check if clicked inside floating option panel (or any of its children)
+  		const isFloatingOptionClick = !!event.target.closest(".floating-option");
+		
+			if (!isFabricCanvasClick && !isFloatingOptionClick) {
+				if (canvas.getActiveObject()) {
+					canvas.discardActiveObject();
+					canvas.requestRenderAll();
+				}
+			}
+		};
+		
+		document.addEventListener("mousedown", handleOutsideClick);	
+	};	
+
+	useEffect(() => {
+		if (canvas && canvasRef.current) {
+		setupUnselectOnOutsideClick(canvas, canvasRef);
+		}
+	}, [canvas]);
+
 	const handleDuplicateImage = () => {
 		const activeObject = canvas.getActiveObject();
 		// console.log('active', activeObject)
@@ -757,11 +789,9 @@ const ImageBuilder = () => {
 						const imageId = activeObject.id; // Adjust based on how you set it
 						
 						// Update selectedImage state
-						setSelectedImage((prevSelectedImages) => {
-							return prevSelectedImages.filter(
-								(image) => image.id !== imageId
-							);
-						});
+						setSelectedImage((prevImage) => {
+							return prevImage?.id === imageId ? null : prevImage;
+						});						
 					}
 	
 					// Remove from canvas
@@ -830,24 +860,24 @@ const ImageBuilder = () => {
 	}, [canvas]); // Only re-run if canvas changes
 
 	const deleteUploadedImage = (imageId) => {
+		console.log('uploaded image', uploadedImages)
 		// Remove from uploaded images
-		setUploadedImages((prevImages) => {
-			const updatedUploadedImages = prevImages.filter((image) => image.id !== imageId);
-	
-			// Remove any matching images on the canvas (based on originalId match)
-			canvas.getObjects().forEach((obj) => {
-				if (obj.originalId === imageId) {
-					canvas.remove(obj);
+		setUploadedImages((prevImage) => {
+			// If the current image matches the imageId to remove, remove it and from canvas
+			if (prevImage?.id === imageId) {
+				const canvasImage = canvas.getObjects().find((obj) => obj.originalId === imageId);
+				if (canvasImage) {
+					canvas.remove(canvasImage);
 				}
-			});
-	
-			return updatedUploadedImages;
+				return null; // Clear uploadedImages since it matches
+			}
+			// If not matching, just keep the current image
+			return prevImage;
 		});
 	
 		// Remove any selected images with the same originalId
-		setSelectedImage((prevSelectedImages) => {
-			const updatedSelectedImages = prevSelectedImages.filter((image) => image.originalId !== imageId);
-			return updatedSelectedImages;
+		setSelectedImage((prevImage) => {
+			return prevImage?.originalId === imageId ? null : prevImage;
 		});
 	};
 	
@@ -860,21 +890,16 @@ const ImageBuilder = () => {
 
 	const handleSelectedImageDelet = (imageId) => {
 		// Remove image from the selectedImage array
-		setSelectedImage((prevImages) => {
-			const updatedImages = prevImages.filter((image) => image.id !== imageId);
-
-			// Find and remove the image from the canvas
-			const imageToRemove = prevImages.find((image) => image.id === imageId);
-			if (imageToRemove) {
-				const canvasImage = canvas.getObjects().find((obj) => obj.id === imageToRemove.id);
+		setSelectedImage((prevImage) => {
+			if (prevImage?.id === imageId) {
+				const canvasImage = canvas.getObjects().find((obj) => obj.id === prevImage.id);
 				if (canvasImage) {
-					// console.log('canvas image', canvasImage)
-					canvas.remove(canvasImage); // Remove from the canvas
+					canvas.remove(canvasImage);
 				}
+				return null; // Unselect
 			}
-
-			return updatedImages;
-		});
+			return prevImage; // Keep current if IDs don't match
+		});		
 	}
 
 	// Function to set background image or color

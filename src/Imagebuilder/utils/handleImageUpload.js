@@ -20,8 +20,10 @@ export const handleImageUpload = async ({
   handleImageSelect,
   handleSelectedImageDelet,
   toast,
+	currentPage
 }) => {
   setLoading(true);
+	// console.log('currentPage', currentPage)
 
   const initialImages = await Promise.all(
     acceptedFiles.map(async (file) => {
@@ -50,8 +52,19 @@ export const handleImageUpload = async ({
     })
   );
 
+	// Skip background removal for "2d-acrylic"
   // Set initial images to state
-  setUploadedImages((prev) => [...prev, ...initialImages]);
+	if (currentPage === "2d-acrylic") {
+		// Just one image object
+		setUploadedImages(initialImages[initialImages.length - 1] || null);
+
+		setLoading(false);
+		setBgRemoveLoading(false);
+		return;
+		} else {
+		// Normal array append
+		setUploadedImages((prev) => [...prev, ...initialImages]);
+	}
 
   // Handle background removal
   const delayedBackgroundRemoval = initialImages.map((img) => {

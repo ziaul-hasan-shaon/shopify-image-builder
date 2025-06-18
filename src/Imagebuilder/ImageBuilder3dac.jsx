@@ -529,6 +529,33 @@ const ImageBuilder3dac = () => {
 			canvas.off('selection:updated');
 		};
 	}, [canvas, cropRect, applyImageCrop]);
+
+	const setupUnselectOnOutsideClick = (canvas, canvasRef) => {
+		const handleOutsideClick = (event) => {
+			const target = event.target;
+			const isFabricCanvasClick =
+				target.tagName === "CANVAS" &&
+				(target.classList.contains("upper-canvas") || target.classList.contains("lower-canvas"));
+
+			// Check if clicked inside floating option panel (or any of its children)
+  		const isFloatingOptionClick = !!event.target.closest(".floating-option");
+		
+			if (!isFabricCanvasClick && !isFloatingOptionClick) {
+				if (canvas.getActiveObject()) {
+					canvas.discardActiveObject();
+					canvas.requestRenderAll();
+				}
+			}
+		};
+		
+		document.addEventListener("mousedown", handleOutsideClick);	
+	};	
+
+	useEffect(() => {
+		if (canvas && canvasRef.current) {
+		setupUnselectOnOutsideClick(canvas, canvasRef);
+		}
+	}, [canvas]);
 	
 	const handleDuplicateImage = () => {
 		const activeObject = canvas.getActiveObject();

@@ -93,7 +93,11 @@ const Canvas = ({
 								backgroundImage:selectedBorder && `url(${selectedBorder})`,
 								backgroundSize: `${canvasWidth}px ${canvasHeight}px`,
 								backgroundRepeat: "no-repeat",
-								boxShadow: uploadedImages?.length > 0 ? '0 2px 5px rgba(0, 0, 0, 0.2)' : "",
+								boxShadow: 
+								(Array.isArray(uploadedImages) && uploadedImages.length > 0) || 
+								(uploadedImages && typeof uploadedImages === 'object' && !Array.isArray(uploadedImages)) 
+									? '0 2px 5px rgba(0, 0, 0, 0.2)' 
+									: ''
 								// top: "52%", // Centers the canvas vertically
 								// left: "60%", // Centers the canvas horizontally
 								// transform: "translate(-50%, -50%)", // Adjusts the position so the canvas is perfectly centered
