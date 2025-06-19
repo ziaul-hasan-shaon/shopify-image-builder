@@ -523,14 +523,18 @@ const ImageBuilder2dac = () => {
 	const setupUnselectOnOutsideClick = (canvas, canvasRef) => {
 		const handleOutsideClick = (event) => {
 			const target = event.target;
+			// console.log('target', target)
 			const isFabricCanvasClick =
 				target.tagName === "CANVAS" &&
 				(target.classList.contains("upper-canvas") || target.classList.contains("lower-canvas"));
 
 			// Check if clicked inside floating option panel (or any of its children)
   		const isFloatingOptionClick = !!event.target.closest(".floating-option");
+  		const isRotateOptionClick = !!event.target.closest(".image-rotate-box");
+  		const isFlipOptionClick = !!event.target.closest(".image-flip-box");
+  		// const isTextSettingOptionClick = !!event.target.closest(".text-setting-box");
 		
-			if (!isFabricCanvasClick && !isFloatingOptionClick) {
+			if (!isFabricCanvasClick && !isFloatingOptionClick && !isRotateOptionClick && !isFlipOptionClick) {
 				if (canvas.getActiveObject()) {
 					canvas.discardActiveObject();
 					canvas.requestRenderAll();

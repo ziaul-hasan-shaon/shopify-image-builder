@@ -410,7 +410,7 @@ const Uploader = ({
 
 				{
 				currentPage !== "2d-acrylic" &&
-					<Flex align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
+					<Flex className='image-rotate-box' align="center" justify="space-between" width={"100%"} gap={3} mt={3} borderY={"1px solid #E5E5E5"} p={5}>
 						<Box width={"60%"}>
 							<Heading fontSize={"16px"}>Rotate</Heading>
 							<Button onClick={() => {
@@ -481,7 +481,7 @@ const Uploader = ({
 				}
 				{
 					currentPage !== "2d-acrylic" &&
-					<Flex align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>
+					<Flex className='image-flip-box' align="center" justify="start" gap={3} borderBottom={"1px solid #E5E5E5"} p={5}>
 						<Box>
 							<Heading fontSize={"16px"}>Flip</Heading>
 							<Button onClick={() => flipSelectedImages('horizontal')} mt={2} p={2} bg="none" borderRadius="5px" _hover={{ opacity: 0.8 }}>

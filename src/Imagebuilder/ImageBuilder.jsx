@@ -540,8 +540,9 @@ const ImageBuilder = () => {
 
 			// Check if clicked inside floating option panel (or any of its children)
   		const isFloatingOptionClick = !!event.target.closest(".floating-option");
+			const isTextSettingOptionClick = !!event.target.closest(".text-setting-box");
 		
-			if (!isFabricCanvasClick && !isFloatingOptionClick) {
+			if (!isFabricCanvasClick && !isFloatingOptionClick && !isTextSettingOptionClick) {
 				if (canvas.getActiveObject()) {
 					canvas.discardActiveObject();
 					canvas.requestRenderAll();

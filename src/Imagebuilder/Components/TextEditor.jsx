@@ -73,7 +73,7 @@ const TextEditor = ({
 					</Button>
 				</Box>
 
-				<Box width="100%">
+				<Box className='text-setting-box' width="100%">
 					<Text fontSize="lg" fontWeight="bold" my={4}>Text Settings</Text>
 					<Flex justify="space-between" width="100%">
 						<Box width="45%">
@@ -136,7 +136,7 @@ const TextEditor = ({
 						</Box>
 					</Box>
 
-					<Flex mt={4} gap={2} alignItems={"center"} width={"100%"}>
+					<Flex className='text-rotat-box' mt={4} gap={2} alignItems={"center"} width={"100%"}>
 						<Box width={"40%"}>
 							<Button bg="none" onClick={() => {
 								rotateText(90)
